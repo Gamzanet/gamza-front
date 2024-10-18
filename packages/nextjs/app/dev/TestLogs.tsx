@@ -4,13 +4,11 @@ import { TestLog } from "~~/types/gamza/AnalysisResult";
 
 const TestLogsScope: FC<{ props: TestLog[] }> = ({ props }) => {
   return (
-    <div className="bg-error">
+    <div className="bg-base-200 m-2">
       <h1>TestLogs Scope</h1>
-      <div className="flex flex-col space-y-4">
-        {props.map(log => (
-          <LogBox key={Math.random().toString(36)} data={log} />
-        ))}
-      </div>
+      {props.map(log => (
+        <LogBox key={Math.random().toString(36)} data={log} />
+      ))}
     </div>
   );
 };

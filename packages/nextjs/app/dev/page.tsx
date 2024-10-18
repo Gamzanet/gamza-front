@@ -10,21 +10,24 @@ const Page: NextPage = async () => {
   const data = response.body.data;
 
   return (
-    <main className="hero bg-base-200 min-h-screen">
-      <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="text-center lg:text-left mx-2">
-          <h1 className="text-5xl font-bold">{title}</h1>
-        </div>
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          <TestLogsScope props={data.testLogs} />
-        </div>
-        <HookGasConsumptionScope props={data.hookGasConsumption} />
-        <TokenPriceDifferenceScope props={data.tokenPriceDifference} />
+    <>
+      <div className="text-center mx-2">
+        <h1 className="text-5xl font-bold">{title}</h1>
       </div>
-    </main>
+      <main className="hero bg-base-200 min-h-screen">
+        <div className="hero-content lg:flex-col">
+          <div className="flex">
+            <HookGasConsumptionScope props={data.hookGasConsumption} />
+            <TokenPriceDifferenceScope props={data.tokenPriceDifference} />
+          </div>
+          <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
+            <TestLogsScope props={data.testLogs} />
+          </div>
+        </div>
+      </main>
+    </>
   );
 };
-
 export default Page;
 
 type MockResponse = {

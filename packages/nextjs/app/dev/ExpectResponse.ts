@@ -16,7 +16,7 @@ const ExpectResponse: { data: AnalysisResult } = {
       {
         type: "warning",
         title: "test_addLiquidity_secondAdditionSameRange",
-        pass: false,
+        pass: true,
         summary: "Fail to add liquidity twice within same range",
         description: "description",
         trace: `fatal: 'origin/main' does not appear to be a git repository
