@@ -8,7 +8,7 @@ const TestLogsScope: FC<{ props: TestLog[] }> = ({ props }) => {
       <h1>TestLogs Scope</h1>
       <div className="flex flex-col space-y-4">
         {props.map(log => (
-          <LogBox key={log.title} data={log} />
+          <LogBox key={Math.random().toString(36)} data={log} />
         ))}
       </div>
     </div>
