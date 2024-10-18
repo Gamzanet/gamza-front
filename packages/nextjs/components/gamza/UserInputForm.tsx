@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Address } from "viem";
-import { AddressInput, IntegerInput } from "~~/components/scaffold-eth/Input";
+import { AddressInput, IntegerInput, IntegerVariant } from "~~/components/scaffold-eth/Input";
 import { ZERO_ADDRESS } from "~~/utils/scaffold-eth/common";
 
 export default function UserInputForm() {
@@ -28,6 +28,7 @@ export default function UserInputForm() {
     setAddressHooks("0x7d61d057dd982b8b0a05a5871c7d40f8b96dd040");
   };
 
+  // TODO supports instant value update: e.g. update while key pressed
   return (
     <form className="card-body" onSubmit={onSubmitHandler}>
       {/* Input PoolKey Form */}
@@ -64,6 +65,7 @@ export default function UserInputForm() {
           placeholder="uint24 fee"
           value={uint24Fee}
           onChange={value => setUint24Fee(value as string)}
+          variant={IntegerVariant.UINT24}
           disableMultiplyBy1e18
         />
       </label>
@@ -77,6 +79,7 @@ export default function UserInputForm() {
           placeholder="int24 tickSpacing"
           value={int24TickSpacing}
           onChange={value => setInt24TickSpacing(value as string)}
+          variant={IntegerVariant.INT24}
           disableMultiplyBy1e18
         />
       </label>
