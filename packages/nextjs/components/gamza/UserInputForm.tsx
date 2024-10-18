@@ -20,7 +20,7 @@ export default function UserInputForm() {
 
   const onClickLinkSetSampleHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-
+    // @see https://unichain-sepolia.blockscout.com/tx/0x51bf9fdd076d4076212562d50caf012fccc7efc3a10e93efb358c30e08855f0a
     setAddressCurrency0(ZERO_ADDRESS);
     setAddressCurrency1("0x6f0cd9ac99c852bdba06f72db93078cba80a32f5");
     setUint24Fee("0");
