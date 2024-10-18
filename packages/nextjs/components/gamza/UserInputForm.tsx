@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Address } from "viem";
 import { AddressInput, IntegerInput } from "~~/components/scaffold-eth/Input";
 
 export default function UserInputForm() {
-  const [addressCurrency0, setAddressCurrency0] = useState("");
-  const [addressCurrency1, setAddressCurrency1] = useState("");
-  const [addressHooks, setAddressHooks] = useState("");
-  const [uint24Fee, setUint24Fee] = useState("");
-  const [int24TickSpacing, setInt24TickSpacing] = useState("");
+  const [addressCurrency0, setAddressCurrency0] = useState<Address>("");
+  const [addressCurrency1, setAddressCurrency1] = useState<Address>("");
+  const [uint24Fee, setUint24Fee] = useState<string>("");
+  const [int24TickSpacing, setInt24TickSpacing] = useState<string>("");
+  const [addressHooks, setAddressHooks] = useState<Address>("");
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     alert(event.type);
   };
 
-  const onClickLinkHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const onClickLinkSetSampleHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     setAddressCurrency0("0x0000000000000000000000000000000000000000");
     setAddressCurrency1("0x6f0cd9ac99c852bdba06f72db93078cba80a32f5");
@@ -89,7 +90,7 @@ export default function UserInputForm() {
       {/* Submit Button */}
       <div className="form-control mt-6">
         <label className="label">
-          <Link href="#" className="label-text-alt link link-hover" onClick={onClickLinkHandler}>
+          <Link href="#" className="label-text-alt link-hover" onClick={onClickLinkSetSampleHandler}>
             Need a sample?
           </Link>
         </label>
