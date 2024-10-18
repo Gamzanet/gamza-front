@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Address } from "viem";
 import { AddressInput, IntegerInput } from "~~/components/scaffold-eth/Input";
+import { ZERO_ADDRESS } from "~~/utils/scaffold-eth/common";
 
 export default function UserInputForm() {
   const [addressCurrency0, setAddressCurrency0] = useState<Address>("");
@@ -19,7 +20,8 @@ export default function UserInputForm() {
 
   const onClickLinkSetSampleHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    setAddressCurrency0("0x0000000000000000000000000000000000000000");
+
+    setAddressCurrency0(ZERO_ADDRESS);
     setAddressCurrency1("0x6f0cd9ac99c852bdba06f72db93078cba80a32f5");
     setUint24Fee("0");
     setInt24TickSpacing("60");
