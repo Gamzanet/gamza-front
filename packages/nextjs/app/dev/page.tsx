@@ -22,5 +22,5 @@ const Page: NextPage = async () => {
 export default Page;
 
 type MockResponse = {
-  body: any;
+  body: typeof ExpectResponse;
 };
