@@ -10,26 +10,25 @@ const Page: NextPage = async () => {
   const data = response.body.data;
 
   return (
-    <>
-      <div className="text-center mx-2">
-        <h1 className="text-5xl font-bold">{title}</h1>
-      </div>
-      <main className="hero bg-base-200 min-h-screen">
-        <div className="hero-content lg:flex-col">
-          <div className="flex">
+    <div className="hero bg-base-200 min-h-screen">
+      <div className="flex flex-col">
+        <header className="text-center text-5xl font-bold">{title}</header>
+        <main className="hero-content lg:flex-col">
+          <section className="flex">
             <HookGasConsumptionScope props={data.hookGasConsumption} />
             <TokenPriceDifferenceScope props={data.tokenPriceDifference} />
-          </div>
-          <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
+          </section>
+          <section className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
             <TestLogsScope props={data.testLogs} />
-          </div>
-        </div>
-      </main>
-    </>
+          </section>
+        </main>
+      </div>
+    </div>
   );
 };
-export default Page;
 
 type MockResponse = {
   body: typeof ExpectResponse;
 };
+
+export default Page;
