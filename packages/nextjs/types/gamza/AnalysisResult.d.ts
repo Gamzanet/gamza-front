@@ -1,6 +1,6 @@
 export interface AnalysisResult {
   hookGasConsumption: HookGasConsumption;
-  TokenPriceDifference: TokenPriceDifference;
+  tokenPriceDifference: TokenPriceDifference;
   testLogs: TestLog[];
   // advancedAnalysis: AdvancedAnalysis | undefined;
 }
