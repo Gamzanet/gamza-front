@@ -18,7 +18,7 @@ const Page: NextPage = async () => {
             <HookGasConsumptionScope props={data.hookGasConsumption} />
             <TokenPriceDifferenceScope props={data.tokenPriceDifference} />
           </section>
-          <section className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
+          <section className="card bg-base-100 w-full max-w-xl shadow-2xl">
             <TestLogsScope props={data.testLogs} />
           </section>
         </main>
