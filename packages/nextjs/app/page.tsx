@@ -1,6 +1,6 @@
 import BugAnt from "./BugAnt";
 import type { NextPage } from "next";
-import UserInputForm from "~~/components/gamza/UserInputForm";
+import UserInputForm from "~~/components/gamza/legacy/UserInputForm";
 
 const Home: NextPage = () => {
   const title = "Gamza Analyzer";

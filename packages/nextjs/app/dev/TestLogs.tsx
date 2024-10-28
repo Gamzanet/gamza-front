@@ -1,5 +1,5 @@
 import { FC } from "react";
-import LogBox from "~~/components/gamza/LogBox";
+import LogBox from "~~/components/gamza/legacy/LogBox";
 import { TestLog } from "~~/types/gamza/AnalysisResult";
 
 const TestLogsScope: FC<{ props: TestLog[] }> = ({ props }) => {
