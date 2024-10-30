@@ -70,3 +70,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.collapse-button {
+  color: white;
+  border-radius: 1px;
+  padding: 0px 3px 0px 3px;
+  margin: 0px 3px 0px 3px;
+  cursor: pointer;
+  font-size: 15px;
+  height: 15px; /* 폰트 크기에 맞는 높이 설정 */
+  width: 15px;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.collapse-button:hover {
+  opacity: 1;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}

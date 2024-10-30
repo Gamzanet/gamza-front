@@ -14,7 +14,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Link from "next/link";
-
+import Logo from "@/components/Logo.svg";
 export function MenubarDemo() {
   const SimpleRouteMenubarMenu = () => {
     const routes = ["Overview", "Scan", "Docs", "Dev", "Result"];
@@ -28,6 +28,11 @@ export function MenubarDemo() {
   };
   return (
     <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>
+          <Logo />
+        </MenubarTrigger>
+      </MenubarMenu>
       {SimpleRouteMenubarMenu()}
       {/* <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
@@ -117,3 +122,4 @@ export function MenubarDemo() {
     </Menubar>
   );
 }
+

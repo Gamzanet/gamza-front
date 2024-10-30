@@ -27,29 +27,34 @@ export interface Data {
   with_20: With20; // 20 to 20
 }
 
+export interface With20 {
+  [key: MethodStringType]: Method | Method[];
+
+  swap: Swap[];
+  addLiquidity: AddLiquidity;
+  donate: Donate;
+  removeLiquidity: RemoveLiquidity;
+}
+
 export interface With6909 {
+  [key: MethodStringType]: Method | Method[];
+
   swap: Swap[];
   addLiquidity: AddLiquidity; // 6909 in
   removeLiquidity: RemoveLiquidity; // 6909 out
 }
 
-export interface Swap {
-  "for-expected-current-price": string;
-  "for-expected-current-liquidity": string;
-  "for-expected-amount0-specified": string;
-  "for-expected-current-fee": string;
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
+type MethodStringType = "swap" | "addLiquidity" | "removeLiquidity" | "donate";
+type Method = AddLiquidity | RemoveLiquidity | Swap | Donate;
+
+interface AddLiquidity extends BaseData, Erc20Data, Erc6909Data {}
+interface RemoveLiquidity extends BaseData, Erc20Data, Erc6909Data {}
+interface Donate extends BaseData, Erc20Data {}
+export interface Swap extends BaseData, Erc20Data, Erc6909Data {
+  "for-expected-current-price"?: string;
+  "for-expected-current-liquidity"?: string;
+  "for-expected-amount0-specified"?: string;
+  "for-expected-current-fee"?: string;
   calc: Calc;
   is_burn: boolean;
   is_exactIn: boolean;
@@ -62,115 +67,23 @@ export interface Calc {
   amount_out: number;
 }
 
-export interface AddLiquidity {
+export interface BaseData {
   amount0delta: string;
   amount1delta: string;
+}
+
+export interface Erc20Data {
   managerAmount0delta: string;
   managerAmount1delta: string;
   hookAmount0delta: string;
   hookAmount1delta: string;
   userAmount0delta: string;
   userAmount1delta: string;
+}
+
+export interface Erc6909Data {
   hook6909Amount0delta: string;
   hook6909Amount1delta: string;
   user6909Amount0delta: string;
   user6909Amount1delta: string;
 }
-
-export interface RemoveLiquidity {
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
-}
-
-export interface With20 {
-  swap: Swap2[];
-  addLiquidity: AddLiquidity2;
-  donate: Donate;
-  removeLiquidity: RemoveLiquidity2;
-}
-
-export interface Swap2 {
-  "for-expected-current-price": string;
-  "for-expected-current-liquidity": string;
-  "for-expected-amount0-specified": string;
-  "for-expected-current-fee": string;
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
-  calc: Calc2;
-  is_burn: boolean;
-  is_exactIn: boolean;
-}
-
-export interface Calc2 {
-  price_expected: number;
-  sqrtP_expected: number;
-  amount_in: number;
-  amount_out: number;
-}
-
-export interface AddLiquidity2 {
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
-}
-
-export interface Donate {
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
-}
-
-export interface RemoveLiquidity2 {
-  amount0delta: string;
-  amount1delta: string;
-  managerAmount0delta: string;
-  managerAmount1delta: string;
-  hookAmount0delta: string;
-  hookAmount1delta: string;
-  userAmount0delta: string;
-  userAmount1delta: string;
-  hook6909Amount0delta: string;
-  hook6909Amount1delta: string;
-  user6909Amount0delta: string;
-  user6909Amount1delta: string;
-}
-
-export type Address = string;

@@ -15,9 +15,9 @@ export function Background({ children }: { children: ReactNode }) {
         background:
           "radial-gradient(89.67% 159.84% at 76.02% 19.88%, #EB487F 0%, #D29FB8 34%, #F71097 75%, #ED6AC4 100%)",
       }}
-      className='absolute w-[90vw] h-[90vh] overflow-x-hidden select-none'
+      className='relative w-[90vw] h-[70vh] overflow-x-hidden select-none'
     >
-      <div className='position absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+      <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
         {children}
       </div>
     </div>

@@ -11,6 +11,7 @@ export default interface MapperType {
 }
 
 type AssetType = "erc20" | "erc6909";
+type AssetKeyType = "with_20" | "with_6909";
 
 export interface Swap {
   exactIn: ExactRecurse;
@@ -31,15 +32,15 @@ export interface ErcBase {
 
 export interface AddLiquidity {
   exactIn: ErcBase;
-  exactOut: null;
+  exactOut?: ErcBase;
 }
 
 export interface RemoveLiquidity {
-  exactIn: null;
+  exactIn?: ErcBase;
   exactOut: ErcBase;
 }
 
 export interface Donate {
   exactIn: ErcBase;
-  exactOut: null;
+  exactOut?: ErcBase;
 }

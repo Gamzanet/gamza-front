@@ -1,150 +1,205 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Address } from "@/types/AnalysisResponse";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
-export default function PoolKeyForm() {
-  const [addressCurrency0, setAddressCurrency0] = useState<Address>("");
-  const [addressCurrency1, setAddressCurrency1] = useState<Address>("");
-  const [uint24Fee, setUint24Fee] = useState<string>("");
-  const [int24TickSpacing, setInt24TickSpacing] = useState<string>("");
-  const [addressHooks, setAddressHooks] = useState<Address>("");
-
-  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    alert(event.type);
-  };
+const PoolKeyForm = () => {
+  const [currency0, setCurrency0] = useState<string>("");
+  const [currency1, setCurrency1] = useState<string>("");
+  const [fee, setFee] = useState<string>("");
+  const [tickSpacing, setTickSpacing] = useState<string>("");
+  const [hooks, setHooks] = useState("");
+  const [responseMessage, setResponseMessage] = useState<string>("");
 
   const onClickLinkSetSampleHandler = (
     event: React.MouseEvent<HTMLAnchorElement>
   ) => {
     event.preventDefault();
-    // @see https://unichain-sepolia.blockscout.com/tx/0x51bf9fdd076d4076212562d50caf012fccc7efc3a10e93efb358c30e08855f0a
-    setAddressCurrency0("0x0000000000000000000000000000000000000000");
-    setAddressCurrency1("0x6f0cd9ac99c852bdba06f72db93078cba80a32f5");
-    setUint24Fee("0");
-    setInt24TickSpacing("60");
-    setAddressHooks("0x7d61d057dd982b8b0a05a5871c7d40f8b96dd040");
+    setCurrency0("0x0197481B0F5237eF312a78528e79667D8b33Dcff");
+    setCurrency1("0xA56569Bd93dc4b9afCc871e251017dB0543920d4");
+    setFee("3000");
+    setTickSpacing("60");
+    setHooks("0x6caC2dcc5eCf5caac0382F1B4A77EABac0F6C0Cc");
   };
 
-  // TODO supports instant value update: e.g. update while key pressed
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const data = {
+      data: {
+        Poolkey: {
+          currency0,
+          currency1,
+          fee: Number(fee),
+          tickSpacing: Number(tickSpacing),
+          hooks,
+        },
+        mode: 2,
+      },
+    };
+    console.log(JSON.stringify(data));
+    // next.env
+
+    try {
+      const response = await fetch("/api/tasks", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      console.log(response);
+      const result = await response.json();
+      console.log(result);
+      if (result) {
+        localStorage.setItem("_herbicide", JSON.stringify(result));
+        // window.location.href = "/result";
+      }
+    } catch (error) {
+      setResponseMessage("오류가 발생했습니다.");
+      console.error("Error:", error);
+    }
+  };
+
   return (
-    <form className='card-body' onSubmit={onSubmitHandler}>
-      {/* Input PoolKey Form */}
-      <div className='card-title'>Input PoolKey Form</div>
+    <form
+      className='flex flex-col gap-4 p-4 border border-gray-300 rounded-md shadow-md bg-white w-[512px] h-[512px]'
+      onSubmit={handleSubmit}
+    >
+      <AddressInput
+        name='currency0'
+        label='Currency currency0'
+        state={currency0}
+        onChange={setCurrency0}
+      />
+      <AddressInput
+        name='currency1'
+        label='Currency currency1'
+        state={currency1}
+        onChange={setCurrency1}
+      />
+      <NumberInput
+        name='fee'
+        label='uint24 fee'
+        state={fee}
+        onChange={setFee}
+      />
+      <NumberInput
+        name='tickSpacing'
+        label='int24 tickSpacing'
+        state={tickSpacing}
+        onChange={setTickSpacing}
+      />
+      <AddressInput
+        name='hook'
+        label='Hook'
+        state={hooks}
+        onChange={setHooks}
+      />
 
-      {/* Currency currency0 */}
-      <label className='form-control'>
-        <span className='label-text'>Currency currency0</span>
-        <AddressInput
-          placeholder='address 0x...'
-          value={addressCurrency0}
-          onChange={(value) => setAddressCurrency0(value)}
-        />
-      </label>
-
-      {/* Currency currency1 */}
-      <label className='form-control'>
-        <div className='label'>
-          <span className='label-text'>Currency currency1</span>
-        </div>
-        <AddressInput
-          placeholder='address 0x...'
-          value={addressCurrency1}
-          onChange={(value) => setAddressCurrency1(value)}
-        />
-      </label>
-
-      {/* uint24 fee */}
-      <label className='form-control'>
-        <div className='label'>
-          <span className='label-text'>uint24 fee</span>
-        </div>
-        <IntegerInput
-          placeholder='uint24 fee'
-          value={uint24Fee}
-          onChange={(value) => setUint24Fee(value as string)}
-        />
-      </label>
-
-      {/* int24 tickSpacing */}
-      <label className='form-control'>
-        <div className='label'>
-          <span className='label-text'>int24 tickSpacing</span>
-        </div>
-        <IntegerInput
-          placeholder='int24 tickSpacing'
-          value={int24TickSpacing}
-          onChange={(value) => setInt24TickSpacing(value as string)}
-        />
-      </label>
-
-      {/* IHooks hooks */}
-      <label className='form-control'>
-        <div className='label'>
-          <span className='label-text'>IHooks hooks</span>
-        </div>
-        <AddressInput
-          placeholder='address 0x...'
-          value={addressHooks}
-          onChange={(value) => setAddressHooks(value)}
-        />
-      </label>
-
-      {/* Submit Button */}
-      <div className='form-control mt-6'>
-        <label className='label'>
-          <Link
-            href='#'
-            className='label-text-alt link-hover'
-            onClick={onClickLinkSetSampleHandler}
-          >
-            Need a sample?
-          </Link>
-        </label>
-        <button className='btn btn-active'>Submit</button>
-      </div>
+      <a
+        href='#'
+        onClick={onClickLinkSetSampleHandler}
+        className='text-blue-500 text-xs'
+      >
+        need a sample?
+      </a>
+      <button
+        type='submit'
+        className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
+      >
+        제출
+      </button>
+      {responseMessage && (
+        <span className='text-red-500 text-xs'>{responseMessage}</span>
+      )}
     </form>
   );
-}
+};
+
+export default PoolKeyForm;
 
 function AddressInput({
-  value,
+  name,
+  label,
+  state,
   onChange,
-  placeholder,
 }: {
-  value: Address;
-  onChange: (value: Address) => void;
-  placeholder: string;
+  name: string;
+  label: string;
+  state: string;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [error, setError] = useState("");
+
+  const regex = /^0x[a-fA-F0-9]{40}$/;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (!regex.test(inputValue)) {
+      setError(
+        'The input must start with "0x" followed by 20 hexadecimal characters.'
+      );
+    } else {
+      setError("");
+    }
+    onChange(inputValue);
+  };
+
   return (
-    <input
-      type='text'
-      className='input input-bordered'
-      placeholder={placeholder}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    />
+    <div>
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        type='text'
+        id={name}
+        placeholder={`address 0x...`}
+        value={state}
+        onChange={handleChange}
+      />
+      {error && <span className='text-red-500 text-xs'>{error}</span>}
+    </div>
   );
 }
 
-function IntegerInput({
-  value,
+function NumberInput({
+  name,
+  label,
+  state,
   onChange,
-  placeholder,
 }: {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
+  name: string;
+  label: string;
+  state: string;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [error, setError] = useState("");
+
+  const regex = /^-?[0-9]+$/;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (!regex.test(inputValue)) {
+      setError("The input must contain only numbers.");
+    } else {
+      setError("");
+    }
+    onChange(inputValue);
+  };
+
   return (
-    <input
-      type='text'
-      className='input input-bordered'
-      placeholder={placeholder}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    />
+    <div>
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        type='number'
+        id={name}
+        placeholder={`number ${name}`}
+        value={state}
+        onChange={handleChange}
+      />
+      {error && <span className='text-red-500 text-xs'>{error}</span>}
+    </div>
   );
 }

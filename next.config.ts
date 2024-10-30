@@ -14,7 +14,15 @@ const nextConfig = (
       ...defaultConfig,
       target: "server",
       env: {
-        API_URL: "http://localhost:3000",
+        API_URL: "http://34.47.123.94:7777",
+      },
+      async rewrites() {
+        return [
+          {
+            source: "/:path*",
+            destination: "http://34.47.123.94:7777/:path*",
+          },
+        ];
       },
     };
   }
@@ -24,7 +32,15 @@ const nextConfig = (
       ...defaultConfig,
       target: "server",
       env: {
-        API_URL: "https://yourdomain.com",
+        API_URL: "http://34.47.123.94:7777",
+      },
+      async rewrites() {
+        return [
+          {
+            source: "/:path*",
+            destination: "http://34.47.123.94:7777/:path*",
+          },
+        ];
       },
     };
   }
