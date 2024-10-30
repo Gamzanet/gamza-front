@@ -17,7 +17,7 @@ import Link from "next/link";
 
 export function MenubarDemo() {
   const SimpleRouteMenubarMenu = () => {
-    const routes = ["Overview", "Scan", "Docs"];
+    const routes = ["Overview", "Scan", "Docs", "Dev", "Result"];
     return routes.map((route) => (
       <MenubarMenu key={route}>
         <MenubarTrigger>
