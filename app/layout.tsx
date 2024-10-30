@@ -33,7 +33,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className}  antialiased overflow-x-hidden overflow-y-hidden`}
+        style={{
+          background: "linear-gradient(180deg, #F5F5F5 0%, #F5F5F5 100%)",
+        }}
       >
         <MenubarDemo />
         {children}
@@ -41,3 +44,9 @@ export default function RootLayout({
     </html>
   );
 }
+
+// position: relative;
+// width: 1728px;
+// height: 3089px;
+
+// /* herbicide_overview_color */

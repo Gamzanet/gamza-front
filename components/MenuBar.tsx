@@ -13,26 +13,28 @@ import {
   // MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/components/Logo.svg";
 export function MenubarDemo() {
   const SimpleRouteMenubarMenu = () => {
-    const routes = ["Overview", "Scan", "Docs", "Dev", "Result"];
+    const routes = [/*"Overview",*/ "Scan", /*"Docs",*/ /*"Dev",*/ "Result"];
     return routes.map((route) => (
-      <MenubarMenu key={route}>
-        <MenubarTrigger>
-          <Link href={`/${route.toLowerCase()}`}>{route}</Link>
-        </MenubarTrigger>
+      <MenubarMenu key={`MenubarMenu-${route}`}>
+        <Link
+          href={`/${route.toLowerCase()}`}
+          className='text-white text-sm space-x-2 p-2'
+          key={`Link-${route}`}
+        >
+          {route}
+        </Link>
       </MenubarMenu>
     ));
   };
   return (
-    <Menubar>
-      <MenubarMenu>
-        <MenubarTrigger>
-          <Logo />
-        </MenubarTrigger>
-      </MenubarMenu>
+    <Menubar className='bg-[#EB487F] '>
+      <Link href='/' className='flex items-center justify-center p-2'>
+        <Image src='Logo.svg' alt='Logo' width={120} height={40} />
+      </Link>
       {SimpleRouteMenubarMenu()}
       {/* <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
@@ -122,4 +124,3 @@ export function MenubarDemo() {
     </Menubar>
   );
 }
-

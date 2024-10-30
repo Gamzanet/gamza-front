@@ -1,13 +1,22 @@
 "use client";
 
-import RecursiveJson from "@/components/RecursiveJson";
 import { Response } from "@/types/InitialResponse";
 import { Suspense } from "react";
-import Comp0, { Comp1, Comp2 } from "./TestCard0";
 import dynamic from "next/dynamic";
-// const Component0 = dynamic(() => import("./TestCard0"), { ssr: false });
-// const Component1 = dynamic(() => import("./TestCard1"), { ssr: false });
-// const Component2 = dynamic(() => import("./TestCard2"), { ssr: false });
+import { Skeleton } from "@/components/ui/skeleton";
+import Comp2 from "./TestCard2";
+const Comp0 = dynamic(() => import("./TestCard0"), {
+  ssr: true,
+  loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
+});
+const Comp1 = dynamic(() => import("./TestCard1"), {
+  ssr: true,
+  loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
+});
+// const Comp2 = dynamic(() => import("./TestCard2"), {
+//   ssr: true,
+//   loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
+// });
 
 export default function Page() {
   const response: Response = JSON.parse(
@@ -45,9 +54,21 @@ export default function Page() {
           timeHash={response.info.timeHash}
           hooks={response.info.hooks}
         />
-        {/* 
-        <Component1 />
-        <Component2 /> */}
+        <Comp1
+          taskId={response.info.tasks[2].id}
+          timeHash={response.info.timeHash}
+          hooks={response.info.hooks}
+        />
+        <Suspense>
+          {[0, 1, 4, 5, 6, 7].map((idx) => (
+            <Comp2
+              key={idx}
+              taskId={response.info.tasks[idx].id}
+              timeHash={response.info.timeHash}
+              hooks={response.info.hooks}
+            />
+          ))}
+        </Suspense>
       </div>
     </div>
   );

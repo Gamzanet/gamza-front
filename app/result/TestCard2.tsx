@@ -1,14 +1,36 @@
-export async function Comp2(timeHash: string, hooks: string) {
+"use client";
+
+import { useEffect, useState } from "react";
+import RecursiveJson from "@/components/RecursiveJson";
+
+export default function Comp2({
+  taskId,
+  timeHash,
+  hooks,
+}: {
+  taskId: string;
+  timeHash: string;
+  hooks: string;
+}) {
+  const [data, setData] = useState(null);
   const cpnt = 2;
   const mode = 2;
-  const idx: Array<number> = [0, 1, 4, 5, 6, 7];
-  const endpoint = `api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`;
+  const cacheEndPoint = `/api/result/${taskId}`;
+  const endpoint = `/api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`;
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(cacheEndPoint);
+      const result = await response.json();
+      setData(result);
+    }
+    fetchData();
+  }, [cacheEndPoint]);
 
   return (
     <div>
       <p>comp2</p>
-      <p>idx: {idx}</p>
-      <p>cpnt: {cpnt}</p>
+      {data ? <RecursiveJson data={data} depth={0} /> : <p>Loading...</p>}
     </div>
   );
 }

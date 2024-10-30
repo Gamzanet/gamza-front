@@ -54,7 +54,7 @@ const PoolKeyForm = () => {
       console.log(result);
       if (result) {
         localStorage.setItem("_herbicide", JSON.stringify(result));
-        // window.location.href = "/result";
+        window.location.href = "/result";
       }
     } catch (error) {
       setResponseMessage("오류가 발생했습니다.");
