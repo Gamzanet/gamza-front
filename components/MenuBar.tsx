@@ -1,8 +1,4 @@
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
+import { Menubar, MenubarMenu } from "@/components/ui/menubar";
 import Image from "next/image";
 import Link from "next/link";
 export function MenubarDemo() {

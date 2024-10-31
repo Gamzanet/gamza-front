@@ -1,4 +1,4 @@
-import TestLogCard from "@/components/TestLogCard";
+import { TestLogCard } from "@/components/Cards";
 import TestLogCardType from "@/types/Component";
 
 const Page: React.FC = () => {
@@ -14,25 +14,18 @@ const Page: React.FC = () => {
 
   return (
     <div>
-      <TestLogCard
-        title='Test Log Card'
-        description='This is a test log card.'
-        content='This is the content of the test log card.'
-        footer='This is the footer of the test log card.'
-      />
       <TestLogCardContainer>{TestLogCardList}</TestLogCardContainer>
     </div>
   );
 };
 
-export default Page;
-
 function TestLogCardContainer({ children }: { children: TestLogCardType[] }) {
   return (
-    <div className='flex flex-col gap-4 overflow-auto h-96'>
+    <div className='flex flex-col gap-4 overflow-auto h-96 w-96'>
       {children.map((props) => (
         <TestLogCard key={props.title} {...props} />
       ))}
     </div>
   );
 }
+export default Page;
