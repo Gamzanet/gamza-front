@@ -4,8 +4,8 @@ export default function Layout({
   token,
 }: {
   children: React.ReactNode;
-  analytics: React.ReactNode;
-  team: React.ReactNode;
+  gas: React.ReactNode;
+  token: React.ReactNode;
 }) {
   return (
     <>
