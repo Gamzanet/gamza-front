@@ -1,7 +1,7 @@
 export interface Response {
   msg: string;
   info: Info;
-  testCache: any[];
+  testCache?: string[];
 }
 
 export interface Info {

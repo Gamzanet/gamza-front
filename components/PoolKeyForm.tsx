@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const PoolKeyForm = () => {
   const [currency0, setCurrency0] = useState<string>("");
@@ -11,6 +12,8 @@ const PoolKeyForm = () => {
   const [tickSpacing, setTickSpacing] = useState<string>("");
   const [hooks, setHooks] = useState("");
   const [responseMessage, setResponseMessage] = useState<string>("");
+
+  const router = useRouter();
 
   const onClickLinkSetSampleHandler = (
     event: React.MouseEvent<HTMLAnchorElement>
@@ -38,23 +41,25 @@ const PoolKeyForm = () => {
         mode: 2,
       },
     };
-    console.log(JSON.stringify(data));
-    // next.env
 
     try {
+      const body = JSON.stringify(data);
+      if (localStorage.getItem("_herbicide_request") === body) {
+        console.log("already sent");
+        router.push("/result");
+      }
+      localStorage.setItem("_herbicide_request", body);
       const response = await fetch("/api/tasks", {
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify(data),
+        body: body,
       });
-      console.log(response);
       const result = await response.json();
-      console.log(result);
       if (result) {
-        localStorage.setItem("_herbicide", JSON.stringify(result));
-        window.location.href = "/result";
+        localStorage.setItem("_herbicide_response", JSON.stringify(result));
+        router.push("/result");
       }
     } catch (error) {
       setResponseMessage("오류가 발생했습니다.");
@@ -109,7 +114,7 @@ const PoolKeyForm = () => {
         type='submit'
         className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
       >
-        제출
+        Submit
       </button>
       {responseMessage && (
         <span className='text-red-500 text-xs'>{responseMessage}</span>
