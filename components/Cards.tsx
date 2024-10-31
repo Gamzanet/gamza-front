@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "./ui/card";
 
-export function TestLogCard({
+export function TestLogPreviewCard({
   title,
   description,
   content,

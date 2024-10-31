@@ -1,6 +1,6 @@
-export default interface TestLogCardType {
-    title: string;
-    description: string;
-    content: string;
-    footer: string;
+export default interface TestLogPreviewCardType {
+  title: string;
+  description: string;
+  content: string;
+  footer: string;
 }
