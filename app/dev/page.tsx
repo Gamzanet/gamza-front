@@ -1,7 +1,11 @@
-import Hero from "@/components/Hero";
+import SeverityBadge from "@/components/SeverityBadge";
 
 const Page: React.FC = () => {
-  return <Hero />;
+  return (
+    <div>
+      <SeverityBadge severity={"high"} />
+    </div>
+  );
 };
 
 export default Page;
