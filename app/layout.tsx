@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className}  antialiased overflow-x-hidden overflow-y-hidden`}
+        className={`${inter.className} antialiased`}
         style={{
           background: "linear-gradient(180deg, #F5F5F5 0%, #F5F5F5 100%)",
         }}

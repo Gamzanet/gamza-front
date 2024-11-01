@@ -8,10 +8,10 @@ export default function Layout({
   token: React.ReactNode;
 }) {
   return (
-    <>
+    <div className='flex flex-col h-screen bg-pink-600'>
       {children}
       {gas}
       {token}
-    </>
+    </div>
   );
 }

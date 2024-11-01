@@ -13,6 +13,7 @@
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RecursiveJsonProps {
   data: any;
@@ -65,3 +66,15 @@ const RecursiveJson: React.FC<RecursiveJsonProps> = ({ data, depth = 0 }) => {
 };
 
 export default RecursiveJson;
+
+export function RecursiveSkeleton() {
+  return (
+    <div className='flex items-center space-x-4'>
+      <Skeleton className='h-12 w-12 rounded-full' />
+      <div className='space-y-2'>
+        <Skeleton className='h-4 w-[250px]' />
+        <Skeleton className='h-4 w-[200px]' />
+      </div>
+    </div>
+  );
+}

@@ -1,9 +1,14 @@
 "use client";
 
-import RecursiveJson from "@/components/RecursiveJson";
+import RecursiveJson, { RecursiveSkeleton } from "@/components/RecursiveJson";
 import AnalysisResponseType from "@/types/AnalysisResponse";
-import { Response } from "@/types/InitialResponse";
 import { useState, useEffect } from "react";
+
+async function fetchData(taskId: string): Promise<AnalysisResponseType | null> {
+  return await fetch(`/api/result/${taskId}`)
+    .then((res) => res.json())
+    .then((res) => (res.status === "Pending" ? null : res));
+}
 
 export default function Comp0() {
   // @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#d33935afa8ab40e78250bf74e83544fa
@@ -11,7 +16,7 @@ export default function Comp0() {
   const cpnt = 0;
   const idx = 3;
 
-  const parsedStorage: Response = JSON.parse(
+  const parsedStorage = JSON.parse(
     localStorage.getItem("_herbicide_response")!
   );
   const taskId = parsedStorage.info.tasks[idx].id;
@@ -20,51 +25,50 @@ export default function Comp0() {
   const endpoint = `/api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`;
 
   const [data, setData] = useState<AnalysisResponseType | null>(null);
-  const [eventSource, setEventSource] = useState<EventSource | null>(null);
-
-  useEffect(() => {
-    const eventSource = new EventSource(endpoint, {
-      withCredentials: true,
-    });
-    eventSource.onmessage = (event) => {
-      console.log(eventSource!.readyState);
-      setData(JSON.parse(event.data));
-    };
-    setEventSource(eventSource);
-  }, []);
-
-  useEffect(() => {
-    if (eventSource) {
-      switch (eventSource.readyState) {
-        case eventSource!.CONNECTING:
-          console.log("Comp0 CONNECTING");
-          break;
-        case eventSource!.OPEN:
-          console.log("Comp0 OPEN");
-          break;
-        case eventSource!.CLOSED:
-          console.log("Comp0 CLOSED");
-          break;
-        default:
-          console.log("eventSource is null");
-      }
-    }
-  }, [eventSource]);
 
   useEffect(() => {
     async function fetchData() {
-      const cacheEndPoint = `/api/result/${taskId}`;
-      const response = await fetch(cacheEndPoint);
-      const result: AnalysisResponseType = await response.json();
-      if (result && result.status !== "Pending") setData(result);
+      const response = await fetch(endpoint, {
+        headers: {
+          "Content-Type": "application/event-stream",
+        },
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let result = "";
+
+      if (reader) {
+        const stream = new ReadableStream({
+          start(controller) {
+            function push() {
+              reader?.read().then(({ done, value }) => {
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                result += decoder.decode(value, { stream: true });
+                push();
+              });
+            }
+            push();
+          },
+        });
+
+        await new Response(stream).text();
+      }
+      console.log(result);
+      const taskId = result.match(/task-id\s+:\s+(\S+)/)![1];
+      setData(await fetch(`/api/result/${taskId}`).then((res) => res.json()));
     }
+
     fetchData();
-  }, [taskId]);
+  }, []);
 
   return (
     <div>
       <p>comp0</p>
-      {data ? <RecursiveJson data={data} depth={0} /> : <p>Loading...</p>}
+      {data ? <RecursiveJson data={data} depth={0} /> : <RecursiveSkeleton />}
     </div>
   );
 }

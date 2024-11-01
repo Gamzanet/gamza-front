@@ -1,63 +1,43 @@
 "use client";
 
+import RecursiveJson, { RecursiveSkeleton } from "@/components/RecursiveJson";
+import AnalysisResponseType from "@/types/AnalysisResponse";
 import { Response } from "@/types/InitialResponse";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
-export default function Page() {
-  const response: Response = JSON.parse(
-    localStorage.getItem("_herbicide_response") || "{}"
+export default function Comp2() {
+  // @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#d33935afa8ab40e78250bf74e83544fa
+  const mode = 2;
+  const cpnt = 2;
+  const idx = [0, 1, 4, 5, 6, 7];
+
+  const parsedStorage: Response = JSON.parse(
+    localStorage.getItem("_herbicide_response")!
   );
+  const taskId = parsedStorage.info.tasks[0].id;
+  const timeHash = parsedStorage.info.timeHash;
+  const hooks = parsedStorage.info.hooks;
+  const endpoint = `/api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`;
 
+  const [data, setData] = useState<AnalysisResponseType | null>(null);
+const [dataList,]
   useEffect(() => {
-    const response: Response = JSON.parse(
-      localStorage.getItem("_herbicide_response") || "{}"
-    );
-
-    
-
-
-
-    // create event stream for the endpoint
-    const eventSource = new EventSource(
-      endpoint_noti(response.info.timeHash, response.info.hooks, 2, 3),
-      {
-        withCredentials: true,
-      }
-    );
-    eventSource.onmessage = (event) => {
-      console.log(event);
+    console.log(process.env.API_URL + endpoint);
+    const eventSource = new EventSource(endpoint, {
+      withCredentials: true,
+    });
+    eventSource.onmessage = async (event) => {
+      console.log(eventSource!.readyState);
+      console.log(event.data);
+      const taskId = event.data.match(/task-id\s+:\s+(\S+)/)![1];
+      setData(await fetch(`/api/result/${taskId}`).then((res) => res.json()));
     };
   }, []);
 
-  const endpoint_noti = (
-    timeHash: string,
-    hooks: string,
-    mode: number,
-    cpnt: number
-  ) => `/api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`;
-
-  const endpoint_tasks = (taskId: string) => `api/result/${taskId}`;
-
   return (
     <div>
-      <div>
-        <h1>Results</h1>
-        <p>{response.info.timeHash}</p>
-        <p>{response.info.hooks}</p>
-      </div>
+
+      {data ? <RecursiveJson data={data} depth={0} /> : <RecursiveSkeleton />}
     </div>
   );
 }
-
-// const Comp0 = dynamic(() => import("./TestCard0"), {
-//   ssr: false,
-//   loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
-// });
-// const Comp1 = dynamic(() => import("./TestCard1"), {
-//   ssr: false,
-//   loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
-// });
-// // const Comp2 = dynamic(() => import("./TestCard2"), {
-// //   ssr: true,
-// //   loading: () => <Skeleton className='w-[100px] h-[20px] rounded-full' />,
-// // });
