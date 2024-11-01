@@ -8,7 +8,7 @@ export function MenubarDemo() {
       <MenubarMenu key={`MenubarMenu-${route}`}>
         <Link
           href={`/${route.toLowerCase()}`}
-          className='text-white text-sm space-x-2 p-2'
+          className='text-foreground text-sm space-x-2 p-2'
           key={`Link-${route}`}
         >
           {route}

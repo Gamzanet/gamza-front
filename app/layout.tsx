@@ -9,6 +9,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.className} antialiased`}
+        className={`${inter.className} antialiased transition-colors `}
         style={{
           background: "linear-gradient(180deg, #F5F5F5 0%, #F5F5F5 100%)",
         }}
