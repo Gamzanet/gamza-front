@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { RecursiveSkeleton } from "@/components/RecursiveJson";
 export default function Loader() {
-  return <Loader2 size={64} />;
+  return <RecursiveSkeleton />;
 }

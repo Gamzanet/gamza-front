@@ -1,15 +1,8 @@
-"use client";
-
-import RecursiveJson, { RecursiveSkeleton } from "@/components/RecursiveJson";
 import AnalysisResponseType from "@/types/AnalysisResponse";
 import { useState, useEffect } from "react";
+import RecursiveJson, { RecursiveSkeleton } from "./RecursiveJson";
 
-export default function Comp0() {
-  // @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#d33935afa8ab40e78250bf74e83544fa
-  const mode = 2;
-  const cpnt = 0;
-  // const idx = 3;
-
+export default function ServerResponseJson(mode: number, cpnt: number) {
   const parsedStorage = JSON.parse(
     localStorage.getItem("_herbicide_response")!
   );
