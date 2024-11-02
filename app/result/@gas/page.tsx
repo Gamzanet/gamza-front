@@ -2,7 +2,7 @@
 
 import { DynamicAnalysisResponseType } from "@/types/AnalysisResponse";
 import { useState, useEffect } from "react";
-import { DynamicTransactionGasCostResult } from "@/components/result/dynamic";
+import { DynamicTransactionPriceResult } from "@/components/result/dynamic";
 
 export default function Comp0() {
   // @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#d33935afa8ab40e78250bf74e83544fa
@@ -11,7 +11,7 @@ export default function Comp0() {
   // const idx = 3;
 
   const parsedStorage = JSON.parse(
-    localStorage.getItem("_herbicide_response")!,
+    localStorage.getItem("_herbicide_response")!
   );
   // const taskId = parsedStorage.info.tasks[idx].id;
   const timeHash = parsedStorage.info.timeHash;
@@ -57,12 +57,12 @@ export default function Comp0() {
     }
 
     fetchData();
-  }, []);
+  }, [endpoint]);
 
   return (
     <div>
       {data ? (
-        <DynamicTransactionGasCostResult data={data} />
+        <DynamicTransactionPriceResult data={data} />
       ) : (
         <p> Loading... </p>
       )}

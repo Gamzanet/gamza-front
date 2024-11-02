@@ -1,0 +1,52 @@
+// response/proxy_check.json
+
+export interface Root {
+  task_id: string;
+  status: string;
+  result: Result;
+}
+
+export interface Result {
+  timeHash: string;
+  poolKey: PoolKey;
+  mode: number;
+  result: Result2;
+  idx: number;
+  time: number;
+}
+
+export interface PoolKey {
+  hooks: string;
+  currency0: string;
+  currency1: string;
+  fee: number;
+  tickSpacing: number;
+}
+
+export interface Result2 {
+  testList: TestList[];
+  failList: FailList[];
+  PASS: number;
+  FAIL: number;
+  name: string;
+}
+
+export interface TestList {
+  name: string;
+  msg: string;
+  status: string;
+  statusCode: number;
+  description: string;
+  impact: string;
+  trace: string;
+}
+
+export interface FailList {
+  name: string;
+  msg: string;
+  status: string;
+  statusCode: number;
+  description: string;
+  impact: string;
+  trace: string;
+}

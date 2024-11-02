@@ -14,7 +14,7 @@ export default function DashBoard() {
 
   useEffect(() => {
     const parsedStorage = JSON.parse(
-      localStorage.getItem("_herbicide_response")!,
+      localStorage.getItem("_herbicide_response")!
     );
     setTimeHash(parsedStorage.info.timeHash);
     setHooks(parsedStorage.info.hooks);
@@ -31,12 +31,12 @@ export default function DashBoard() {
         console.log(taskId);
 
         const result: DynamicAnalysisResponseType = await fetch(
-          `/api/result/${taskId}`,
+          `/api/result/${taskId}`
         ).then((res) => res.json());
         const newComponent = (
-          <div key={taskId} className="bg-gray-200">
+          <div key={taskId} className='bg-gray-200'>
             <p>Task ID: {taskId}</p>
-            {/** render components */}
+            <p>Mode: {result.result.mode}</p>
           </div>
         );
         setComponents((prevComponents) => [...prevComponents, newComponent]);

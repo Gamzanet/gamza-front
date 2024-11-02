@@ -15,11 +15,9 @@ import {
   TransactionGasCostProps,
 } from "@/types/DynamicAnalysis";
 
-function toTokenPriceProps({
-  response,
-}: {
-  response: DynamicAnalysisResponseType;
-}): TokenPriceProps {
+function toTokenPriceProps(
+  response: DynamicAnalysisResponseType
+): TokenPriceProps {
   const calculation = response.result.data.with_20.swap[0].calc;
   return {
     realPrice: 0,
@@ -28,11 +26,9 @@ function toTokenPriceProps({
   };
 }
 
-function toTransactionPriceProps({
-  response,
-}: {
-  response: DynamicAnalysisGasCompareResponseType;
-}): TransactionGasCostProps {
+function toTransactionGasProps(
+  response: DynamicAnalysisGasCompareResponseType
+): TransactionGasCostProps {
   const data = response.result;
   return {
     swap: {
@@ -54,11 +50,9 @@ function toTransactionPriceProps({
   };
 }
 
-function toERC20DeltaDifferenceProps({
-  response,
-}: {
-  response: DynamicAnalysisResponseType;
-}): ERC20DeltaDifferenceProps {
+function toERC20DeltaDifferenceProps(
+  response: DynamicAnalysisResponseType
+): ERC20DeltaDifferenceProps {
   const data = response.result.data.with_20;
   return {
     addLiquidity: {
@@ -121,11 +115,9 @@ function toERC20DeltaDifferenceProps({
   };
 }
 
-function toERC6909DeltaDifferenceProps({
-  response,
-}: {
-  response: DynamicAnalysisResponseType;
-}): ERC6909DeltaDifferenceProps {
+function toERC6909DeltaDifferenceProps(
+  response: DynamicAnalysisResponseType
+): ERC6909DeltaDifferenceProps {
   const data = response.result.data.with_6909;
   return {
     addLiquidity: {
@@ -161,5 +153,47 @@ function toERC6909DeltaDifferenceProps({
         amount1: Number(data.swap[0].hookAmount1delta),
       },
     },
+  };
+}
+
+export {
+  toTokenPriceProps,
+  toTransactionGasProps,
+  toERC20DeltaDifferenceProps,
+  toERC6909DeltaDifferenceProps,
+};
+
+interface ResponseMetadata {
+  cpnt: number;
+  idx: number;
+  mode: number;
+}
+
+/// @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#365fa6eb3d524963b4eb56c73c10c4a1
+// [mode:2 | cpnt:0 | idx:3] Oracle Price Comparison Test
+// [mode:2 | cpnt:1 | idx:2] Transaction Gas Cost Comparison Test
+// [mode:2 | cpnt:2 | idx:0] Minimum Test
+// [mode:2 | cpnt:2 | idx:1] Time-based minimum test
+// [mode:2 | cpnt:2 | idx:4] PoolManager Test
+// [mode:2 | cpnt:2 | idx:5] Time-based step test
+// [mode:2 | cpnt:2 | idx:6] Double initialization test
+// [mode:2 | cpnt:2 | idx:7] Proxy Test
+
+function toResponseMetadata(componentName: string): ResponseMetadata {
+  const mapper: { [key: string]: ResponseMetadata } = {
+    "Oracle Price Comparison Test": { cpnt: 0, idx: 3, mode: 2 },
+    "Transaction Gas Cost Comparison Test": { cpnt: 1, idx: 2, mode: 2 },
+    "Minimum Test": { cpnt: 2, idx: 0, mode: 2 },
+    "Time-based minimum test": { cpnt: 2, idx: 1, mode: 2 },
+    "PoolManager Test": { cpnt: 2, idx: 4, mode: 2 },
+    "Time-based step test": { cpnt: 2, idx: 5, mode: 2 },
+    "Double initialization test": { cpnt: 2, idx: 6, mode: 2 },
+    "Proxy Test": { cpnt: 2, idx: 7, mode: 2 },
+  };
+
+  return {
+    cpnt: mapper[componentName].cpnt,
+    idx: mapper[componentName].idx,
+    mode: mapper[componentName].mode,
   };
 }

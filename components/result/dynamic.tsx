@@ -17,13 +17,18 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { PoolKeyType } from "@/types/AnalysisResponse";
+import {
+  ERC20DeltaDifferenceProps,
+  TokenPriceProps,
+  TransactionGasCostProps,
+} from "@/types/DynamicAnalysis";
 
 import { useState } from "react";
 
-function DynamicERCDeltaDifferenceResult({
+function DynamicERC20DeltaDifferenceResult({
   props,
 }: {
-  props: ERCDeltaDifferenceProps;
+  props: ERC20DeltaDifferenceProps;
 }) {
   // can handle ERC20 & ERC6909 mint & ERC6909 burn cases
   const [method, setMethod] = useState("swap");
@@ -32,9 +37,9 @@ function DynamicERCDeltaDifferenceResult({
     const value = props[method][type];
     return (
       <TableRow>
-        <TableCell className="text-center">{type}</TableCell>
-        <TableCell className="text-center">{value.amount0}</TableCell>
-        <TableCell className="text-center">{value.amount1}</TableCell>
+        <TableCell className='text-center'>{type}</TableCell>
+        <TableCell className='text-center'>{value.amount0}</TableCell>
+        <TableCell className='text-center'>{value.amount1}</TableCell>
       </TableRow>
     );
   };
@@ -44,13 +49,13 @@ function DynamicERCDeltaDifferenceResult({
     }`;
 
   return (
-    <Card className="w-min">
+    <Card className='w-min'>
       <CardHeader>
         <CardTitle>ERC20DeltaDifference</CardTitle>
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col">
-        <div className="flex w-min">
+      <CardContent className='flex flex-col'>
+        <div className='flex w-min'>
           <Button
             className={getButtonClass("swap")}
             onClick={() => setMethod("swap")}
@@ -76,15 +81,15 @@ function DynamicERCDeltaDifferenceResult({
             donate
           </Button>
         </div>
-        <Table className="w-[350px]">
+        <Table className='w-[350px]'>
           <TableCaption>Table Description</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-center text-primary">Type</TableHead>
-              <TableHead className="w-[100px] text-center text-primary">
+              <TableHead className='text-center text-primary'>Type</TableHead>
+              <TableHead className='w-[100px] text-center text-primary'>
                 amount0
               </TableHead>
-              <TableHead className="w-[100px] text-center text-primary">
+              <TableHead className='w-[100px] text-center text-primary'>
                 amount1
               </TableHead>
             </TableRow>
@@ -103,22 +108,22 @@ function DynamicERCDeltaDifferenceResult({
   );
 }
 
-function DynamicTransactionPriceResult({
+function DynamicTransactionGasResult({
   data,
 }: {
-  data: TransactionPriceProps;
+  data: TransactionGasCostProps;
 }) {
-  const component = (method: keyof TransactionPriceProps) => {
+  const component = (method: keyof TransactionGasCostProps) => {
     const value: {
       withHook: number;
       withoutHook: number;
     } = data[method];
     return (
       <TableRow>
-        <TableCell className="text-center">{method}</TableCell>
-        <TableCell className="text-center">{value.withHook}</TableCell>
-        <TableCell className="text-center">{value.withoutHook}</TableCell>
-        <TableCell className="text-center">
+        <TableCell className='text-center'>{method}</TableCell>
+        <TableCell className='text-center'>{value.withHook}</TableCell>
+        <TableCell className='text-center'>{value.withoutHook}</TableCell>
+        <TableCell className='text-center'>
           {(value.withHook - value.withoutHook).toFixed(0)}
         </TableCell>
       </TableRow>
@@ -126,7 +131,7 @@ function DynamicTransactionPriceResult({
   };
 
   return (
-    <Card className="w-[500px]">
+    <Card className='w-[500px]'>
       <CardHeader>
         <CardTitle>Transaction Price</CardTitle>
         <CardDescription>Component Description</CardDescription>
@@ -134,14 +139,14 @@ function DynamicTransactionPriceResult({
       <CardContent>
         <Table>
           <TableCaption>Table Description</TableCaption>
-          <TableHeader className="bg-gray-200">
+          <TableHeader className='bg-gray-200'>
             <TableRow>
-              <TableHead className="text-center">Mehtod</TableHead>
-              <TableHead className="w-[100px] text-center">With Hook</TableHead>
-              <TableHead className="w-[100px] text-center">
+              <TableHead className='text-center'>Mehtod</TableHead>
+              <TableHead className='w-[100px] text-center'>With Hook</TableHead>
+              <TableHead className='w-[100px] text-center'>
                 Without Hook
               </TableHead>
-              <TableHead className="w-[100px] text-center">Delta</TableHead>
+              <TableHead className='w-[100px] text-center'>Delta</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -173,7 +178,7 @@ function DynamicPoolKeyResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4">
+        <div className='grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4'>
           <p>Currency0</p> <p>{currency0}</p>
           <p>Currency1</p> <p>{currency1}</p>
           <p>Fee</p> <p>{fee}</p>
@@ -202,17 +207,17 @@ function DynamicTokenPriceResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 grid-flow-row border gap-4 w-[500px] justify-items-center p-4">
+        <div className='grid grid-cols-2 grid-flow-row border gap-4 w-[500px] justify-items-center p-4'>
           <p>Real Price</p> <p>{realPrice}</p>
           <p>Expected Price</p>
           <p>
             <span>{expectedPrice} </span>
-            <span className="text-xs">({expectedDiff}%)</span>
+            <span className='text-xs'>({expectedDiff}%)</span>
           </p>
           <p>Oracle Price</p>
           <p>
             <span>{oraclePrice} </span>
-            <span className="text-xs">({oracleDiff}%)</span>
+            <span className='text-xs'>({oracleDiff}%)</span>
           </p>
         </div>
       </CardContent>
@@ -224,8 +229,8 @@ function DynamicTokenPriceResult({
 }
 
 export {
-  DynamicERCDeltaDifferenceResult,
-  DynamicTransactionPriceResult,
+  DynamicERC20DeltaDifferenceResult,
+  DynamicTransactionGasResult,
   DynamicPoolKeyResult,
   DynamicTokenPriceResult,
 };
