@@ -192,8 +192,8 @@ function toResponseMetadata(componentName: string): ResponseMetadata {
   };
 
   return {
+    mode: mapper[componentName].mode,
     cpnt: mapper[componentName].cpnt,
     idx: mapper[componentName].idx,
-    mode: mapper[componentName].mode,
   };
 }
