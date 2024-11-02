@@ -13,7 +13,6 @@ const nextConfig = (
     return {
       ...defaultConfig,
       reactStrictMode: true,
-      target: "server",
       env: {
         API_URL: "http://34.47.123.94:7777",
       },
@@ -31,7 +30,6 @@ const nextConfig = (
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
       ...defaultConfig,
-      target: "server",
       env: {
         API_URL: "http://34.47.123.94:7777",
       },
