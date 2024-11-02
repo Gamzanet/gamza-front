@@ -5,53 +5,47 @@
 // 2. 0번째 인덱스를 가정하고 구현한 후 주석을 통해 명시하면 됩니다.
 
 import {
-  DynamicAnalysisGasCompareResponseType,
-  DynamicAnalysisResponseType,
-} from "@/types/AnalysisResponse";
-import {
   ERC20DeltaDifferenceProps,
   ERC6909DeltaDifferenceProps,
   TokenPriceProps,
   TransactionGasCostProps,
 } from "@/types/DynamicAnalysis";
+import { TokenPriceCompareRoot } from "@/types/response/api/result/taskId/2_0_3_TokenPriceCompare";
+import { GasCompareRoot } from "@/types/response/api/result/taskId/2_1_2_GasCompare";
 
-function toTokenPriceProps(
-  response: DynamicAnalysisResponseType,
-): TokenPriceProps {
-  const calculation = response.result.data.with_20.swap[0].calc;
+function toGasCompareProps(response: GasCompareRoot): TransactionGasCostProps {
+  const data = response.result.result;
   return {
-    realPrice: 0,
-    expectedPrice: calculation.price_expected,
-    oraclePrice: 0,
+    swap: {
+      withHook: Number(data.hook.swap.totalGas),
+      withoutHook: Number(data.noHook.swap.totalGas),
+    },
+    removeLiquidity: {
+      withHook: Number(data.hook.remove.totalGas),
+      withoutHook: Number(data.noHook.remove.totalGas),
+    },
+    addLiquidity: {
+      withHook: Number(data.hook.add.totalGas),
+      withoutHook: Number(data.noHook.add.totalGas),
+    },
+    donate: {
+      withHook: Number(data.hook.donate.totalGas),
+      withoutHook: Number(data.noHook.donate.totalGas),
+    },
   };
 }
 
-function toTransactionGasProps(
-  response: DynamicAnalysisGasCompareResponseType,
-): TransactionGasCostProps {
-  const data = response.result;
+function toTokenPriceProps(response: TokenPriceCompareRoot): TokenPriceProps {
+  const swap0 = response.result.data.with_20.swap[0];
   return {
-    swap: {
-      withHook: Number(data["hook-swap-totalGas"]),
-      withoutHook: Number(data["no-hook-swap-totalGas"]),
-    },
-    removeLiquidity: {
-      withHook: Number(data["hook-removeLiquidity-totalGas"]),
-      withoutHook: Number(data["no-hook-removeLiquidity-totalGas"]),
-    },
-    addLiquidity: {
-      withHook: Number(data["hook-addLiquidity-totalGas"]),
-      withoutHook: Number(data["no-hook-addLiquidity-totalGas"]),
-    },
-    donate: {
-      withHook: Number(data["hook-donate-totalGas"]),
-      withoutHook: Number(data["no-hook-donate-totalGas"]),
-    },
+    realPrice: Number(swap0.amount1delta) / Number(swap0.amount0delta), // in perspective of token0
+    expectedPrice: swap0.calc.price_expected,
+    oraclePrice: response.result.price ? response.result.price : -1, // guess `result.price` as oracle price
   };
 }
 
 function toERC20DeltaDifferenceProps(
-  response: DynamicAnalysisResponseType,
+  response: TokenPriceCompareRoot,
 ): ERC20DeltaDifferenceProps {
   const data = response.result.data.with_20;
   return {
@@ -116,7 +110,7 @@ function toERC20DeltaDifferenceProps(
 }
 
 function toERC6909DeltaDifferenceProps(
-  response: DynamicAnalysisResponseType,
+  response: TokenPriceCompareRoot,
 ): ERC6909DeltaDifferenceProps {
   const data = response.result.data.with_6909;
   return {
@@ -129,6 +123,7 @@ function toERC6909DeltaDifferenceProps(
         amount0: Number(data.addLiquidity.hookAmount0delta),
         amount1: Number(data.addLiquidity.hookAmount1delta),
       },
+      // manager unchanged
     },
     removeLiquidity: {
       user: {
@@ -139,6 +134,7 @@ function toERC6909DeltaDifferenceProps(
         amount0: Number(data.removeLiquidity.hookAmount0delta),
         amount1: Number(data.removeLiquidity.hookAmount1delta),
       },
+      // manager unchanged
     },
     swap: {
       user: {
@@ -152,13 +148,15 @@ function toERC6909DeltaDifferenceProps(
         amount0: Number(data.swap[0].hookAmount0delta),
         amount1: Number(data.swap[0].hookAmount1delta),
       },
+      // manager unchanged
     },
+    // donation impossible
   };
 }
 
 export {
   toTokenPriceProps,
-  toTransactionGasProps,
+  toGasCompareProps,
   toERC20DeltaDifferenceProps,
   toERC6909DeltaDifferenceProps,
 };
@@ -170,27 +168,27 @@ interface ResponseMetadata {
 }
 
 /// @see https://www.notion.so/entropy1110/56bbf3e1fc6e4e0ab31e222d0cf1e3dd?pvs=4#365fa6eb3d524963b4eb56c73c10c4a1
-// [mode:2 | cpnt:0 | idx:3] Oracle Price Comparison Test
-// [mode:2 | cpnt:1 | idx:2] Transaction Gas Cost Comparison Test
-// [mode:2 | cpnt:2 | idx:0] Minimum Test
-// [mode:2 | cpnt:2 | idx:1] Time-based minimum test
-// [mode:2 | cpnt:2 | idx:4] PoolManager Test
-// [mode:2 | cpnt:2 | idx:5] Time-based step test
-// [mode:2 | cpnt:2 | idx:6] Double initialization test
-// [mode:2 | cpnt:2 | idx:7] Proxy Test
-
-function toResponseMetadata(componentName: string): ResponseMetadata {
+// [mode:2 | cpnt:0 | idx:3] TokenPriceCompare
+// [mode:2 | cpnt:1 | idx:2] GasCompare
+// [mode:2 | cpnt:2 | idx:0] MinimumTest
+// [mode:2 | cpnt:2 | idx:1] TimeBasedMinimumTest
+// [mode:2 | cpnt:2 | idx:4] PoolManagerTest
+// [mode:2 | cpnt:2 | idx:5] TimeBasedStepTest
+// [mode:2 | cpnt:2 | idx:6] DoubleInitializeTest
+// [mode:2 | cpnt:2 | idx:7] ProxyTest
+function getResponseMetadataByComponentName(
+  componentName: string,
+): ResponseMetadata {
   const mapper: { [key: string]: ResponseMetadata } = {
-    "Oracle Price Comparison Test": { cpnt: 0, idx: 3, mode: 2 },
-    "Transaction Gas Cost Comparison Test": { cpnt: 1, idx: 2, mode: 2 },
-    "Minimum Test": { cpnt: 2, idx: 0, mode: 2 },
-    "Time-based minimum test": { cpnt: 2, idx: 1, mode: 2 },
-    "PoolManager Test": { cpnt: 2, idx: 4, mode: 2 },
-    "Time-based step test": { cpnt: 2, idx: 5, mode: 2 },
-    "Double initialization test": { cpnt: 2, idx: 6, mode: 2 },
-    "Proxy Test": { cpnt: 2, idx: 7, mode: 2 },
+    TokenPriceCompare: { cpnt: 0, idx: 3, mode: 2 },
+    GasCompare: { cpnt: 1, idx: 2, mode: 2 },
+    MinimumTest: { cpnt: 2, idx: 0, mode: 2 },
+    TimeBasedMinimumTest: { cpnt: 2, idx: 1, mode: 2 },
+    PoolManagerTest: { cpnt: 2, idx: 4, mode: 2 },
+    TimeBasedStepTest: { cpnt: 2, idx: 5, mode: 2 },
+    DoubleInitializeTest: { cpnt: 2, idx: 6, mode: 2 },
+    ProxyTest: { cpnt: 2, idx: 7, mode: 2 },
   };
-
   return {
     mode: mapper[componentName].mode,
     cpnt: mapper[componentName].cpnt,
