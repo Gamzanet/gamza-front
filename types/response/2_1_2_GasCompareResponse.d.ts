@@ -1,4 +1,5 @@
-export interface Root {
+import { PoolKeyType } from "@/types/Property";
+export interface GasCompareResponseRoot {
   task_id: string;
   status: string;
   result: Result;
@@ -6,19 +7,11 @@ export interface Root {
 
 export interface Result {
   timeHash: string;
-  poolkey: Poolkey;
+  poolkey: PoolKeyType;
   mode: number;
   result: Result2;
   idx: number;
   time: number;
-}
-
-export interface Poolkey {
-  currency0: string;
-  currency1: string;
-  fee: number;
-  tickSpacing: number;
-  hooks: string;
 }
 
 export interface Result2 {
