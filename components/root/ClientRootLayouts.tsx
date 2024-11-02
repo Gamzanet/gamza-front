@@ -16,13 +16,13 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   if (!mounted) return null;
 
   return (
-    <div className={"flex items-center space-x-2 " + className}>
+    <>
       <Switch
         id="dark-mode"
         checked={theme === "light"}
         onCheckedChange={() => setTheme(theme === "light" ? "dark" : "light")}
       />
       <Label htmlFor="dark-mode">{theme} Mode</Label>
-    </div>
+    </>
   );
 }
