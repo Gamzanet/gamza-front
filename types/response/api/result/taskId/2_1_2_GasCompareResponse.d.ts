@@ -2,7 +2,7 @@ import { PoolKeyType } from "@/types/Property";
 
 // @see https://www.notion.so/entropy1110/for-loop-hook-271dcc1c8a994536bd8bcf6213e9c98c?pvs=4#ef3b17c9d392458b97fbba1e044d37fd
 
-export interface Root {
+export interface GasCompareResponseRoot {
   task_id: string;
   status: string;
   result: Result;

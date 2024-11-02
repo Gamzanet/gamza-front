@@ -2,7 +2,7 @@ import { PoolKeyType } from "@/types/Property";
 
 // @see https://www.notion.so/entropy1110/ArrakisHook-53f30ea6a0584809a1c4b25a9004deaf?pvs=4#c0b8515c545940aa9459e27d2a9b9f46
 
-export interface Root {
+export interface PoolManagerTestRoot {
   task_id: string;
   status: string;
   result: Result;

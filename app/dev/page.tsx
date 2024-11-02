@@ -21,7 +21,7 @@ export default function Page() {
         mode: 2,
       },
     };
-    
+
     post({
       body: sampleRequest,
     }).then((response) => {
@@ -30,7 +30,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className=''>
+    <div className="">
       {response ? (
         <div>
           <div>{response.msg}</div>

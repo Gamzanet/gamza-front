@@ -6,7 +6,7 @@ import { PoolKeyType } from "@/types/Property";
 // 14 passed case
 // @see https://www.notion.so/entropy1110/StopLoss-12fec224c99380499032cf6c11985bf8?pvs=4#997c2530e3174cef9499d979d2a72779
 
-export interface Root {
+export interface MinimumTestRoot {
   task_id: string;
   status: string;
   result: Result;

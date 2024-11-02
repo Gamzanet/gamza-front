@@ -6,7 +6,7 @@ import { PoolKeyType } from "@/types/Property";
 // Passed case
 // @see https://www.notion.so/entropy1110/FeeTakingHook-12fec224c99380edaabef8b685ada29c?pvs=4#dba4b252abf042a9ba2df034966b3690
 
-export interface Root {
+export interface DoubleInitializeTestRoot {
   task_id: string;
   status: string;
   result: Result;
