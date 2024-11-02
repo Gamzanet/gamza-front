@@ -11,7 +11,7 @@ export default function Comp0() {
   // const idx = 3;
 
   const parsedStorage = JSON.parse(
-    localStorage.getItem("_herbicide_response")!
+    localStorage.getItem("_herbicide_response")!,
   );
   // const taskId = parsedStorage.info.tasks[idx].id;
   const timeHash = parsedStorage.info.timeHash;

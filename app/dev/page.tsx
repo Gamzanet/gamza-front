@@ -19,13 +19,11 @@ import {
 
 export default function Page() {
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <DynamicERC20DeltaDifferenceResult
         props={toERC20DeltaDifferenceProps(rawResponse)}
       />
-      <DynamicTransactionGasResult
-        data={toTransactionGasProps(rawResponse)}
-      />
+      <DynamicTransactionGasResult data={toTransactionGasProps(rawResponse)} />
       <DynamicPoolKeyResult data={rawResponse.result.poolKey} />
       <DynamicTokenPriceResult data={toTokenPriceProps(rawResponse)} />
     </div>

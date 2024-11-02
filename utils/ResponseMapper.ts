@@ -16,7 +16,7 @@ import {
 } from "@/types/DynamicAnalysis";
 
 function toTokenPriceProps(
-  response: DynamicAnalysisResponseType
+  response: DynamicAnalysisResponseType,
 ): TokenPriceProps {
   const calculation = response.result.data.with_20.swap[0].calc;
   return {
@@ -27,7 +27,7 @@ function toTokenPriceProps(
 }
 
 function toTransactionGasProps(
-  response: DynamicAnalysisGasCompareResponseType
+  response: DynamicAnalysisGasCompareResponseType,
 ): TransactionGasCostProps {
   const data = response.result;
   return {
@@ -51,7 +51,7 @@ function toTransactionGasProps(
 }
 
 function toERC20DeltaDifferenceProps(
-  response: DynamicAnalysisResponseType
+  response: DynamicAnalysisResponseType,
 ): ERC20DeltaDifferenceProps {
   const data = response.result.data.with_20;
   return {
@@ -116,7 +116,7 @@ function toERC20DeltaDifferenceProps(
 }
 
 function toERC6909DeltaDifferenceProps(
-  response: DynamicAnalysisResponseType
+  response: DynamicAnalysisResponseType,
 ): ERC6909DeltaDifferenceProps {
   const data = response.result.data.with_6909;
   return {
