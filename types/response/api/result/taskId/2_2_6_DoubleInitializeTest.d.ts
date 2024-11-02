@@ -9,33 +9,25 @@ import { PoolKeyType } from "@/types/Property";
 export interface DoubleInitializeTestRoot {
   task_id: string;
   status: string;
-  result: Result;
+  result: DataResult;
 }
 
-export interface Result {
+export interface DataResult {
   timeHash: string;
-  poolKey: PoolKey;
+  poolKey: PoolKeyType;
   mode: number;
-  result: Result2[];
+  result: TestResult[];
   idx: number;
   time: number;
 }
 
-export interface PoolKey {
-  hooks: string;
-  currency0: string;
-  currency1: string;
-  fee: number;
-  tickSpacing: number;
-}
-
-export interface Result2 {
+export interface TestResult {
   name: string;
   PASS: number;
   FAIL: number;
   status: number;
   failList?: FailList[];
-  data: Daum[];
+  data: StorageDiff[];
 }
 
 export interface FailList {
@@ -47,7 +39,7 @@ export interface FailList {
   trace: string;
 }
 
-export interface Daum {
+export interface StorageDiff {
   k1: K1;
   k2: K2;
   slot: string;

@@ -9,14 +9,14 @@ import { PoolKeyType } from "@/types/Property";
 export interface ProxyTestRoot {
   task_id: string;
   status: string;
-  result: Result;
+  result: DataResult;
 }
 
-export interface Result {
+export interface DataResult {
   timeHash: string;
   poolKey: PoolKey;
   mode: number;
-  result: Result2[];
+  result: TestResult[];
   idx: number;
   time: number;
 }
@@ -29,7 +29,7 @@ export interface PoolKey {
   tickSpacing: number;
 }
 
-export interface Result2 {
+export interface TestResult {
   testList: TestList[];
   failList?: FailList[];
   PASS: number;

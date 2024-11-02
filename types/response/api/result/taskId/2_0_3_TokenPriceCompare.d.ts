@@ -5,79 +5,38 @@ import { PoolKeyType } from "@/types/Property";
 export interface TokenPriceCompareRoot {
   task_id: string;
   status: string;
-  result: Result;
+  result: TokenPriceCompareResult;
 }
 
-export interface Result {
+export interface TokenPriceCompareResult {
   name: string;
   mode: number;
   idx: number;
   time: number;
   poolKey: PoolKeyType;
-  data: Data;
+  data: TokenPriceCompareData;
   price?: number; // -1 or null were found
 }
 
-export interface Data {
-  with_6909: With6909;
-  with_20: With20;
+export interface TokenPriceCompareData {
+  with_6909: TokenPriceCompareWith6909;
+  with_20: TokenPriceCompareWith20;
 }
 
-export interface With6909 {
-  swap: Swap[];
-  addLiquidity: AddLiquidity;
-  removeLiquidity: RemoveLiquidity;
+export interface TokenPriceCompareWith6909 {
+  swap: TokenPriceCompareSwap[];
+  addLiquidity: TokenPriceCompareAddLiquidity;
+  removeLiquidity: TokenPriceCompareRemoveLiquidity;
 }
 
-export interface Swap extends UnionAmountDelta {
-  "for-expected-current-price": string;
-  "for-expected-current-liquidity": string;
-  "for-expected-amount0-specified": string;
-  "for-expected-current-fee": string;
-
-  calc: Calc;
-  is_burn: boolean;
-  is_exactIn: boolean;
+export interface TokenPriceCompareWith20 {
+  swap: TokenPriceCompareSwap[];
+  addLiquidity: TokenPriceCompareAddLiquidity;
+  donate: TokenPriceCompareDonate;
+  removeLiquidity: TokenPriceCompareRemoveLiquidity;
 }
 
-export interface Swap2 extends UnionAmountDelta {
-  "for-expected-current-price": string;
-  "for-expected-current-liquidity": string;
-  "for-expected-amount0-specified": string;
-  "for-expected-current-fee": string;
-
-  calc: Calc2;
-  is_burn: boolean;
-  is_exactIn: boolean;
-}
-
-export interface Calc {
-  price_expected: number;
-  sqrtP_expected: number;
-  amount_in: number;
-  amount_out: number;
-}
-
-export interface Calc2 {
-  price_expected: number;
-  sqrtP_expected: number;
-  amount_in: number;
-  amount_out: number;
-}
-export interface With20 {
-  swap: Swap2[];
-  addLiquidity: AddLiquidity2;
-  donate: Donate;
-  removeLiquidity: RemoveLiquidity2;
-}
-
-export interface AddLiquidity extends UnionAmountDelta {}
-export interface AddLiquidity2 extends UnionAmountDelta {}
-export interface RemoveLiquidity extends UnionAmountDelta {}
-export interface RemoveLiquidity2 extends UnionAmountDelta {}
-export interface Donate extends UnionAmountDelta {}
-
-interface UnionAmountDelta {
+interface TokenPriceCompareUnionAmountDelta {
   amount0delta: string;
   amount1delta: string;
   managerAmount0delta: string;
@@ -90,4 +49,30 @@ interface UnionAmountDelta {
   hook6909Amount1delta: string;
   user6909Amount0delta: string;
   user6909Amount1delta: string;
+}
+
+export interface TokenPriceCompareAddLiquidity
+  extends TokenPriceCompareUnionAmountDelta {}
+export interface TokenPriceCompareRemoveLiquidity
+  extends TokenPriceCompareUnionAmountDelta {}
+export interface TokenPriceCompareDonate
+  extends TokenPriceCompareUnionAmountDelta {}
+
+export interface TokenPriceCompareSwap
+  extends TokenPriceCompareUnionAmountDelta {
+  "for-expected-current-price"?: string; // server internal log
+  "for-expected-current-liquidity"?: string; // server internal log
+  "for-expected-amount0-specified"?: string; // server internal log
+  "for-expected-current-fee"?: string; // server internal log
+
+  calc: TokenPriceCompareCalc;
+  is_burn: boolean;
+  is_exactIn: boolean;
+}
+
+export interface TokenPriceCompareCalc {
+  price_expected: number;
+  sqrtP_expected: number;
+  amount_in: number;
+  amount_out: number;
 }
