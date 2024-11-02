@@ -12,11 +12,11 @@ export default function Page() {
   return (
     <div>
       <DynamicPoolKeyResult
-        currency0='0x0197481B0F5237eF312a78528e79667D8b33Dcff'
-        currency1='0xA56569Bd93dc4b9afCc871e251017dB0543920d4'
+        currency0="0x0197481B0F5237eF312a78528e79667D8b33Dcff"
+        currency1="0xA56569Bd93dc4b9afCc871e251017dB0543920d4"
         fee={3000}
         tickSpacing={60}
-        hooks='0x6caC2dcc5eCf5caac0382F1B4A77EABac0F6C0Cc'
+        hooks="0x6caC2dcc5eCf5caac0382F1B4A77EABac0F6C0Cc"
       />
       {/* <TokenPriceProps realPrice={1.4} expectedPrice={1.4} oraclePrice={2.1} /> */}
     </div>
@@ -37,7 +37,7 @@ function DynamicPoolKeyResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4'>
+        <div className="grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4">
           <p>Currency0</p> <p>{currency0}</p>
           <p>Currency1</p> <p>{currency1}</p>
           <p>Fee</p> <p>{fee}</p>
@@ -66,17 +66,17 @@ function DynamicTokenPriceResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-cols-2 grid-flow-row border gap-4 w-[500px] justify-items-center p-4'>
+        <div className="grid grid-cols-2 grid-flow-row border gap-4 w-[500px] justify-items-center p-4">
           <p>Real Price</p> <p>{realPrice}</p>
           <p>Expected Price</p>
           <p>
             <span>{expectedPrice} </span>
-            <span className='text-xs'>({expectedDiff}%)</span>
+            <span className="text-xs">({expectedDiff}%)</span>
           </p>
           <p>Oracle Price</p>
           <p>
             <span>{oraclePrice} </span>
-            <span className='text-xs'>({oracleDiff}%)</span>
+            <span className="text-xs">({oracleDiff}%)</span>
           </p>
         </div>
       </CardContent>
