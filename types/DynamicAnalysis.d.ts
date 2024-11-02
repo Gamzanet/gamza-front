@@ -12,3 +12,20 @@ interface TransactionPriceProps {
   addLiquidity: { withHook: number; withoutHook: number };
   donate: { withHook: number; withoutHook: number };
 }
+
+interface DeltaDifferenceType {
+  [key: string]: { amount0: number; amount1: number };
+
+  user: { amount0: number; amount1: number };
+  hook: { amount0: number; amount1: number };
+  manager?: { amount0: number; amount1: number };
+}
+
+interface ERCDeltaDifferenceProps {
+  [key: string]: DeltaDifferenceType;
+
+  addLiquidity: DeltaDifferenceType;
+  removeLiquidity: DeltaDifferenceType;
+  swap: DeltaDifferenceType;
+  donate?: DeltaDifferenceType;
+}
