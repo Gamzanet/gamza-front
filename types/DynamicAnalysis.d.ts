@@ -3,8 +3,7 @@ interface TokenPriceProps {
   expectedPrice: number;
   oraclePrice: number;
 }
-
-interface TransactionPriceProps {
+interface TransactionGasCostProps {
   [key: string]: { withHook: number; withoutHook: number };
 
   swap: { withHook: number; withoutHook: number };
@@ -27,5 +26,18 @@ interface ERCDeltaDifferenceProps {
   addLiquidity: DeltaDifferenceType;
   removeLiquidity: DeltaDifferenceType;
   swap: DeltaDifferenceType;
-  donate?: DeltaDifferenceType;
+  donate?: DeltaDifferenceType | undefined;
 }
+
+type ERC6909DeltaDifferenceProps = ERCDeltaDifferenceProps;
+interface ERC20DeltaDifferenceProps extends ERCDeltaDifferenceProps {
+  donate: DeltaDifferenceType;
+}
+
+export {
+  TokenPriceProps,
+  TransactionGasCostProps,
+  DeltaDifferenceType,
+  ERC6909DeltaDifferenceProps,
+  ERC20DeltaDifferenceProps,
+};

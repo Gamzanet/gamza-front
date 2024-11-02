@@ -21,6 +21,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         id="dark-mode"
         checked={theme === "light"}
         onCheckedChange={() => setTheme(theme === "light" ? "dark" : "light")}
+        className={className}
       />
       <Label htmlFor="dark-mode">{theme} Mode</Label>
     </>

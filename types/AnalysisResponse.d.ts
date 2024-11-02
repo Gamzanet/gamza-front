@@ -1,26 +1,30 @@
-export default interface AnalysisResponseType {
+interface DynamicAnalysisResponseType {
   task_id: string;
   status: string;
-  result: Result;
+  result: RenewalResult;
 }
 
-export interface Result {
-  name: string;
+interface RenewalResult {
+  timeHash: string;
+  poolKey: PoolKey;
   mode: number;
   idx: number;
   time: number;
-  poolKey: PoolKeyType;
+
+  name: string;
   data: Data;
   price: number;
 }
 
-export interface PoolKeyType {
-  hooks: string;
-  currency0: string;
-  currency1: string;
+interface PoolKeyType {
+  hooks: Address;
+  currency0: Address;
+  currency1: Address;
   fee: number;
   tickSpacing: number;
 }
+
+type Address = string;
 
 export interface Data {
   with_6909: With6909; // includes 6909, donate not supported
@@ -86,4 +90,35 @@ export interface Erc6909Data {
   hook6909Amount1delta: string;
   user6909Amount0delta: string;
   user6909Amount1delta: string;
+}
+
+export interface DynamicAnalysisGasCompareResponseType {
+  timeHash: string;
+  poolKey: PoolKeyType;
+  mode: number;
+  result: GasCompareResponse;
+  idx: number;
+  time: number;
+}
+
+export interface GasCompareResponse {
+  [key: string]: string;
+
+  name: string;
+  "hook-Swap-tokenPrice": string;
+  "hook-Swap-protocolFee": string;
+  "hook-Swap-lpFee": string;
+  "hook-Swap-balance-amount0": string;
+  "hook-Swap-balance-amount1": string;
+  "hook-swap-gas": string;
+  "hook-swap-gasPrice": string;
+  "hook-swap-totalGas": string;
+  "no-hook-Swap-tokenPrice": string;
+  "no-hook-Swap-protocolFee": string;
+  "no-hook-Swap-lpFee": string;
+  "no-hook-Swap-balance-amount0": string;
+  "no-hook-Swap-balance-amount1": string;
+  "no-hook-swap-gas": string;
+  "no-hook-swap-gasPrice": string;
+  "no-hook-swap-totalGas": string;
 }

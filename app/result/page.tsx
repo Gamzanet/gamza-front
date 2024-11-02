@@ -1,7 +1,6 @@
 "use client";
 
-import RecursiveJson from "@/components/RecursiveJson";
-import AnalysisResponseType from "@/types/AnalysisResponse";
+import { DynamicAnalysisResponseType } from "@/types/AnalysisResponse";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function DashBoard() {
@@ -31,19 +30,19 @@ export default function DashBoard() {
         console.log(idx);
         console.log(taskId);
 
-        const result: AnalysisResponseType = await fetch(
+        const result: DynamicAnalysisResponseType = await fetch(
           `/api/result/${taskId}`,
         ).then((res) => res.json());
         const newComponent = (
           <div key={taskId} className="bg-gray-200">
             <p>Task ID: {taskId}</p>
-            <RecursiveJson data={result} depth={0} />
+            {/** render components */}
           </div>
         );
         setComponents((prevComponents) => [...prevComponents, newComponent]);
       };
     }
-  }, []);
+  }, [timeHash, hooks, mode, cpnt]);
 
   useEffect(() => {
     if (components.length >= len) {
