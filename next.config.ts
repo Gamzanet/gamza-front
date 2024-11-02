@@ -13,14 +13,11 @@ const nextConfig = (
     return {
       ...defaultConfig,
       reactStrictMode: true,
-      env: {
-        API_URL: "http://34.47.123.94:7777",
-      },
       async rewrites() {
         return [
           {
             source: "/api/:path*",
-            destination: "http://34.47.123.94:7777/api/:path*",
+            destination: process.env.API_URL + "/api/:path*",
           },
         ];
       },
@@ -30,14 +27,11 @@ const nextConfig = (
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
       ...defaultConfig,
-      env: {
-        API_URL: "http://34.47.123.94:7777",
-      },
       async rewrites() {
         return [
           {
             source: "/api/:path*",
-            destination: "http://34.47.123.94:7777/api/:path*",
+            destination: process.env.API_URL + "/api/:path*",
           },
         ];
       },
