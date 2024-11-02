@@ -1,5 +1,8 @@
 import { PoolKeyType } from "@/types/Property";
-export interface DoubleInitializeTestRoot {
+
+// @see https://www.notion.so/entropy1110/ArrakisHook-53f30ea6a0584809a1c4b25a9004deaf?pvs=4#c0b8515c545940aa9459e27d2a9b9f46
+
+export interface Root {
   task_id: string;
   status: string;
   result: Result;
@@ -7,7 +10,7 @@ export interface DoubleInitializeTestRoot {
 
 export interface Result {
   timeHash: string;
-  poolkey: PoolKeyType;
+  poolKey: PoolKeyType;
   mode: number;
   result: Result2;
   idx: number;
@@ -16,14 +19,26 @@ export interface Result {
 
 export interface Result2 {
   testList: TestList[];
+  failList: FailList[];
   PASS: number;
   FAIL: number;
   name: string;
 }
 
 export interface TestList {
-  status: string;
-  statusCode: number;
   name: string;
   msg: string;
+  status: string;
+  statusCode: number;
+  description?: string;
+  impact?: string;
+}
+
+export interface FailList {
+  name: string;
+  msg: string;
+  status: string;
+  statusCode: number;
+  description: string;
+  impact: string;
 }

@@ -1,6 +1,8 @@
 import { PoolKeyType } from "@/types/Property";
 
-export interface TokenPriceCompareRoot {
+// @see https://www.notion.so/entropy1110/LPFeeTakingHook-12fec224c993805cb204d89989b22371?pvs=4#b489466a35f847c994c433d4798419d4
+
+export interface Root {
   task_id: string;
   status: string;
   result: Result;
@@ -8,7 +10,7 @@ export interface TokenPriceCompareRoot {
 
 export interface Result {
   timeHash: string;
-  poolkey: PoolKeyType;
+  poolKey: PoolKeyType;
   mode: number;
   result: Result2;
   idx: number;
@@ -16,13 +18,8 @@ export interface Result {
 }
 
 export interface Result2 {
-  msg: string[];
+  revertAt: any;
   name: string;
-  data: Daum[];
-  price: number;
-}
-
-export interface Daum {
-  name: string;
-  value: string;
+  result: string;
+  trace: string;
 }
