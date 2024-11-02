@@ -6,22 +6,22 @@ import TaskCreationRequest from "@/types/request/api/tasks/TaskCreationRequest";
 import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
 
 export default function Page() {
-  const sampleRequest: TaskCreationRequest = {
-    data: {
-      Poolkey: {
-        currency0: "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
-        currency1: "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
-        fee: 0,
-        tickSpacing: 60,
-        hooks: "0xEB0E9255aaB63951464f8adF268f676575E92000",
-      },
-      mode: 2,
-    },
-  };
-
   const [response, setResponse] = useState<TaskCreationResponseRoot | null>();
 
   useEffect(() => {
+    const sampleRequest: TaskCreationRequest = {
+      data: {
+        Poolkey: {
+          currency0: "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+          currency1: "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+          fee: 0,
+          tickSpacing: 60,
+          hooks: "0xEB0E9255aaB63951464f8adF268f676575E92000",
+        },
+        mode: 2,
+      },
+    };
+    
     post({
       body: sampleRequest,
     }).then((response) => {
@@ -30,7 +30,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="">
+    <div className=''>
       {response ? (
         <div>
           <div>{response.msg}</div>
