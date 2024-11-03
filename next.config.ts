@@ -12,7 +12,10 @@ const nextConfig = (
   if (phase === PHASE_DEVELOPMENT_SERVER) {
     return {
       ...defaultConfig,
-      reactStrictMode: true,
+      webpack: (config) => {
+        config.externals.push("pino-pretty", "lokijs", "encoding");
+        return config;
+      },
       async rewrites() {
         return [
           {
@@ -27,6 +30,10 @@ const nextConfig = (
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
       ...defaultConfig,
+      webpack: (config) => {
+        config.externals.push("pino-pretty", "lokijs", "encoding");
+        return config;
+      },
       async rewrites() {
         return [
           {
