@@ -161,7 +161,7 @@ export {
   toERC6909DeltaDifferenceProps,
 };
 
-interface ResponseMetadata {
+export interface ResponseMetadata {
   cpnt: number;
   idx: number;
   mode: number;
@@ -176,7 +176,7 @@ interface ResponseMetadata {
 // [mode:2 | cpnt:2 | idx:5] TimeBasedStepTest
 // [mode:2 | cpnt:2 | idx:6] DoubleInitializeTest
 // [mode:2 | cpnt:2 | idx:7] ProxyTest
-function getResponseMetadataByComponentName(
+export function getResponseMetadataByComponentName(
   componentName: string,
 ): ResponseMetadata {
   const mapper: { [key: string]: ResponseMetadata } = {
@@ -195,3 +195,15 @@ function getResponseMetadataByComponentName(
     idx: mapper[componentName].idx,
   };
 }
+
+export const componentNames = [
+  "MinimumTest", // idx: 0
+  "TimeBasedMinimumTest", // idx: 1
+  "GasCompare", // idx: 2
+  "TokenPriceCompare", // idx: 3
+  "PoolManagerTest", // idx: 4
+  "TimeBasedStepTest", // idx: 5
+  "DoubleInitializeTest", // idx: 6
+  "ProxyTest", // idx: 7
+] as const;
+export type ComponentNameType = (typeof componentNames)[number];

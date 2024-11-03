@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { post } from "../actions/v1/tasks/page";
+import { post } from "@/app/actions/v1/tasks/page";
 import TaskCreationRequest from "@/types/request/api/tasks/TaskCreationRequest";
 import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
 
@@ -22,9 +22,7 @@ export default function Page() {
       },
     };
 
-    post({
-      body: sampleRequest,
-    }).then((response) => {
+    post(sampleRequest).then((response) => {
       setResponse(response);
     });
   }, []);
