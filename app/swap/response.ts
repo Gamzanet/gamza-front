@@ -1,8 +1,8 @@
-import AnalysisResponseType from "@/types/AnalysisResponse";
+import { TokenPriceCompareRoot } from "@/types/response/api/result/taskId/2_0_3_TokenPriceCompare";
 
 export { rawResponse };
 
-const rawResponse: AnalysisResponseType = {
+const rawResponse: TokenPriceCompareRoot = {
   task_id: "a1ab2066-6a0e-4656-a405-185b9d0afd3d",
   status: "Success",
   result: {

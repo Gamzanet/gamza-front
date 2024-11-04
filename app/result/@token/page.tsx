@@ -1,4 +1,8 @@
-// "use client";
+"use client";
+export default function Page() {
+  return <div>Token Price Page</div>;
+}
+
 //
 // import RecursiveJson from "@/components/RecursiveJson";
 // import AnalysisResponseType from "@/types/AnalysisResponse";
@@ -62,7 +66,3 @@
 //
 //   return <div>{components}</div>;
 // }
-
-export default function Page() {
-  return <div>Token Price Page</div>;
-}

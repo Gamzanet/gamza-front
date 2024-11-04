@@ -1,4 +1,23 @@
-// "use client";
+"use client";
+
+import { useEffect, useState } from "react";
+import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
+
+export default function Page() {
+  const [timeHash, setTimeHash] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const parsedStorage: TaskCreationResponseRoot = JSON.parse(
+        localStorage.getItem("_herbicide_response")!,
+      );
+      setTimeHash(parsedStorage.info.timeHash);
+    }
+  }, []);
+
+  return <div>{timeHash}</div>;
+}
+
 //
 // import React, { useEffect, useRef, useState } from "react";
 //
@@ -53,21 +72,3 @@
 //
 //   return <div>{components}</div>;
 // }
-
-"use client";
-
-import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
-
-export default function Page() {
-  // read localStorage
-  const parsedStorage: TaskCreationResponseRoot = JSON.parse(
-    localStorage.getItem("_herbicide_response")!,
-  );
-  // fetch result
-
-  // subscribe to event source
-
-  // render
-
-  return <div>{parsedStorage.info.timeHash}</div>;
-}

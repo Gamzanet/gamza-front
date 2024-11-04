@@ -24,7 +24,7 @@ export default function Home() {
         >
           Step into the Future of DeFi:
           <br /> Unlock the Power of
-          <br /> Uniswap V4 Hooks with{" "}
+          <br /> Uniswap V4 Hooks with
         </p>
         <p className="bg-none text-primary">\&lt; Herbicide &gt;\</p>
       </header>
@@ -49,7 +49,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-export function ExampleContainer({ children }: { children: React.ReactNode }) {
+function ExampleContainer({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <Carousel className="w-full max-w-xs">
       <CarouselContent>{children}</CarouselContent>
@@ -59,7 +61,7 @@ export function ExampleContainer({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ExampleContent({ children }: { children: React.ReactNode }) {
+function ExampleContent({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <CarouselItem className="w-[100vh]">
       <div className="p-1">

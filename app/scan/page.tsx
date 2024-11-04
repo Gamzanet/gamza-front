@@ -1,6 +1,6 @@
 "use client";
 
-import { post } from "@/app/actions/v1/tasks/page";
+import { post } from "@/app/actions/v1/tasks/actions";
 import CodeHighlighter from "@/components/form/CodeHighlighter";
 import { AddressInput, NumberInput } from "@/components/form/PoolKeyForm";
 import { Button } from "@/components/ui/button";

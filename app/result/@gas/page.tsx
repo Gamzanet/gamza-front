@@ -1,4 +1,9 @@
-// "use client";
+"use client";
+
+export default function Page() {
+  return <div>Gas Compare Page</div>;
+}
+
 //
 // import {DynamicTransactionPriceResult} from "@/components/result/dynamic";
 // import {DynamicAnalysisResponseType} from "@/types/AnalysisResponse";
@@ -70,7 +75,3 @@
 //     </div>
 //   );
 // }
-
-export default function Page() {
-  return <div>Gas Compare Page</div>;
-}
