@@ -7,14 +7,14 @@ export default function NotFound() {
 
   const data = getSiteData(); // TODO fetch data from async API using await
   return (
-    <div className="hero min-h-screen">
-      <div className="hero-content flex flex-col text-center w-min bg-base-100 rounded-lg p-8">
+    <div className="min-h-screen hero">
+      <div className="flex w-min flex-col rounded-lg p-8 text-center hero-content bg-base-100">
         <h1 className="text-2xl">
           404 Not Found
           <p className="text-base">Start from links below</p>
         </h1>
 
-        <div className="space-y-4 text-left w-min">
+        <div className="w-min text-left space-y-4">
           {data.map((url) => (
             <Link key={url} href={url} className="block badge link link-hover">
               {url}

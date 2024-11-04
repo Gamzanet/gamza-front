@@ -20,7 +20,7 @@ export default function Home() {
             backgroundClip: "text",
             fill: "transparent",
           }}
-          className="select-none w-max-[1/2] "
+          className="select-none w-max-[1/2]"
         >
           Step into the Future of DeFi:
           <br /> Unlock the Power of
@@ -29,7 +29,6 @@ export default function Home() {
         <p className="bg-none text-primary">\&lt; Herbicide &gt;\</p>
       </header>
       {/* <HerbicideHero /> */}
-      <PoolKeyForm />
       <ExampleContainer>
         <ExampleContent>STEP 1</ExampleContent>
         <ExampleContent>STEP 2</ExampleContent>
@@ -41,6 +40,7 @@ export default function Home() {
   );
 }
 
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -48,8 +48,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import PoolKeyForm from "@/components/PoolKeyForm";
 
 export function ExampleContainer({ children }: { children: React.ReactNode }) {
   return (

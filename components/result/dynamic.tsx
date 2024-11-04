@@ -9,19 +9,19 @@ import {
 } from "@/components/ui/card";
 import {
   Table,
-  TableRow,
-  TableCell,
-  TableCaption,
-  TableHeader,
-  TableHead,
   TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { PoolKeyType } from "@/types/AnalysisResponse";
 import {
   ERC20DeltaDifferenceProps,
   TokenPriceProps,
   TransactionGasCostProps,
 } from "@/types/DynamicAnalysis";
+import { PoolKeyType } from "@/types/Property";
 
 import { useState } from "react";
 
@@ -86,10 +86,10 @@ function DynamicERC20DeltaDifferenceResult({
           <TableHeader>
             <TableRow>
               <TableHead className="text-center text-primary">Type</TableHead>
-              <TableHead className="w-[100px] text-center text-primary">
+              <TableHead className="text-center w-[100px] text-primary">
                 amount0
               </TableHead>
-              <TableHead className="w-[100px] text-center text-primary">
+              <TableHead className="text-center w-[100px] text-primary">
                 amount1
               </TableHead>
             </TableRow>
@@ -142,11 +142,11 @@ function DynamicTransactionGasResult({
           <TableHeader className="bg-gray-200">
             <TableRow>
               <TableHead className="text-center">Mehtod</TableHead>
-              <TableHead className="w-[100px] text-center">With Hook</TableHead>
-              <TableHead className="w-[100px] text-center">
+              <TableHead className="text-center w-[100px]">With Hook</TableHead>
+              <TableHead className="text-center w-[100px]">
                 Without Hook
               </TableHead>
-              <TableHead className="w-[100px] text-center">Delta</TableHead>
+              <TableHead className="text-center w-[100px]">Delta</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -207,7 +207,7 @@ function DynamicTokenPriceResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 grid-flow-row border gap-4 w-[500px] justify-items-center p-4">
+        <div className="grid grid-flow-row grid-cols-2 justify-items-center gap-4 border p-4 w-[500px]">
           <p>Real Price</p> <p>{realPrice}</p>
           <p>Expected Price</p>
           <p>

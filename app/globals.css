@@ -67,6 +67,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -75,8 +76,8 @@ body {
 .collapse-button {
   color: white;
   border-radius: 1px;
-  padding: 0px 3px 0px 3px;
-  margin: 0px 3px 0px 3px;
+  padding: 0 3px 0 3px;
+  margin: 0 3px 0 3px;
   cursor: pointer;
   font-size: 15px;
   height: 15px; /* 폰트 크기에 맞는 높이 설정 */

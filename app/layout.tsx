@@ -1,12 +1,12 @@
+import { BackToTop, ThemeSwitcher } from "@/components/root/ClientRootLayouts";
+import { MenubarDemo } from "@/components/root/ServerRootLayouts";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { Lora } from "next/font/google";
 import "./globals.css";
-import { MenubarDemo } from "@/components/root/ServerRootLayouts";
 import { Providers } from "./providers";
-import { ThemeSwitcher } from "@/components/root/ClientRootLayouts";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const inter1 = Lora({
   subsets: ["latin"],
@@ -26,11 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter1.className}  antialiased overflow-y-hidden ${GeistSans.className} ${GeistMono.className}`}
+        className={`${inter1.className} antialiased overflow-y-hidden ${GeistSans.className} ${GeistMono.className}`}
       >
         <Providers>
           <MenubarDemo />
-          <ScrollArea className="h-[90vh] w-screen p-8">{children}</ScrollArea>
+          <ScrollArea className="w-screen p-8 h-[90vh]">{children}</ScrollArea>
+          <BackToTop />
           <ThemeSwitcher />
         </Providers>
       </body>
