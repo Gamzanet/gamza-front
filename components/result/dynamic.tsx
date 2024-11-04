@@ -179,7 +179,7 @@ function DynamicPoolKeyResult({
         <CardTitle>PoolKey</CardTitle>
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className='font-fira-code'>
         <div className='grid grid-cols-[auto,1fr] border gap-4 p-4'>
           <p className='font-bold'>Currency0</p> <p>{currency0}</p>
           <p className='font-bold'>Currency1</p> <p>{currency1}</p>
@@ -188,9 +188,6 @@ function DynamicPoolKeyResult({
           <p className='font-bold'>Hooks</p> <p>{hooks}</p>
         </div>
       </CardContent>
-      <CardFooter>
-        <p></p>
-      </CardFooter>
     </Card>
   );
 }
@@ -209,7 +206,7 @@ function DynamicTokenPriceResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-flow-row grid-cols-2 justify-items-center gap-4 border p-4 w-[500px]'>
+        <div className='grid grid-flow-row grid-cols-2  gap-4 border p-4 w-[500px]'>
           <p>Real Price</p> <p>{realPrice}</p>
           <p>Expected Price</p>
           <p>

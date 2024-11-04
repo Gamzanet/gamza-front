@@ -66,7 +66,7 @@ function Component({
   chartData: TransactionGasCostToChartData[];
 }) {
   return (
-    <Card className='p-4'>
+    <Card className="p-4">
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
@@ -76,81 +76,81 @@ function Component({
           <BarChart
             accessibilityLayer
             data={chartData}
-            layout='vertical'
+            layout="vertical"
             margin={{
               right: 16,
             }}
           >
             <CartesianGrid horizontal={false} />
             <YAxis
-              dataKey='method'
-              type='category'
+              dataKey="method"
+              type="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value) => value.slice(0, 3)}
               hide
             />
-            <XAxis dataKey='enableHook' type='number' hide />
+            <XAxis dataKey="enableHook" type="number" hide />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator='line' />}
+              content={<ChartTooltipContent indicator="line" />}
             />
             <Bar
-              dataKey='enableHook'
-              layout='vertical'
-              fill='hsl(var(--chart-5))'
-              className='opacity-50 hover:opacity-100'
+              dataKey="enableHook"
+              layout="vertical"
+              fill="hsl(var(--chart-5))"
+              className="opacity-50 hover:opacity-100"
               radius={4}
             >
               <LabelList
-                dataKey='method'
-                position='insideLeft'
+                dataKey="method"
+                position="insideLeft"
                 offset={8}
-                className='fill-[--color-label]'
+                className="fill-[--color-label]"
                 fontSize={12}
               />
               <LabelList
-                dataKey='enableHook'
-                position='right'
+                dataKey="enableHook"
+                position="right"
                 offset={8}
-                className='fill-foreground'
+                className="fill-foreground"
                 fontSize={12}
               />
             </Bar>
             <Bar
-              dataKey='disableHook'
-              layout='vertical'
-              fill='hsl(var(--chart-1))'
-              className='opacity-50 hover:opacity-100'
+              dataKey="disableHook"
+              layout="vertical"
+              fill="hsl(var(--chart-1))"
+              className="opacity-50 hover:opacity-100"
               radius={4}
             >
               <LabelList
-                dataKey='method'
-                position='insideLeft'
+                dataKey="method"
+                position="insideLeft"
                 offset={8}
-                className='fill-[--color-label]'
+                className="fill-[--color-label]"
                 fontSize={12}
               />
               <LabelList
-                dataKey='disableHook'
-                position='right'
+                dataKey="disableHook"
+                position="right"
                 offset={8}
-                className='fill-foreground'
+                className="fill-foreground"
                 fontSize={12}
               />
             </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 font-medium leading-none'>
-          Maximum gas: Swap 8186 <TrendingUp className='h-4 w-4' />
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Maximum gas: Swap 8186 <TrendingUp className="h-4 w-4" />
         </div>
-        <div className='leading-none text-muted-foreground'>
+        <div className="leading-none text-muted-foreground">
           min:donate:5190 | average:6792.25 | median:6417.5
         </div>
-        <div className='leading-none text-muted-foreground'>{children}</div>
+        <div className="leading-none text-muted-foreground">{children}</div>
       </CardFooter>
     </Card>
   );
@@ -158,10 +158,10 @@ function Component({
 export default function GasDifferenceChart() {
   const data: TransactionGasCostToChartProps = givenData();
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className="flex flex-col items-center justify-center">
       <Component
-        cardTitle='Estimated Gas Usage'
-        cardDescription='per method gas consumption enabled/disabled hooks'
+        cardTitle="Estimated Gas Usage"
+        cardDescription="per method gas consumption enabled/disabled hooks"
         chartData={data.data}
       >
         <GasDifferenceSummary />
@@ -174,26 +174,26 @@ function GasDifferenceSummary(): React.ReactNode {
   const chartData = givenData().data;
   const methodDifferences = chartData.map(
     ({ method, enableHook, disableHook }) =>
-      `${method}: ${enableHook - disableHook}`
+      `${method}: ${enableHook - disableHook}`,
   );
 
   // summary min/max difference
 
   const minDifference = Math.min(
-    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
+    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
   );
   const maxDifference = Math.max(
-    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
+    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
   );
 
   // summary total difference
   const totalEnableHook = chartData.reduce(
     (acc, { enableHook }) => acc + enableHook,
-    0
+    0,
   );
   const totalDisableHook = chartData.reduce(
     (acc, { disableHook }) => acc + disableHook,
-    0
+    0,
   );
   const totalDifference = totalEnableHook - totalDisableHook;
 
@@ -222,7 +222,7 @@ function GasDifferenceSummary(): React.ReactNode {
           <BarChart accessibilityLayer data={chartData2}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='method'
+              dataKey="method"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -232,15 +232,15 @@ function GasDifferenceSummary(): React.ReactNode {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey='gas' fill='hsl(var(--chart-3))' radius={8} />
+            <Bar dataKey="gas" fill="hsl(var(--chart-3))" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 font-medium leading-none'>
-          Maximum gas gap: Swap 2706 <TrendingUp className='h-4 w-4' />
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Maximum gas gap: Swap 2706 <TrendingUp className="h-4 w-4" />
         </div>
-        <div className='leading-none text-muted-foreground'>
+        <div className="leading-none text-muted-foreground">
           min:donate:0 | average:1272.5 | median:1192
         </div>
       </CardFooter>

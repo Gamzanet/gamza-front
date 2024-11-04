@@ -49,10 +49,11 @@ export default function Layout({
           className='min-h-[200px] rounded-lg border md:min-w-[450px]'
         >
           <ResizablePanel>
-            <div className='grid grid-cols-2 grid-rows-2 gap-4'>
-              {poolKey}
-              {erc20delta}
-              {erc6909deltaBurn}
+            <div className='flex flex-col gap-4'>
+              <div className='flex justify-between'>
+                {poolKey}
+                {erc20delta}
+              </div>
               {erc6909deltaMint}
             </div>
           </ResizablePanel>

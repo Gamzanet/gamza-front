@@ -1,18 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-export function AvatarDemo() {
-  return (
-    <Avatar>
-      <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
-  );
-}
+import { DynamicTokenPriceResult } from "@/components/result/dynamic";
 
 export default function ERC6909DeltaBurnResultPage() {
   return (
-    <>
-      <AvatarDemo />
-    </>
+    <DynamicTokenPriceResult
+      realPrice={1.4}
+      expectedPrice={1.4}
+      oraclePrice={2.1}
+    />
   );
 }
