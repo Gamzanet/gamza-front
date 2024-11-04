@@ -26,7 +26,7 @@ export default function HookCodeForm({
   const [code, setCode] = useState<string>("");
 
   const onClickSamplePoolKeyHandler = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     setCode(sampleCodeTakeProfitHook);
@@ -47,26 +47,26 @@ export default function HookCodeForm({
         <CardDescription> desc </CardDescription>
       </CardHeader>
 
-      <CardContent className='text-xs'>
-        <Tabs defaultValue='Input'>
+      <CardContent className="text-xs">
+        <Tabs defaultValue="Input">
           <TabsList>
-            <TabsTrigger value='Input'>Input</TabsTrigger>
-            <TabsTrigger value='Preview'>Preview</TabsTrigger>
+            <TabsTrigger value="Input">Input</TabsTrigger>
+            <TabsTrigger value="Preview">Preview</TabsTrigger>
           </TabsList>
-          <TabsContent value='Input'>
+          <TabsContent value="Input">
             <Textarea
-              id='code'
+              id="code"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
             <button
               onClick={onClickSamplePoolKeyHandler}
-              className='text-xs cursor-pointer hover:underline'
+              className="text-xs cursor-pointer hover:underline"
             >
               need a sample?
             </button>
           </TabsContent>
-          <TabsContent value='Preview'>
+          <TabsContent value="Preview">
             <CodeHighlighter codeString={code} />
           </TabsContent>
         </Tabs>
@@ -74,7 +74,7 @@ export default function HookCodeForm({
       <CardFooter>
         <CardFooter>
           <Button
-            className='bg-primary text-white'
+            className="bg-primary text-white"
             onClick={(e) => {
               e.preventDefault();
               doRequest(makeHookCodeRequestBody()).then(() => {

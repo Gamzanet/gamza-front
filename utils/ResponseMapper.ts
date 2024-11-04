@@ -41,7 +41,7 @@ function toTokenPriceProps(response: TokenPriceCompareRoot): TokenPriceProps {
 }
 
 function toERC20DeltaDifferenceProps(
-  response: TokenPriceCompareRoot
+  response: TokenPriceCompareRoot,
 ): ERC20DeltaDifferenceProps {
   const data = response.result.data.with_20;
   return {
@@ -106,7 +106,7 @@ function toERC20DeltaDifferenceProps(
 }
 
 function toERC6909DeltaDifferenceProps(
-  response: TokenPriceCompareRoot
+  response: TokenPriceCompareRoot,
 ): ERC6909DeltaDifferenceProps {
   const data = response.result.data.with_6909;
   return {
@@ -173,7 +173,7 @@ export interface ResponseMetadata {
 // [mode:2 | cpnt:2 | idx:6] DoubleInitializeTest
 // [mode:2 | cpnt:2 | idx:7] ProxyTest
 export function getResponseMetadataByComponentName(
-  componentName: string
+  componentName: string,
 ): ResponseMetadata {
   const mapper: { [key: string]: ResponseMetadata } = {
     TokenPriceCompare: { cpnt: 0, idx: 3, mode: 2 },
@@ -205,7 +205,7 @@ export const componentNames = [
 export type ComponentNameType = (typeof componentNames)[number];
 
 export function getMockedComponent2ResponseByIndex(
-  index: number
+  index: number,
 ): Comp2IntegratedAnalysisRoot2 | undefined {
   const rawData = component2IntegratedResponse;
   for (const data of rawData) {

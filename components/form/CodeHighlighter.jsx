@@ -10,7 +10,7 @@ const CodeHighlighter = ({ codeString }) => {
   return (
     <div className={`text-[${fontSize}rem]`}>
       <Button
-        className='rounded-full m-2 text-xl w-fit-content text-align-center text-white'
+        className="rounded-full m-2 text-xl w-fit-content text-align-center text-white"
         onClick={() => {
           setFontSize(fontSize + 0.5);
         }}
@@ -18,14 +18,14 @@ const CodeHighlighter = ({ codeString }) => {
         +
       </Button>
       <Button
-        className='rounded-full m-2 text-xl w-fit-content text-align-center text-white'
+        className="rounded-full m-2 text-xl w-fit-content text-align-center text-white"
         onClick={() => {
           setFontSize(fontSize - 0.5);
         }}
       >
         -
       </Button>
-      <SyntaxHighlighter language='solidity' style={dark}>
+      <SyntaxHighlighter language="solidity" style={dark}>
         {codeString}
       </SyntaxHighlighter>
     </div>

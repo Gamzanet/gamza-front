@@ -9,7 +9,7 @@ export function TopStickMenuBar() {
       <MenubarMenu key={`MenubarMenu-${route}`}>
         <Link
           href={`/${route.toLowerCase()}`}
-          className='p-2 text-white opacity-80 space-x-2 hover:text-accent hover:opacity-100'
+          className="p-2 text-white opacity-80 space-x-2 hover:text-accent hover:opacity-100"
           key={`Link-${route}`}
         >
           {route}
@@ -18,9 +18,9 @@ export function TopStickMenuBar() {
     ));
   };
   return (
-    <Menubar className='sticky top-0 flex w-screen border-0 p-4 space-x-4 bg-primary rounded-[0px]'>
-      <Link href='/' className='pr-8'>
-        <Image src='Logo.svg' alt='Logo' width={100} height={37} />
+    <Menubar className="sticky top-0 flex w-screen border-0 p-4 space-x-4 bg-primary rounded-[0px]">
+      <Link href="/" className="pr-8">
+        <Image src="Logo.svg" alt="Logo" width={100} height={37} />
       </Link>
       {SimpleRouteMenubarMenu()}
     </Menubar>

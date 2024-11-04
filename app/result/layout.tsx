@@ -1,4 +1,5 @@
 import CodeHighlighter from "@/components/form/CodeHighlighter";
+import { DynamicPoolKeyResult } from "@/components/result/dynamic";
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,11 +19,16 @@ export default function Layout({
   comp0,
   comp1,
   comp2,
+  poolKey,
+  erc20delta,
+  erc6909deltaBurn,
+  erc6909deltaMint,
 }: {
   children: React.ReactNode;
   comp0: React.ReactNode;
   comp1: React.ReactNode;
   comp2: React.ReactNode;
+  poolKey: React.ReactNode;
 }) {
   return (
     <div className='flex flex-col'>
@@ -30,9 +36,9 @@ export default function Layout({
         <CollapsibleTrigger className='font-bold color-primary opacity-50 hover:opacity-100'>
           Trace Log (click to expand)
         </CollapsibleTrigger>
-              <CollapsibleContent>
+        <CollapsibleContent>
           <ScrollArea className='min-h-[400px] max-h-600[px] rounded-lg border md:min-w-[450px] hover:overflow-auto'>
-            <CodeHighlighter codeString={sampleTrace} />
+            {/* // TODO: enable later <CodeHighlighter codeString={sampleTrace} /> */}
           </ScrollArea>
         </CollapsibleContent>
       </Collapsible>
@@ -42,9 +48,16 @@ export default function Layout({
           direction='horizontal'
           className='min-h-[200px] rounded-lg border md:min-w-[450px]'
         >
-          <ResizablePanel>PoolKey</ResizablePanel>
+          <ResizablePanel>
+            <div className='grid grid-cols-2 grid-rows-2 gap-4'>
+              {poolKey}
+              {erc20delta}
+              {erc6909deltaBurn}
+              {erc6909deltaMint}
+            </div>
+          </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel>Gas Diff Chart</ResizablePanel>
+          <ResizablePanel defaultSize={30}>{comp2}</ResizablePanel>
         </ResizablePanelGroup>
       </div>
       <div>

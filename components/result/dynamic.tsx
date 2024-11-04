@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,11 +26,6 @@ import {
 import { PoolKeyType } from "@/types/Property";
 
 import { useState } from "react";
-
-
-
-
-
 
 function DynamicERC20DeltaDifferenceResult({
   props,
@@ -183,12 +180,12 @@ function DynamicPoolKeyResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4'>
-          <p>Currency0</p> <p>{currency0}</p>
-          <p>Currency1</p> <p>{currency1}</p>
-          <p>Fee</p> <p>{fee}</p>
-          <p>TickSpacing</p> <p>{tickSpacing}</p>
-          <p>Hooks</p> <p>{hooks}</p>
+        <div className='grid grid-cols-[auto,1fr] border gap-4 p-4'>
+          <p className='font-bold'>Currency0</p> <p>{currency0}</p>
+          <p className='font-bold'>Currency1</p> <p>{currency1}</p>
+          <p className='font-bold'>Fee</p> <p>{fee}</p>
+          <p className='font-bold'>TickSpacing</p> <p>{tickSpacing}</p>
+          <p className='font-bold'>Hooks</p> <p>{hooks}</p>
         </div>
       </CardContent>
       <CardFooter>

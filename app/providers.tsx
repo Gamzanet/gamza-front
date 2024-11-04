@@ -5,7 +5,7 @@ export function Providers({ children, ...props }: ThemeProviderProps) {
   return (
     <ThemeProvider
       themes={["light", "dark"]}
-      attribute='class'
+      attribute="class"
       disableTransitionOnChange
       {...props}
     >

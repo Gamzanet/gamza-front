@@ -17,7 +17,7 @@ export default function RootPage() {
           fontWeight: 800,
           fontSize: "50px",
         }}
-        className='flex flex-col items-center justify-center w-full'
+        className="flex flex-col items-center justify-center w-full"
       >
         <p
           style={{
@@ -28,37 +28,37 @@ export default function RootPage() {
             backgroundClip: "text",
             fill: "transparent",
           }}
-          className='select-none w-max-[1/2]'
+          className="select-none w-max-[1/2]"
         >
           Step into the Future of DeFi:
           <br /> Unlock the Power of
           <br /> UniSwap V4 Hooks with
         </p>
-        <p className='bg-none text-primary'>\&lt; Herbicide &gt;\</p>
+        <p className="bg-none text-primary">\&lt; Herbicide &gt;\</p>
       </header>
       <ScanInputFormPage />
       <main
-        className='flex flex-col items-center justify-center
-        w-full text-black'
+        className="flex flex-col items-center justify-center
+        w-full text-black"
       >
-        <div className='flex p-4 m-4 gap-4'>
+        <div className="flex p-4 m-4 gap-4">
           <SimpleCustomizableLinkCard
-            className='bg-blue-200 w-[400px] h-[500px]'
-            href='/scan'
-            title='Scan'
-            description='Assessing Uniswap V4 Hook Vulnerabilities is now streamlined-ensure your custom hooks are secure.'
+            className="bg-blue-200 w-[400px] h-[500px]"
+            href="/scan"
+            title="Scan"
+            description="Assessing Uniswap V4 Hook Vulnerabilities is now streamlined-ensure your custom hooks are secure."
           />
           <SimpleCustomizableLinkCard
-            className='bg-primary-400 w-[400px] h-[500px]'
-            href='/docs'
-            title='Docs'
+            className="bg-primary-400 w-[400px] h-[500px]"
+            href="/docs"
+            title="Docs"
             description="Let's study the vulnerability audit methods using Herbicide and the security best practices for Uniswap V4."
           >
             <Image
-              src='uni.svg'
+              src="uni.svg"
               width={300}
               height={300}
-              alt='Unicorn reading a book'
+              alt="Unicorn reading a book"
             />
           </SimpleCustomizableLinkCard>
         </div>

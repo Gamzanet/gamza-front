@@ -39,7 +39,7 @@ function AddressInput({
 
     if (!regex.test(inputValue)) {
       setError(
-        'The input must start with "0x" followed by 20 hexadecimal characters.'
+        'The input must start with "0x" followed by 20 hexadecimal characters.',
       );
     } else {
       setError("");
@@ -51,13 +51,13 @@ function AddressInput({
     <div>
       <Label htmlFor={name}>{label}</Label>
       <Input
-        type='text'
+        type="text"
         id={name}
         placeholder={`address 0x...`}
         value={state}
         onChange={handleChange}
       />
-      {error && <span className='text-xs text-red-500'>{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 }
@@ -92,13 +92,13 @@ function NumberInput({
     <div>
       <Label htmlFor={name}>{label}</Label>
       <Input
-        type='number'
+        type="number"
         id={name}
         placeholder={`number ${name}`}
         value={state}
         onChange={handleChange}
       />
-      {error && <span className='text-xs text-red-500'>{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 }
@@ -116,7 +116,7 @@ export default function PoolKeyForm({
   const [deployer, setDeployer] = useState<string>("");
 
   const onClickSamplePoolKeyHandler = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     setCurrency0("0x0197481B0F5237eF312a78528e79667D8b33Dcff");
@@ -145,57 +145,57 @@ export default function PoolKeyForm({
 
   return (
     <Card>
-      <CardHeader className='flex'>
+      <CardHeader className="flex">
         <CardTitle>PoolKeyForm</CardTitle>
         <CardDescription>desc</CardDescription>
       </CardHeader>
-      <CardContent className='text-xs'>
+      <CardContent className="text-xs">
         <AddressInput
-          name='currency0'
-          label='Currency currency0'
+          name="currency0"
+          label="Currency currency0"
           state={currency0}
           onChange={setCurrency0}
         />
         <AddressInput
-          name='currency1'
-          label='Currency currency1'
+          name="currency1"
+          label="Currency currency1"
           state={currency1}
           onChange={setCurrency1}
         />
         <NumberInput
-          name='fee'
-          label='uint24 fee'
+          name="fee"
+          label="uint24 fee"
           state={fee}
           onChange={setFee}
         />
         <NumberInput
-          name='tickSpacing'
-          label='int24 tickSpacing'
+          name="tickSpacing"
+          label="int24 tickSpacing"
           state={tickSpacing}
           onChange={setTickSpacing}
         />
         <AddressInput
-          name='hook'
-          label='IHook hooks'
+          name="hook"
+          label="IHook hooks"
           state={hooks}
           onChange={setHooks}
         />
         <AddressInput
-          name='deployer'
-          label='address deployer'
+          name="deployer"
+          label="address deployer"
           state={deployer}
           onChange={setDeployer}
         />
         <button
           onClick={onClickSamplePoolKeyHandler}
-          className='text-xs cursor-pointer hover:underline'
+          className="text-xs cursor-pointer hover:underline"
         >
           need a sample?
         </button>
       </CardContent>
       <CardFooter>
         <Button
-          className='bg-primary text-white'
+          className="bg-primary text-white"
           onClick={(e) => {
             e.preventDefault();
             doRequest(makePoolKeyRequestBody()).then(() => {

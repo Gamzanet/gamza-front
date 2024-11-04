@@ -7,7 +7,7 @@ export interface CodeOnlyAnalysisResultProps {
 }
 
 export interface CodeOnlyAnalysisTestLogs {
-    severity?: string;
-    name?: string;
-    description?: string;
+  severity?: string;
+  name?: string;
+  description?: string;
 }

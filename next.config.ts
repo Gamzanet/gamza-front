@@ -7,7 +7,7 @@ import {
 
 const nextConfig = (
   phase: string,
-  { defaultConfig }: { defaultConfig: NextConfig }
+  { defaultConfig }: { defaultConfig: NextConfig },
 ): NextConfig => {
   // TODO: use environment variables
 

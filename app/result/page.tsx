@@ -27,7 +27,6 @@ import { PoolKeyType } from "@/types/Property";
 
 import { useState } from "react";
 
-
 // response
 // 1. 2_2_0 MinimumTest
 // 2. 2_2_1 TimeBasedMinimumTest
@@ -57,9 +56,9 @@ function DynamicERC20DeltaDifferenceResult({
     const value = props[method][type];
     return (
       <TableRow>
-        <TableCell className='text-center'>{type}</TableCell>
-        <TableCell className='text-center'>{value.amount0}</TableCell>
-        <TableCell className='text-center'>{value.amount1}</TableCell>
+        <TableCell className="text-center">{type}</TableCell>
+        <TableCell className="text-center">{value.amount0}</TableCell>
+        <TableCell className="text-center">{value.amount1}</TableCell>
       </TableRow>
     );
   };
@@ -69,13 +68,13 @@ function DynamicERC20DeltaDifferenceResult({
     }`;
 
   return (
-    <Card className='w-min'>
+    <Card className="w-min">
       <CardHeader>
         <CardTitle>ERC20DeltaDifference</CardTitle>
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
-      <CardContent className='flex flex-col'>
-        <div className='flex w-min'>
+      <CardContent className="flex flex-col">
+        <div className="flex w-min">
           <Button
             className={getButtonClass("swap")}
             onClick={() => setMethod("swap")}
@@ -101,15 +100,15 @@ function DynamicERC20DeltaDifferenceResult({
             donate
           </Button>
         </div>
-        <Table className='w-[350px]'>
+        <Table className="w-[350px]">
           <TableCaption>Table Description</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className='text-center text-primary'>Type</TableHead>
-              <TableHead className='text-center w-[100px] text-primary'>
+              <TableHead className="text-center text-primary">Type</TableHead>
+              <TableHead className="text-center w-[100px] text-primary">
                 amount0
               </TableHead>
-              <TableHead className='text-center w-[100px] text-primary'>
+              <TableHead className="text-center w-[100px] text-primary">
                 amount1
               </TableHead>
             </TableRow>
@@ -140,10 +139,10 @@ function DynamicTransactionGasResult({
     } = data[method];
     return (
       <TableRow>
-        <TableCell className='text-center'>{method}</TableCell>
-        <TableCell className='text-center'>{value.withHook}</TableCell>
-        <TableCell className='text-center'>{value.withoutHook}</TableCell>
-        <TableCell className='text-center'>
+        <TableCell className="text-center">{method}</TableCell>
+        <TableCell className="text-center">{value.withHook}</TableCell>
+        <TableCell className="text-center">{value.withoutHook}</TableCell>
+        <TableCell className="text-center">
           {(value.withHook - value.withoutHook).toFixed(0)}
         </TableCell>
       </TableRow>
@@ -151,7 +150,7 @@ function DynamicTransactionGasResult({
   };
 
   return (
-    <Card className='w-[500px]'>
+    <Card className="w-[500px]">
       <CardHeader>
         <CardTitle>Transaction Price</CardTitle>
         <CardDescription>Component Description</CardDescription>
@@ -159,14 +158,14 @@ function DynamicTransactionGasResult({
       <CardContent>
         <Table>
           <TableCaption>Table Description</TableCaption>
-          <TableHeader className='bg-gray-200'>
+          <TableHeader className="bg-gray-200">
             <TableRow>
-              <TableHead className='text-center'>Mehtod</TableHead>
-              <TableHead className='text-center w-[100px]'>With Hook</TableHead>
-              <TableHead className='text-center w-[100px]'>
+              <TableHead className="text-center">Mehtod</TableHead>
+              <TableHead className="text-center w-[100px]">With Hook</TableHead>
+              <TableHead className="text-center w-[100px]">
                 Without Hook
               </TableHead>
-              <TableHead className='text-center w-[100px]'>Delta</TableHead>
+              <TableHead className="text-center w-[100px]">Delta</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -198,7 +197,7 @@ function DynamicPoolKeyResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4'>
+        <div className="grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4">
           <p>Currency0</p> <p>{currency0}</p>
           <p>Currency1</p> <p>{currency1}</p>
           <p>Fee</p> <p>{fee}</p>
@@ -227,17 +226,17 @@ function DynamicTokenPriceResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='grid grid-flow-row grid-cols-2 justify-items-center gap-4 border p-4 w-[500px]'>
+        <div className="grid grid-flow-row grid-cols-2 justify-items-center gap-4 border p-4 w-[500px]">
           <p>Real Price</p> <p>{realPrice}</p>
           <p>Expected Price</p>
           <p>
             <span>{expectedPrice} </span>
-            <span className='text-xs'>({expectedDiff}%)</span>
+            <span className="text-xs">({expectedDiff}%)</span>
           </p>
           <p>Oracle Price</p>
           <p>
             <span>{oraclePrice} </span>
-            <span className='text-xs'>({oracleDiff}%)</span>
+            <span className="text-xs">({oracleDiff}%)</span>
           </p>
         </div>
       </CardContent>

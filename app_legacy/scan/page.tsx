@@ -74,23 +74,22 @@ function PoolKeyForm({ router }: Readonly<{ router: AppRouterInstance }>) {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-// {
-//   "data": {
-//     "currency0": "0x0197481B0F5237eF312a78528e79667D8b33Dcff",
-//     "currency1": "0xA56569Bd93dc4b9afCc871e251017dB0543920d4",
-//     "fee": 3000,
-//     "hooks": "0x6da8f09885Bb7aaD2d45476179DbC75573984080",
-//     "tickSpacing": 60
-//   },
-//   "deployer": "0x4e59b44847b379578588920cA78FbF26c0B4956C"
-// }
+    // {
+    //   "data": {
+    //     "currency0": "0x0197481B0F5237eF312a78528e79667D8b33Dcff",
+    //     "currency1": "0xA56569Bd93dc4b9afCc871e251017dB0543920d4",
+    //     "fee": 3000,
+    //     "hooks": "0x6da8f09885Bb7aaD2d45476179DbC75573984080",
+    //     "tickSpacing": 60
+    //   },
+    //   "deployer": "0x4e59b44847b379578588920cA78FbF26c0B4956C"
+    // }
     setCurrency0("0x0197481B0F5237eF312a78528e79667D8b33Dcff");
     setCurrency1("0xA56569Bd93dc4b9afCc871e251017dB0543920d4");
     setFee("3000");
     setTickSpacing("60");
     setHooks("0x6da8f09885Bb7aaD2d45476179DbC75573984080");
     setDeployer("0x4e59b44847b379578588920cA78FbF26c0B4956C");
-    
 
     // Test1
     // setCurrency0("0x0197481B0F5237eF312a78528e79667D8b33Dcff");
@@ -99,7 +98,6 @@ function PoolKeyForm({ router }: Readonly<{ router: AppRouterInstance }>) {
     // setTickSpacing("60");
     // setHooks("0x6caC2dcc5eCf5caac0382F1B4A77EABac0F6C0Cc");
     // setDeployer("0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375");
-
   };
 
   function makePoolKeyRequestBody(): TaskCreationRequest {

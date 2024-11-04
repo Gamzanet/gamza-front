@@ -15,7 +15,6 @@ interface TransactionGasCostProps {
   [key: string]: { withHook: number; withoutHook: number };
 }
 
-
 interface TransactionGasCostToChartProps {
   data: TransactionGasCostToChartData[];
 }

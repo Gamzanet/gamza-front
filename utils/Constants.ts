@@ -462,7 +462,6 @@ export const sampleTaskCreationRequest: string = `{
   ],
 };`;
 
-
 // response
 // 1. 2_2_0 MinimumTest
 // 2. 2_2_1 TimeBasedMinimumTest

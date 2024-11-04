@@ -30,10 +30,10 @@ import {
 
 function givenData(): TransactionGasCostToChartProps {
   const chartData: TransactionGasCostToChartData[] = [
-    { method: "swap", enableHook: 186, disableHook: 80 },
-    { method: "addLiquidity", enableHook: 305, disableHook: 200 },
-    { method: "removeLiquidity", enableHook: 237, disableHook: 120 },
-    { method: "donate", enableHook: 190, disableHook: 73 },
+    { method: "swap", enableHook: 8186, disableHook: 5480 },
+    { method: "addLiquidity", enableHook: 7556, disableHook: 5289 },
+    { method: "removeLiquidity", enableHook: 6237, disableHook: 5120 },
+    { method: "donate", enableHook: 5190, disableHook: 5190 },
   ];
   return { data: chartData };
 }
@@ -54,30 +54,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function GasDifferenceChart() {
-  const data: TransactionGasCostToChartProps = givenData();
-  return (
-    <div>
-      <div className='flex flex-col items-center justify-center'>
-        <Component
-          cardTitle='Estimated Gas Usage'
-          cardDescription='per method gas consumption enabled/disabled hooks'
-          chartData={data.data}
-        >
-          <GasDifferenceSummary />
-        </Component>
-      </div>
-    </div>
-  );
-}
-export default function PoolKeyInputResultComponent2AggregationPage() {
-  return (
-    <div>
-      <GasDifferenceChart />
-    </div>
-  );
-}
-
 function Component({
   cardTitle,
   cardDescription,
@@ -90,7 +66,7 @@ function Component({
   chartData: TransactionGasCostToChartData[];
 }) {
   return (
-    <Card>
+    <Card className='p-4'>
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
@@ -169,46 +145,63 @@ function Component({
       </CardContent>
       <CardFooter className='flex-col items-start gap-2 text-sm'>
         <div className='flex gap-2 font-medium leading-none'>
-          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
+          Maximum gas: Swap 8186 <TrendingUp className='h-4 w-4' />
+        </div>
+        <div className='leading-none text-muted-foreground'>
+          min:donate:5190 | average:6792.25 | median:6417.5
         </div>
         <div className='leading-none text-muted-foreground'>{children}</div>
       </CardFooter>
     </Card>
   );
 }
+export default function GasDifferenceChart() {
+  const data: TransactionGasCostToChartProps = givenData();
+  return (
+    <div className='flex flex-col items-center justify-center'>
+      <Component
+        cardTitle='Estimated Gas Usage'
+        cardDescription='per method gas consumption enabled/disabled hooks'
+        chartData={data.data}
+      >
+        <GasDifferenceSummary />
+      </Component>
+    </div>
+  );
+}
 
 function GasDifferenceSummary(): React.ReactNode {
-  // summary per method difference
-  // const methodDifferences = chartData.map(
-  //   ({ method, enableHook, disableHook }) =>
-  //     `${method}: ${enableHook - disableHook}`
-  // );
+  const chartData = givenData().data;
+  const methodDifferences = chartData.map(
+    ({ method, enableHook, disableHook }) =>
+      `${method}: ${enableHook - disableHook}`
+  );
 
-  // // summary min/max difference
+  // summary min/max difference
 
-  // const minDifference = Math.min(
-  //   ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
-  // );
-  // const maxDifference = Math.max(
-  //   ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
-  // );
+  const minDifference = Math.min(
+    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
+  );
+  const maxDifference = Math.max(
+    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook)
+  );
 
-  // // summary total difference
-  // const totalEnableHook = chartData.reduce(
-  //   (acc, { enableHook }) => acc + enableHook,
-  //   0
-  // );
-  // const totalDisableHook = chartData.reduce(
-  //   (acc, { disableHook }) => acc + disableHook,
-  //   0
-  // );
-  // const totalDifference = totalEnableHook - totalDisableHook;
+  // summary total difference
+  const totalEnableHook = chartData.reduce(
+    (acc, { enableHook }) => acc + enableHook,
+    0
+  );
+  const totalDisableHook = chartData.reduce(
+    (acc, { disableHook }) => acc + disableHook,
+    0
+  );
+  const totalDifference = totalEnableHook - totalDisableHook;
 
   const chartData2 = [
-    { method: "Swap", gas: 186 },
-    { method: "AddLiquidity", gas: 305 },
-    { method: "RemoveLiquidity", gas: 237 },
-    { method: "Donate", gas: 190 },
+    { method: "Swap", gas: 2706 },
+    { method: "AddLiquidity", gas: 2267 },
+    { method: "RemoveLiquidity", gas: 1117 },
+    { method: "Donate", gas: 0 },
   ];
 
   const chartConfig2 = {
@@ -245,10 +238,10 @@ function GasDifferenceSummary(): React.ReactNode {
       </CardContent>
       <CardFooter className='flex-col items-start gap-2 text-sm'>
         <div className='flex gap-2 font-medium leading-none'>
-          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
+          Maximum gas gap: Swap 2706 <TrendingUp className='h-4 w-4' />
         </div>
         <div className='leading-none text-muted-foreground'>
-          Showing total visitors for the last 6 months
+          min:donate:0 | average:1272.5 | median:1192
         </div>
       </CardFooter>
     </Card>

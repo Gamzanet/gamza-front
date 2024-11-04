@@ -19,13 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`antialiased  ${GeistSans.className} ${GeistMono.className}`}
       >
         <Providers>
           <TopStickMenuBar />
-          <ScrollArea className='w-screen p-8 h-[90vh] flex flex-col items-center'>
+          <ScrollArea className="w-screen p-8 h-[90vh] flex flex-col items-center">
             {children}
           </ScrollArea>
           <ThemeSwitcher />

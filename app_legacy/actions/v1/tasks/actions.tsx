@@ -7,7 +7,7 @@ import {
 } from "@/utils/ResponseMapper";
 
 export async function post(
-  body: TaskCreationRequest
+  body: TaskCreationRequest,
 ): Promise<TaskCreationResponseRoot> {
   const response = await fetch(process.env.API_URL + "/api/tasks", {
     method: "POST",
@@ -40,13 +40,13 @@ export async function subscribe(
   mode: number,
   cpnt: number,
   maxLength: number = 1,
-  callback?: (data: MessageEvent) => void
+  callback?: (data: MessageEvent) => void,
 ): Promise<EventSource> {
   const eventListener = new EventSource(
     process.env.API_URL + `/api/noti/${timeHash}/${hooks}/${mode}/${cpnt}`,
     {
       withCredentials: true,
-    }
+    },
   );
 
   let counter = 0;
@@ -67,7 +67,7 @@ export async function subscribeByComponentName(
   hooks: string,
   componentName: ComponentNameType,
   maxLength: number = 1,
-  callback?: (data: MessageEvent) => void
+  callback?: (data: MessageEvent) => void,
 ): Promise<EventSource> {
   const metadata: ResponseMetadata =
     getResponseMetadataByComponentName(componentName);
@@ -77,14 +77,14 @@ export async function subscribeByComponentName(
     metadata.mode,
     metadata.cpnt,
     maxLength,
-    callback
+    callback,
   );
 }
 
 export async function subscribeAndFetchSingleByComponentName(
   timeHash: string,
   hooks: string,
-  componentName: ComponentNameType
+  componentName: ComponentNameType,
 ): Promise<object> {
   const message: ParsedEventMessageType = await new Promise((resolve) => {
     subscribeByComponentName(timeHash, hooks, componentName, 1, (event) => {
@@ -100,7 +100,7 @@ interface ParsedEventMessageType {
 }
 
 export async function parseEventMessage(
-  event: MessageEvent
+  event: MessageEvent,
 ): Promise<ParsedEventMessageType> {
   const idx: string = event.data.match(/idx\s+:\s+(\S+),/)![1];
   const taskId: string = event.data.match(/task-id\s+:\s+(\S+)/)![1];

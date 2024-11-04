@@ -56,8 +56,8 @@ export function GasDifferenceChart() {
   const data: TransactionGasCostToChartProps = givenData();
   return (
     <Component
-      cardTitle='Estimated Gas Usage'
-      cardDescription='per method gas consumption enabled/disabled hooks'
+      cardTitle="Estimated Gas Usage"
+      cardDescription="per method gas consumption enabled/disabled hooks"
       chartData={data.data}
     >
       <GasDifferenceSummary />
@@ -117,7 +117,7 @@ function GasDifferenceSummary(): React.ReactNode {
           <BarChart accessibilityLayer data={chartData2}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='method'
+              dataKey="method"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -127,15 +127,15 @@ function GasDifferenceSummary(): React.ReactNode {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey='gas' fill='hsl(var(--chart-3))' radius={8} />
+            <Bar dataKey="gas" fill="hsl(var(--chart-3))" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 font-medium leading-none'>
-          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
-        <div className='leading-none text-muted-foreground'>
+        <div className="leading-none text-muted-foreground">
           Showing total visitors for the last 6 months
         </div>
       </CardFooter>

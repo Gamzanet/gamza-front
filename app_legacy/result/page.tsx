@@ -25,7 +25,7 @@ export default function Page() {
   useEffect(() => {
     // 1. get the timeHash and hooks from the localStorage
     const parsedStorage: TaskCreationResponseRoot = JSON.parse(
-      localStorage.getItem("_herbicide_response")!
+      localStorage.getItem("_herbicide_response")!,
     );
     setTimeHash(parsedStorage.info.timeHash);
     setHooks(parsedStorage.info.hooks);
@@ -173,7 +173,7 @@ export default function Page() {
       <p>{timeHash}</p>
       <p>{hooks}</p>
       {components.map((component, idx) => (
-        <div key={idx} className='bg-gray-200'>
+        <div key={idx} className="bg-gray-200">
           <p>Test Name: {component.testName}</p>
           <p>Message: {component.msg}</p>
           <p>Description: {component.description}</p>
