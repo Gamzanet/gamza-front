@@ -50,3 +50,6 @@ export interface TaskCreationAllRequest {
     deployer?: Address;
   };
 }
+
+
+// {"data":{"Poolkey":{"currency0":"0x0197481B0F5237eF312a78528e79667D8b33Dcff","currency1":"0xA56569Bd93dc4b9afCc871e251017dB0543920d4","fee":3000,"tickSpacing":60,"hooks":"0x6caC2dcc5eCf5caac0382F1B4A77EABac0F6C0Cc"},"mode":2}}

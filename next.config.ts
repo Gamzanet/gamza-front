@@ -7,8 +7,10 @@ import {
 
 const nextConfig = (
   phase: string,
-  { defaultConfig }: { defaultConfig: NextConfig },
+  { defaultConfig }: { defaultConfig: NextConfig }
 ): NextConfig => {
+  // TODO: use environment variables
+
   if (phase === PHASE_DEVELOPMENT_SERVER) {
     return {
       ...defaultConfig,
@@ -16,7 +18,7 @@ const nextConfig = (
         return [
           {
             source: "/api/:path*",
-            destination: process.env.API_URL + "/api/:path*",
+            destination: "http://192.168.50.6:7777/api/:path*",
           },
         ];
       },
@@ -26,12 +28,11 @@ const nextConfig = (
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
       ...defaultConfig,
-
       async rewrites() {
         return [
           {
             source: "/api/:path*",
-            destination: process.env.API_URL + "/api/:path*",
+            destination: "http://192.168.50.6:7777/api/:path*",
           },
         ];
       },
