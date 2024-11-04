@@ -1,4 +1,4 @@
-import { BackToTop, ThemeSwitcher } from "@/components/root/ClientRootLayouts";
+import { ThemeSwitcher } from "@/components/root/ClientRootLayouts";
 import { MenubarDemo } from "@/components/root/ServerRootLayouts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GeistMono } from "geist/font/mono";
@@ -30,8 +30,9 @@ export default function RootLayout({
       >
         <Providers>
           <MenubarDemo />
-          <ScrollArea className="w-screen p-8 h-[90vh]">{children}</ScrollArea>
-          <BackToTop />
+          <ScrollArea className="w-screen p-8 h-[90vh] flex flex-col items-center">
+            {children}
+          </ScrollArea>
           <ThemeSwitcher />
         </Providers>
       </body>

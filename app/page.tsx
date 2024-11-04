@@ -1,3 +1,17 @@
+import Page from "@/app/scan/page";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 export default function Home() {
   return (
     <main
@@ -24,53 +38,101 @@ export default function Home() {
         >
           Step into the Future of DeFi:
           <br /> Unlock the Power of
-          <br /> Uniswap V4 Hooks with
+          <br /> UniSwap V4 Hooks with
         </p>
         <p className="bg-none text-primary">\&lt; Herbicide &gt;\</p>
+        <Page />
       </header>
+      <div className="flex p-4 m-4 gap-4">
+        <SimpleCustomizableLinkCard
+          className="bg-blue-200 w-[400px] h-[500px]"
+          href="/scan"
+          title="Scan"
+          description="Assessing Uniswap V4 Hook Vulnerabilities is now  streamlined-ensure your custom hooks are secure."
+        />
+        <SimpleCustomizableLinkCard
+          className="bg-primary-400 w-[400px] h-[500px]"
+          href="/docs"
+          title="Docs"
+          description="Let's study the vulnerability audit methods using Herbicide and the security best practices for Uniswap V4."
+        >
+          <Image
+            src="uni.svg"
+            width={300}
+            height={300}
+            alt="Unicorn reading a book"
+          />
+        </SimpleCustomizableLinkCard>
+      </div>
       {/* <HerbicideHero /> */}
-      <ExampleContainer>
-        <ExampleContent>STEP 1</ExampleContent>
-        <ExampleContent>STEP 2</ExampleContent>
-        <ExampleContent>STEP 3</ExampleContent>
-        <ExampleContent>STEP 4</ExampleContent>
-        <ExampleContent>STEP 5</ExampleContent>
-      </ExampleContainer>
+      {/*<ExampleContainer>*/}
+      {/*  <ExampleContent>STEP 1</ExampleContent>*/}
+      {/*  <ExampleContent>STEP 2</ExampleContent>*/}
+      {/*  <ExampleContent>STEP 3</ExampleContent>*/}
+      {/*  <ExampleContent>STEP 4</ExampleContent>*/}
+      {/*  <ExampleContent>STEP 5</ExampleContent>*/}
+      {/*</ExampleContainer>*/}
     </main>
   );
 }
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-
-function ExampleContainer({
+function SimpleCustomizableLinkCard({
+  className,
+  href,
+  title,
+  description,
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  className: string;
+  href: string;
+  title: string;
+  description: string;
+  children?: React.ReactNode;
+}>) {
   return (
-    <Carousel className="w-full max-w-xs">
-      <CarouselContent>{children}</CarouselContent>
-      <CarouselPrevious className="dark:bg-foreground" />
-      <CarouselNext className="dark:bg-foreground" />
-    </Carousel>
+    <a href={href}>
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription> {description} </CardDescription>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+      </Card>
+    </a>
   );
 }
-
-function ExampleContent({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <CarouselItem className="w-[100vh]">
-      <div className="p-1">
-        <Card>
-          <CardContent className="flex aspect-video items-center justify-center p-6">
-            {children}
-          </CardContent>
-        </Card>
-      </div>
-    </CarouselItem>
-  );
-}
+//
+// import { Card, CardContent } from "@/components/ui/card";
+// import {
+//   Carousel,
+//   CarouselContent,
+//   CarouselItem,
+//   CarouselNext,
+//   CarouselPrevious,
+// } from "@/components/ui/carousel";
+//
+// function ExampleContainer({
+//   children,
+// }: Readonly<{ children: React.ReactNode }>) {
+//   return (
+//     <Carousel className="w-full max-w-xs">
+//       <CarouselContent>{children}</CarouselContent>
+//       <CarouselPrevious className="dark:bg-foreground" />
+//       <CarouselNext className="dark:bg-foreground" />
+//     </Carousel>
+//   );
+// }
+//
+// function ExampleContent({ children }: Readonly<{ children: React.ReactNode }>) {
+//   return (
+//     <CarouselItem className="w-[100vh]">
+//       <div className="p-1">
+//         <Card>
+//           <CardContent className="flex aspect-video items-center justify-center p-6">
+//             {children}
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </CarouselItem>
+//   );
+// }

@@ -104,11 +104,9 @@ interface ParsedEventMessageType {
 export async function parseEventMessage(
   event: MessageEvent,
 ): Promise<ParsedEventMessageType> {
-  {
-    const idx: string = event.data.match(/idx\s+:\s+(\S+),/)![1];
-    const taskId: string = event.data.match(/task-id\s+:\s+(\S+)/)![1];
-    return { index: parseInt(idx), taskId };
-  }
+  const idx: string = event.data.match(/idx\s+:\s+(\S+),/)![1];
+  const taskId: string = event.data.match(/task-id\s+:\s+(\S+)/)![1];
+  return { index: parseInt(idx), taskId };
 }
 
 // export async function subscribeAndFetch(
