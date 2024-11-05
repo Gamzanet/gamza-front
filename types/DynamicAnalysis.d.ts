@@ -1,3 +1,5 @@
+import { MethodStringType } from "./Mapper";
+
 interface TokenPriceProps {
   realPrice: number;
   expectedPrice: number;
@@ -11,6 +13,15 @@ interface TransactionGasCostProps {
   donate: { withHook: number; withoutHook: number };
 
   [key: string]: { withHook: number; withoutHook: number };
+}
+
+interface TransactionGasCostToChartProps {
+  data: TransactionGasCostToChartData[];
+}
+interface TransactionGasCostToChartData {
+  method: MethodStringType;
+  enableHook: number; // gas cost
+  disableHook: number; // gas cost
 }
 
 interface DeltaDifferenceType {
@@ -36,10 +47,23 @@ interface ERC20DeltaDifferenceProps extends ERCDeltaDifferenceProps {
   donate: DeltaDifferenceType;
 }
 
+interface FailedTestTraceProps {
+  testName: string;
+  msg?: string;
+  description?: string;
+  statusCode?: number;
+  status?: string;
+  trace?: string;
+  impact?: string;
+}
+
 export {
   TokenPriceProps,
   TransactionGasCostProps,
   DeltaDifferenceType,
   ERC6909DeltaDifferenceProps,
   ERC20DeltaDifferenceProps,
+  TransactionGasCostToChartProps,
+  TransactionGasCostToChartData,
+  FailedTestTraceProps,
 };

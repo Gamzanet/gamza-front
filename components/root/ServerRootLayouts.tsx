@@ -2,7 +2,7 @@ import { Menubar, MenubarMenu } from "@/components/ui/menubar";
 import Image from "next/image";
 import Link from "next/link";
 
-export function MenubarDemo() {
+export function TopStickMenuBar() {
   const SimpleRouteMenubarMenu = () => {
     const routes = [/*"Overview",*/ "Scan", /*"Docs",*/ "Result", "Dev"];
     return routes.map((route) => (

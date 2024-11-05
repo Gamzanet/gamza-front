@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "fira-code": ["Fira Code", "monospace"],
+      },
       colors: {
         primary: {
           DEFAULT: "hsl(var(--primary))",

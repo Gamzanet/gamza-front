@@ -1,5 +1,3 @@
-"use server";
-
 import TaskCreationRequest from "@/types/request/api/tasks/TaskCreationRequest";
 import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
 import {
