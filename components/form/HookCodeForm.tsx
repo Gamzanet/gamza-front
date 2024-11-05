@@ -18,12 +18,14 @@ import { Textarea } from "../ui/textarea";
 import CodeHighlighter from "./CodeHighlighter";
 import { doRequest } from "@/utils/SimpleRequest";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default function HookCodeForm({
   router,
 }: Readonly<{ router: AppRouterInstance }>) {
   // TODO: send request to server based on the input
   const [code, setCode] = useState<string>("");
+  const [fontSize, setFontSize] = useState(1.3);
 
   const onClickSamplePoolKeyHandler = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -40,11 +42,12 @@ export default function HookCodeForm({
       },
     };
   }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>HookCodeForm</CardTitle>
-        <CardDescription> desc </CardDescription>
+        <CardDescription>desc</CardDescription>
       </CardHeader>
 
       <CardContent className="text-xs">
@@ -58,6 +61,7 @@ export default function HookCodeForm({
               id="code"
               value={code}
               onChange={(e) => setCode(e.target.value)}
+              className="h-72"
             />
             <button
               onClick={onClickSamplePoolKeyHandler}
@@ -67,24 +71,42 @@ export default function HookCodeForm({
             </button>
           </TabsContent>
           <TabsContent value="Preview">
-            <CodeHighlighter codeString={code} />
+            <div className="py-2">
+              <Button
+                className="rounded-full p-2 m-2 text-xl w-fit-content text-align-center bg-blue-500 text-white hover:bg-blue-600 select-none"
+                onClick={() => {
+                  setFontSize(fontSize + 0.5);
+                }}
+              >
+                🔍➕
+              </Button>
+              <Button
+                className="rounded-full p-2 m-2 text-xl w-fit-content text-align-center bg-blue-500 text-white hover:bg-blue-600 select-none"
+                onClick={() => {
+                  setFontSize(fontSize - 0.5);
+                }}
+              >
+                🔍➖
+              </Button>
+            </div>
+            <ScrollArea className="max-h-[60vh] flex flex-col  items-center">
+              <CodeHighlighter codeString={code} fontSize={fontSize} />
+            </ScrollArea>
           </TabsContent>
         </Tabs>
       </CardContent>
       <CardFooter>
-        <CardFooter>
-          <Button
-            className="bg-primary text-white"
-            onClick={(e) => {
-              e.preventDefault();
-              doRequest(makeHookCodeRequestBody()).then(() => {
-                router.push("/result/code");
-              });
-            }}
-          >
-            Scan
-          </Button>
-        </CardFooter>
+        <Button
+          className="bg-primary text-white"
+          onClick={(e) => {
+            e.preventDefault();
+            doRequest(makeHookCodeRequestBody()).then(() => {
+              router.push("/result/code");
+            });
+          }}
+        >
+          Scan
+        </Button>
       </CardFooter>
     </Card>
   );

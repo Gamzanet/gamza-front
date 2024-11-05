@@ -61,16 +61,7 @@ export default function Layout({
           <ResizablePanel defaultSize={32}>{EstimatedGasUsage}</ResizablePanel>
         </ResizablePanelGroup>
       </div>
-      <div>
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="min-h-[200px] rounded-lg border md:min-w-[450px]"
-        >
-          <ResizablePanel>{erc6909deltaBurn}</ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel>ERC6909</ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
+      {/* add here */}
     </div>
   );
 }

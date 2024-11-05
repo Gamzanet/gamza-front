@@ -25,9 +25,7 @@ export default function RootLayout({
       >
         <Providers>
           <TopStickMenuBar />
-          <ScrollArea className="w-screen p-8 h-[90vh] flex flex-col items-center">
-            {children}
-          </ScrollArea>
+          {children}
           <ThemeSwitcher />
         </Providers>
       </body>

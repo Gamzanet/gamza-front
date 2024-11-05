@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Card,
@@ -19,22 +21,22 @@ export default function RootPage() {
         }}
         className="flex flex-col items-center justify-center w-full"
       >
-        <p
-          style={{
-            background:
-              "radial-gradient(89.67% 159.84% at 76.02% 19.88%, #EB487F 0%, #D29FB8 34%, #F71097 75%, #ED6AC4 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            fill: "transparent",
-          }}
-          className="select-none w-max-[1/2]"
-        >
-          Step into the Future of DeFi:
-          <br /> Unlock the Power of
-          <br /> UniSwap V4 Hooks with
-        </p>
-        <p className="bg-none text-primary">\&lt; Herbicide &gt;\</p>
+        <span className="bg-none text-primary p-4">
+          Scan for{" "}
+          <span
+            style={{
+              background:
+                "radial-gradient(89.67% 159.84% at 76.02% 19.88%, #EB487F 0%, #D29FB8 34%, #F71097 75%, #ED6AC4 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              fill: "transparent",
+            }}
+            className="select-none w-max-[1/2]"
+          >
+            Uniswap V4 - Hook
+          </span>
+        </span>
       </header>
       <ScanInputFormPage />
       <main
