@@ -1,34 +1,9 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { tokenPriceCasesWithKeys } from "@/utils/Constants";
-
-export function TetherLogo({ className }: { className?: string }) {
-  return (
-    <Avatar className={className}>
-      <AvatarImage
-        src="https://cdn.worldvectorlogo.com/logos/tether.svg"
-        alt="tether"
-      />
-      <AvatarFallback>Tether</AvatarFallback>
-    </Avatar>
-  );
-}
-
-export function EtherLogo({ className }: { className?: string }) {
-  return (
-    <Avatar className={className}>
-      <AvatarImage
-        src="https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg"
-        alt="tether"
-      />
-      <AvatarFallback>Ether</AvatarFallback>
-    </Avatar>
-  );
-}
 
 const priceDataSet: {
   Asset: string;
@@ -194,40 +169,5 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-
-export function RadioStateHandler({
-  labels,
-  setter,
-}: {
-  labels: string[];
-  setter: SetStateAction<any>;
-}) {
-  const handleValueChange = (value: string) => {
-    setter(value);
-  };
-
-  return (
-    <div className="select-none">
-      <RadioGroup defaultValue={labels[0]} onValueChange={handleValueChange}>
-        {/* <div className="flex items-center space-x-2">
-          <RadioGroupItem value="default" id="r1" />
-          <Label htmlFor="r1">Default</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="comfortable" id="r2" />
-          <Label htmlFor="r2">Comfortable</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="compact" id="r3" />
-          <Label htmlFor="r3">Compact</Label>
-        </div> */}
-        {labels.map((label) => (
-          <div className="flex items-center space-x-2" key={label}>
-            <RadioGroupItem value={label} id={label} />
-            <Label htmlFor={label}>{label}</Label>
-          </div>
-        ))}
-      </RadioGroup>
-    </div>
-  );
-}
+import { EtherLogo, TetherLogo } from "@/components/Avatar";
+import { RadioStateHandler } from "@/components/form/RadioStateHandler";

@@ -1,16 +1,11 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { tokenPriceCasesWithKeys } from "@/utils/Constants";
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import {
-  EtherLogo,
-  RadioStateHandler,
-  TetherLogo,
-} from "../@ERCDeltaQueryTable/page";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { EtherLogo, TetherLogo } from "@/components/Avatar";
+import { RadioStateHandler } from "@/components/form/RadioStateHandler";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
   Table,
   TableBody,
@@ -37,30 +32,6 @@ const priceDataSet: {
   Amount0Delta: number;
   Amount1Delta: number;
 }[] = tokenPriceCasesWithKeys;
-
-["Swap", "AddLiquidity", "RemoveLiquidity", "Donate"].forEach((method) => {
-  priceDataSet.push({
-    Asset: "General",
-    Method: method,
-    MintBurn: "Mint",
-    ExactInOut: "ExactIn",
-    PoolHookUser: "User",
-    Amount0Delta: 1.203050087,
-    Amount1Delta: 0.8312205875,
-  });
-});
-
-["Mint", "Burn"].forEach((mb) => {
-  priceDataSet.push({
-    Asset: "ERC20",
-    Method: "Swap",
-    MintBurn: mb,
-    ExactInOut: "ExactOut",
-    PoolHookUser: "User",
-    Amount0Delta: 1.203050087,
-    Amount1Delta: 0.8312205875,
-  });
-});
 
 const filteredPriceDataSet = priceDataSet.filter((item) => {
   if (item.Method !== "Swap" && item.ExactInOut === "ExactOut") {
@@ -106,7 +77,7 @@ export default function ERC6909DeltaBurnResultPage() {
       </CardHeader>
       <CardContent>
         <div className="p-4">
-          <div className="flex gap-4›">
+          <div className="flex gap-4">
             <Tabs defaultValue="account">
               <TabsList>
                 {["Swap", "AddLiquidity", "RemoveLiquidity", "Donate"].map(
@@ -142,7 +113,7 @@ export default function ERC6909DeltaBurnResultPage() {
             </div>
           </div>
 
-          <Table>
+          <Table className="font-fira-code">
             <TableCaption>Amount0/1 Delta Summary</TableCaption>
             <TableHeader>
               <TableRow>

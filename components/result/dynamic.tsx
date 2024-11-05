@@ -207,14 +207,14 @@ function DynamicTokenPriceResult({
     const fetchData = async () => {
       // 먼저 데이터를 한 번 가져옵니다.
       const data = await getPythEthUsdPrice();
-      setOraclePrice(parseInt(data) / 10 ** 8);
+      setOraclePrice(parseInt(data) ** 2 / 1e8);
       setCurrentTime(new Date().toLocaleTimeString());
 
       const interval = setInterval(async () => {
         const data = await getPythEthUsdPrice();
-        setOraclePrice(parseInt(data) / 10 ** 8);
+        setOraclePrice(parseInt(data) ** 2 / 1e8);
         setCurrentTime(new Date().toLocaleTimeString());
-      }, 100000);
+      }, 10000);
       return () => clearInterval(interval);
     };
     fetchData();
@@ -232,12 +232,13 @@ function DynamicTokenPriceResult({
           <p>Expected Price</p>
           <p>
             <span>{expectedPrice} </span>
-            <span className="text-xs">({expectedDiff}%)</span>
+            <span className="text-xs"> ({expectedDiff}%)</span>
           </p>
           <p>Oracle Price</p>
           <p>
             <span>{oraclePrice}</span>
-            <span className="text-xs">({oracleDiff}%)</span>
+            <span className="text-xs"> ({oracleDiff}%)</span>
+            <br />
             <span className="text-xs"> at {currentTime}</span>
           </p>
         </div>
