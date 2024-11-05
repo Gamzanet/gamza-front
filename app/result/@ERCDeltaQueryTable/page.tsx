@@ -10,8 +10,8 @@ export function TetherLogo({ className }: { className?: string }) {
   return (
     <Avatar className={className}>
       <AvatarImage
-        src='https://cdn.worldvectorlogo.com/logos/tether.svg'
-        alt='tether'
+        src="https://cdn.worldvectorlogo.com/logos/tether.svg"
+        alt="tether"
       />
       <AvatarFallback>Tether</AvatarFallback>
     </Avatar>
@@ -22,8 +22,8 @@ export function EtherLogo({ className }: { className?: string }) {
   return (
     <Avatar className={className}>
       <AvatarImage
-        src='https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg'
-        alt='tether'
+        src="https://cdn.worldvectorlogo.com/logos/ethereum-eth.svg"
+        alt="tether"
       />
       <AvatarFallback>Ether</AvatarFallback>
     </Avatar>
@@ -60,7 +60,7 @@ export default function ERC6909DeltaBurnResultPage() {
   >("Swap");
   const [mintBurn, setMintBurn] = useState<"Mint" | "Burn">("Mint");
   const [swapExactInOut, setSwapExactInOut] = useState<"ExactIn" | "ExactOut">(
-    "ExactIn"
+    "ExactIn",
   );
 
   const matchingData = filteredPriceDataSet.filter((item) => {
@@ -85,42 +85,45 @@ export default function ERC6909DeltaBurnResultPage() {
 
   return (
     <Card>
-      <CardHeader className='relative'>
+      <CardHeader className="relative">
         <div>
-          <EtherLogo className='absolute justify-center left-[200]' />
-          <TetherLogo className='absolute justify-center left-[255]' />
+          <EtherLogo className="absolute justify-center left-[200]" />
+          <TetherLogo className="absolute justify-center left-[255]" />
         </div>
         <CardTitle>Matching Data</CardTitle>
-        <CardDescription>Amount0/1Delta Query</CardDescription>
+        <CardDescription>Amount0/1 Delta Query</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='flex flex-col'>
-          <div className='flex items-end gap-8 h-full w-min'>
+        <div className="flex flex-col">
+          <div className="flex items-end gap-8 h-full w-min">
             <RadioStateHandler
               labels={["ERC20", "ERC6909"]}
               setter={setAssetType}
             />
-            <div className='select-none'>
+            <div className="select-none">
               <RadioGroup
                 defaultValue={"Swap"}
                 onValueChange={(e: any) => setMethodType(e)}
               >
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='Swap' id='r1' />
-                  <Label htmlFor='r1'>Swap</Label>
+                <div className="flex items-center space-x-2" key="Swap">
+                  <RadioGroupItem value="Swap" id="r1" />
+                  <Label htmlFor="r1">Swap</Label>
                 </div>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='AddLiquidity' id='r2' />
-                  <Label htmlFor='r2'>AddLiquidity</Label>
+                <div className="flex items-center space-x-2" key="AddLiquidity">
+                  <RadioGroupItem value="AddLiquidity" id="r2" />
+                  <Label htmlFor="r2">AddLiquidity</Label>
                 </div>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='RemoveLiquidity' id='r3' />
-                  <Label htmlFor='r3'>RemoveLiquidity</Label>
+                <div
+                  className="flex items-center space-x-2"
+                  key="RemoveLiquidity"
+                >
+                  <RadioGroupItem value="RemoveLiquidity" id="r3" />
+                  <Label htmlFor="r3">RemoveLiquidity</Label>
                 </div>
                 {assetType == "ERC20" && (
-                  <div className='flex items-center space-x-2'>
-                    <RadioGroupItem value='Donate' id='r4' />
-                    <Label htmlFor='r4'>Donate</Label>
+                  <div className="flex items-center space-x-2" key="Donate">
+                    <RadioGroupItem value="Donate" id="r4" />
+                    <Label htmlFor="r4">Donate</Label>
                   </div>
                 )}
               </RadioGroup>
@@ -204,7 +207,7 @@ export function RadioStateHandler({
   };
 
   return (
-    <div className='select-none'>
+    <div className="select-none">
       <RadioGroup defaultValue={labels[0]} onValueChange={handleValueChange}>
         {/* <div className="flex items-center space-x-2">
           <RadioGroupItem value="default" id="r1" />
@@ -219,7 +222,7 @@ export function RadioStateHandler({
           <Label htmlFor="r3">Compact</Label>
         </div> */}
         {labels.map((label) => (
-          <div className='flex items-center space-x-2' key={label}>
+          <div className="flex items-center space-x-2" key={label}>
             <RadioGroupItem value={label} id={label} />
             <Label htmlFor={label}>{label}</Label>
           </div>

@@ -2,7 +2,7 @@ import { DynamicPoolKeyResult } from "@/components/result/dynamic";
 
 export default function PoolKeyInformationResultPage() {
   return (
-    <div className='text-xs w-fit-content'>
+    <div className="text-xs w-fit-content">
       <DynamicPoolKeyResult
         currency0={"0x0000000000000000000000000000000000000000"}
         currency1={"0xdAC17F958D2ee523a2206206994597C13D831ec7"}

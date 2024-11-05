@@ -22,22 +22,25 @@ export default function Layout({
   poolKey,
   erc20delta,
   erc6909deltaBurn,
-  erc6909deltaMint,
+  ERCDeltaQueryTable,
 }: {
   children: React.ReactNode;
   comp0: React.ReactNode;
   comp1: React.ReactNode;
   comp2: React.ReactNode;
   poolKey: React.ReactNode;
+  erc20delta: React.ReactNode;
+  erc6909deltaBurn: React.ReactNode;
+  ERCDeltaQueryTable: React.ReactNode;
 }) {
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <Collapsible>
-        <CollapsibleTrigger className='font-bold color-primary opacity-50 hover:opacity-100'>
+        <CollapsibleTrigger className="font-bold color-primary opacity-50 hover:opacity-100">
           Trace Log (click to expand)
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <ScrollArea className='min-h-[400px] max-h-600[px] rounded-lg border md:min-w-[450px] hover:overflow-auto'>
+          <ScrollArea className="min-h-[400px] max-h-600[px] rounded-lg border md:min-w-[450px] hover:overflow-auto">
             {/* // TODO: enable later <CodeHighlighter codeString={sampleTrace} /> */}
           </ScrollArea>
         </CollapsibleContent>
@@ -45,16 +48,16 @@ export default function Layout({
 
       <div>
         <ResizablePanelGroup
-          direction='horizontal'
-          className='min-h-[200px] rounded-lg border md:min-w-[450px]'
+          direction="horizontal"
+          className="min-h-[200px] rounded-lg border md:min-w-[450px]"
         >
           <ResizablePanel>
-            <div className='flex flex-col gap-4'>
-              <div className='flex justify-between'>
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between">
                 {poolKey}
                 {erc20delta}
               </div>
-              {erc6909deltaMint}
+              {ERCDeltaQueryTable}
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
@@ -63,12 +66,10 @@ export default function Layout({
       </div>
       <div>
         <ResizablePanelGroup
-          direction='horizontal'
-          className='min-h-[200px] rounded-lg border md:min-w-[450px]'
+          direction="horizontal"
+          className="min-h-[200px] rounded-lg border md:min-w-[450px]"
         >
-          <ResizablePanel>ERC20</ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel>ERC6909</ResizablePanel>
+          <ResizablePanel>{erc6909deltaBurn}</ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel>ERC6909</ResizablePanel>
         </ResizablePanelGroup>
