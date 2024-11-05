@@ -7,56 +7,56 @@ import {
   FunctionScope,
 } from "./CommonTypes";
 
-export interface Root {
+export interface PoolKeyStaticResultRoot {
   task_id: string;
   status: string;
-  result: Result;
+  result: PoolKeyStaticResultResult;
 }
 
-export interface Result {
+export interface PoolKeyStaticResultResult {
   timeHash: string;
   hooks: string;
-  result: Result2;
-  slither: Slither;
+  result: PoolKeyStaticResultResult2;
+  slither: PoolKeyStaticResultSlither;
   mode: number;
   idx: number;
   poolKey: PoolKeyType;
 }
 
-export interface Result2 {
-  info: Info;
-  threats: Threat[];
+export interface PoolKeyStaticResultResult2 {
+  info: PoolKeyStaticResultInfo;
+  threats: PoolKeyStaticResultThreat[];
 }
 
-export interface Info {
+export interface PoolKeyStaticResultInfo {
   chain_name: string;
   evm_version: string;
   data: FileScope;
 }
 
-export interface Threat {
+export interface PoolKeyStaticResultThreat {
   detector: string;
-  data: Data2;
+  data: PoolKeyStaticResultData2;
 }
 
-export interface Data2 {
+export interface PoolKeyStaticResultData2 {
   description: string;
   impact: string;
 }
 
-export interface Slither {
-  detector: Detector;
-  printer: Printer;
+export interface PoolKeyStaticResultSlither {
+  detector: PoolKeyStaticResultDetector;
+  printer: PoolKeyStaticResultPrinter;
 }
 
-export interface Detector {
+export interface PoolKeyStaticResultDetector {
   success: boolean;
   error: any;
   detector: string;
-  data: Daum[];
+  data: PoolKeyStaticResultDaum[];
 }
 
-export interface Daum {
+export interface PoolKeyStaticResultDaum {
   description: string;
   markdown: string;
   check: string;
@@ -64,20 +64,20 @@ export interface Daum {
   confidence: string;
 }
 
-export interface Printer {
+export interface PoolKeyStaticResultPrinter {
   contract: string;
   success: boolean;
   error: any;
-  data: Daum2[];
+  data: PoolKeyStaticResultDaum2[];
 }
 
-export interface Daum2 {
+export interface PoolKeyStaticResultDaum2 {
   printer: string;
   fields_names: string[];
-  result: Result3[];
+  result: PoolKeyStaticResultResult3[];
 }
 
-export interface Result3 {
+export interface PoolKeyStaticResultResult3 {
   Function: string;
   "require or assert"?: string;
   Modifiers?: string[];

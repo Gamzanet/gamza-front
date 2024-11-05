@@ -19,7 +19,7 @@ export interface Variable {
   signature: string;
   type: string;
   location: string;
-  visibility?: string;
+  visibility: string | null;
   scope: string;
   mutability: string;
 }
@@ -30,8 +30,8 @@ export interface FunctionScope {
   name: string;
   variable: Variable[];
   parameters: Parameter[];
-  purity?: string;
-  visibility: string;
+  purity: string | null;
+  visibility: string | null;
   payable: boolean;
   override: boolean;
   modifier: string[];

@@ -171,31 +171,31 @@ export default function GasDifferenceChart() {
 }
 
 function GasDifferenceSummary(): React.ReactNode {
-  const chartData = givenData().data;
-  const methodDifferences = chartData.map(
-    ({ method, enableHook, disableHook }) =>
-      `${method}: ${enableHook - disableHook}`,
-  );
+  // const chartData = givenData().data;
+  // const methodDifferences = chartData.map(
+  //   ({ method, enableHook, disableHook }) =>
+  //     `${method}: ${enableHook - disableHook}`,
+  // );
 
-  // summary min/max difference
+  // // summary min/max difference
 
-  const minDifference = Math.min(
-    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
-  );
-  const maxDifference = Math.max(
-    ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
-  );
+  // const minDifference = Math.min(
+  //   ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
+  // );
+  // const maxDifference = Math.max(
+  //   ...chartData.map(({ enableHook, disableHook }) => enableHook - disableHook),
+  // );
 
-  // summary total difference
-  const totalEnableHook = chartData.reduce(
-    (acc, { enableHook }) => acc + enableHook,
-    0,
-  );
-  const totalDisableHook = chartData.reduce(
-    (acc, { disableHook }) => acc + disableHook,
-    0,
-  );
-  const totalDifference = totalEnableHook - totalDisableHook;
+  // // summary total difference
+  // const totalEnableHook = chartData.reduce(
+  //   (acc, { enableHook }) => acc + enableHook,
+  //   0,
+  // );
+  // const totalDisableHook = chartData.reduce(
+  //   (acc, { disableHook }) => acc + disableHook,
+  //   0,
+  // );
+  // const totalDifference = totalEnableHook - totalDisableHook;
 
   const chartData2 = [
     { method: "Swap", gas: 2706 },

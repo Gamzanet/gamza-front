@@ -1,6 +1,6 @@
 "use client";
 
-import { post } from "@/app/actions/v1/tasks/actions";
+import { post } from "@/app_legacy/actions/v1/tasks/actions";
 import TaskCreationRequest from "@/types/request/api/tasks/TaskCreationRequest";
 import { TaskCreationResponseRoot } from "@/types/response/api/tasks/TaskCreationResponse";
 import { useEffect, useState } from "react";

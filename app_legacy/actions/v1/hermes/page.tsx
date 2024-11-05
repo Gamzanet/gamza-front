@@ -2,20 +2,20 @@
 
 // https://hermes.pyth.network/api/latest_price_feeds?ids[]=0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace
 
-export async function getPythEthUsdPrice(): Promise<string> {
-  const response: {
-    price: {
-      price: string;
-      conf: string;
-      expo: number;
-      publish_time: number;
-    };
-  }[] = await fetch(
-    "https://hermes.pyth.network/api/latest_price_feeds?ids[]=0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace",
-  ).then((res) => res.json());
-  console.log(response);
-  return response[0].price.price;
-}
+// async function getPythEthUsdPrice(): Promise<string> {
+//   const response: {
+//     price: {
+//       price: string;
+//       conf: string;
+//       expo: number;
+//       publish_time: number;
+//     };
+//   }[] = await fetch(
+//     "https://hermes.pyth.network/api/latest_price_feeds?ids[]=0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace",
+//   ).then((res) => res.json());
+//   console.log(response);
+//   return response[0].price.price;
+// }
 
 // [
 //   {

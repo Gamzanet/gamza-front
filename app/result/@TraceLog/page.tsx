@@ -48,7 +48,7 @@ const Page = () => {
           🔍➖
         </Button>
       </div>
-      <ScrollArea className="max-h-[60vh] flex flex-col  items-center">
+      <ScrollArea className="max-h-[60vh] flex flex-col items-center">
         <Suspense fallback={<Skeleton />}>
           <Highlight />
         </Suspense>

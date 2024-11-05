@@ -1,6 +1,5 @@
 import { ThemeSwitcher } from "@/components/root/ClientRootLayouts";
 import { TopStickMenuBar } from "@/components/root/ServerRootLayouts";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";

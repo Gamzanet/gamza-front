@@ -1,5 +1,4 @@
 import { ThemeSwitcher } from "@/components/root/ClientRootLayouts";
-import { MenubarDemo } from "@/components/root/ServerRootLayouts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
@@ -7,6 +6,7 @@ import type { Metadata } from "next";
 import { Lora } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { TopStickMenuBar } from "@/components/root/ServerRootLayouts";
 
 const inter1 = Lora({
   subsets: ["latin"],
@@ -29,7 +29,7 @@ export default function RootLayout({
         className={`${inter1.className} antialiased overflow-y-hidden ${GeistSans.className} ${GeistMono.className}`}
       >
         <Providers>
-          <MenubarDemo />
+          <TopStickMenuBar />
           <ScrollArea className="w-screen p-8 h-[90vh] flex flex-col items-center">
             {children}
           </ScrollArea>

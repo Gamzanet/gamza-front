@@ -1,6 +1,5 @@
 "use client";
 
-import { getPythEthUsdPrice } from "@/app/api/hermes/page";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,7 +25,7 @@ import {
 } from "@/types/DynamicAnalysis";
 import { PoolKeyType } from "@/types/Property";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function DynamicERC20DeltaDifferenceResult({
   props,
@@ -196,29 +195,29 @@ function DynamicPoolKeyResult({
 function DynamicTokenPriceResult({
   realPrice,
   expectedPrice,
+  oraclePrice,
 }: TokenPriceProps) {
-  const [oraclePrice, setOraclePrice] = useState(0);
-  const [currentTime, setCurrentTime] = useState<string>();
+  // const [oraclePrice, setOraclePrice] = useState(0);
+  // const [currentTime, setCurrentTime] = useState<string>();
 
   const expectedDiff = ((expectedPrice / realPrice) * 100).toFixed(2);
   const oracleDiff = ((oraclePrice / realPrice) * 100).toFixed(2);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // 먼저 데이터를 한 번 가져옵니다.
-      const data = await getPythEthUsdPrice();
-      setOraclePrice(parseInt(data) ** 2 / 1e8);
-      setCurrentTime(new Date().toLocaleTimeString());
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await getPythEthUsdPrice();
+  //     setOraclePrice(parseInt(data) ** 2 / 1e8);
+  //     setCurrentTime(new Date().toLocaleTimeString());
 
-      const interval = setInterval(async () => {
-        const data = await getPythEthUsdPrice();
-        setOraclePrice(parseInt(data) ** 2 / 1e8);
-        setCurrentTime(new Date().toLocaleTimeString());
-      }, 10000);
-      return () => clearInterval(interval);
-    };
-    fetchData();
-  }, []);
+  //     const interval = setInterval(async () => {
+  //       const data = await getPythEthUsdPrice();
+  //       setOraclePrice(parseInt(data) ** 2 / 1e8);
+  //       setCurrentTime(new Date().toLocaleTimeString());
+  //     }, 10000);
+  //     return () => clearInterval(interval);
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <Card>
@@ -236,10 +235,14 @@ function DynamicTokenPriceResult({
           </p>
           <p>Oracle Price</p>
           <p>
-            <span>{oraclePrice}</span>
-            <span className="text-xs"> ({oracleDiff}%)</span>
-            <br />
-            <span className="text-xs"> at {currentTime}</span>
+            <span>{oraclePrice} </span>
+            <span
+              className={`text-xs ${parseFloat(oracleDiff) >= 105 ? "text-primary" : ""}`}
+            >
+              ({oracleDiff}%)
+            </span>
+            {/* <br /> */}
+            {/* <span className='text-xs'> at {currentTime}</span> */}
           </p>
         </div>
       </CardContent>
