@@ -1,3 +1,5 @@
+//@note constant
+
 import { Comp2IntegratedAnalysisRoot2 } from "@/types/response/api/result/Comp2IntegratedAnalysisResult";
 
 export const sampleCodeTakeProfitHook: string = `// SPDX-License-Identifier: UNLICENSED

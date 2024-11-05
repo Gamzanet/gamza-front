@@ -89,6 +89,7 @@ export default function HookCodeForm({
                 🔍➖
               </Button>
             </div>
+            {/* TODO: encapsulate scroll area */}
             <ScrollArea className="max-h-[60vh] flex flex-col  items-center">
               <CodeHighlighter codeString={code} fontSize={fontSize} />
             </ScrollArea>

@@ -18,7 +18,7 @@ export function TopStickMenuBar() {
     ));
   };
   return (
-    <Menubar className="sticky top-0 flex w-screen border-0 p-4 space-x-4 bg-primary rounded-[0px] z-50">
+    <Menubar className="sticky top-0 flex w-full border-0 p-4 space-x-4 bg-primary rounded-[0px] z-50">
       <Link href="/" className="pr-8">
         <Image src="Logo.svg" alt="Logo" width={100} height={37} />
       </Link>

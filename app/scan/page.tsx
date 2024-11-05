@@ -2,7 +2,6 @@
 
 import HookCodeForm from "@/components/form/HookCodeForm";
 import PoolKeyForm from "@/components/form/PoolKeyForm";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tabs } from "@radix-ui/react-tabs";
 import { useRouter } from "next/navigation";
