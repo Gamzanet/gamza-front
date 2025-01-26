@@ -24,6 +24,8 @@ export default function HookCodeForm({
 }: Readonly<{ router: AppRouterInstance }>) {
   // TODO: send request to server based on the input
   const [code, setCode] = useState<string>("");
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [error, setError] = useState<string | null>(null); // 에러 메시지 추가
 
   const onClickSamplePoolKeyHandler = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -41,12 +43,45 @@ export default function HookCodeForm({
     };
   }
 
+  const saveDataToLocalStorage = () => {
+    const hookCodeData = { code };
+    localStorage.setItem("hookCodeData", JSON.stringify(hookCodeData));
+  }
+
+  // API 요청 함수
+  const sendApiRequest = async () => {
+    setLoading(true);
+    setError(null); // 에러 초기화
+    try {
+      saveDataToLocalStorage(); // 입력 데이터를 localStorage에 저장
+
+      const requestBody = makeHookCodeRequestBody();
+      const response = await fetch("http://localhost:7777/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
+
+      const query = new URLSearchParams({ ids: JSON.stringify(taskIds) }).toString();
+      router.push(`/staticResult?${query}`);
+
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Card className="w-[500px] border-4">
       <CardHeader>
         <CardTitle>HookCodeForm</CardTitle>
       </CardHeader>
-
       <CardContent className="text-xs">
         <Tabs defaultValue="Input">
           <TabsList>
@@ -77,13 +112,12 @@ export default function HookCodeForm({
           className="bg-primary text-white"
           onClick={(e) => {
             e.preventDefault();
-            doRequest(makeHookCodeRequestBody()).then(() => {
-              router.push("/result2");
-            });
+            sendApiRequest();
           }}
         >
           Scan
         </Button>
+        {error && <p className="text-red-500 mt-2">{error}</p>} {"fail to send request"}
       </CardFooter>
     </Card>
   );

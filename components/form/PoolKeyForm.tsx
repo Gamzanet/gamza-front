@@ -115,6 +115,9 @@ export default function PoolKeyForm({
   const [hooks, setHooks] = useState<string>("");
   const [deployer, setDeployer] = useState<string>("");
 
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [error, setError] = useState<string | null>(null); // 에러 메시지 추가
+
   const onClickSamplePoolKeyHandler = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -138,10 +141,45 @@ export default function PoolKeyForm({
           hooks,
         },
         mode: 2, // TODO: support other modes
-        deployer,
+        // deployer,
       },
     };
   }
+  
+  const saveDataToLocalStorage = () => {
+    const poolKeyData = { currency0, currency1, fee, tickSpacing, hooks, deployer };
+    localStorage.setItem("poolKeyData", JSON.stringify(poolKeyData));
+  };
+  
+  // API 요청 함수
+  const sendApiRequest = async () => {
+    setLoading(true);
+    setError(null); // 에러 초기화
+    try {
+      saveDataToLocalStorage(); // 입력 데이터를 localStorage에 저장
+
+      const requestBody = makePoolKeyRequestBody();
+      const response = await fetch("http://localhost:7777/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
+
+      const query = new URLSearchParams({ ids: JSON.stringify(taskIds) }).toString();
+      router.push(`/dynamicResult?${query}`);
+
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="border-4 border-solid w-[500px]">
@@ -197,13 +235,13 @@ export default function PoolKeyForm({
           className="bg-primary text-white"
           onClick={(e) => {
             e.preventDefault();
-            doRequest(makePoolKeyRequestBody()).then(() => {
-              router.push("/result");
-            });
+            sendApiRequest();
           }}
+          disabled={loading} // 로딩 중 버튼 비활성화
         >
-          Scan
+          {loading ? "Sending..." : "Scan"}
         </Button>
+        {error && <p className="text-red-500 mt-2">{error}</p>} {"fail to send request"}
       </CardFooter>
     </Card>
   );

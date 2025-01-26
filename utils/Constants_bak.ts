@@ -2074,7 +2074,7 @@ export const tokenPriceCasesWithKeys2: {
 // 4. 2_2_6 DoubleInitializeTest
 // 5. 2_2_7 ProxyTest
 
-export const component2IntegratedResponse2: Comp2IntegratedAnalysisRoot2[] = [
+export const component2IntegratedResponse: Comp2IntegratedAnalysisRoot2[] = [
   {
     task_id: "a861174b-b1c2-4e34-88f9-ffce1b93f534",
     status: "Success",
@@ -2849,7 +2849,7 @@ export const component2IntegratedResponse2: Comp2IntegratedAnalysisRoot2[] = [
   },
 ];
 
-export const component2IntegratedResponse = [
+export const component2IntegratedResponse2 = [
   {
     task_id: "14004f27-679e-426f-b9e5-32222f86bab1",
     status: "Success",
