@@ -12,6 +12,7 @@ import {
   Card, CardHeader, CardTitle, CardDescription, CardContent,
 } from "@/components/ui/card";
 import { RadioStateHandler, CheckBoxBooleanStateHandler } from "@/components/form/RadioStateHandler";
+import Loading from "@/components/ui/loading";
 
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
@@ -73,7 +74,11 @@ export default function ERC6909DeltaBurnResultPage() {
   }, [searchParams]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-full">
+        <Loading containerClassName="h-full" />
+      </div>
+    );
   }
 
   if (error) {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import ScrollableCode from "@/components/form/CodeHighlighter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Loading from "@/components/ui/loading";
 
 export default function StaticAnalysisResultPage() {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -55,7 +56,11 @@ export default function StaticAnalysisResultPage() {
   }, [hookAddress]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-full">
+        <Loading containerClassName="h-full" />
+      </div>
+    );
   }
 
   if (error) {

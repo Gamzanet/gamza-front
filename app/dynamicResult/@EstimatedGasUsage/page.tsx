@@ -26,6 +26,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import Loading from "@/components/ui/loading";
 
 export const description = "A bar chart with a custom label";
 
@@ -270,7 +271,11 @@ export default function GasDifferenceChart() {
   }, [searchParams]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-full">
+        <Loading containerClassName="h-full" />
+      </div>
+    );
   }
 
   if (error) {

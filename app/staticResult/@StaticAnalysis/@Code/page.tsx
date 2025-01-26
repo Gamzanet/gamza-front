@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Loading from "@/components/ui/loading";
 
 import ScrollableCode from "@/components/form/CodeHighlighter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,7 +69,11 @@ export default function StaticAnalysisResultPage() {
   }, [searchParams]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-full">
+        <Loading containerClassName="h-full" />
+      </div>
+    );
   }
 
   if (error) {
