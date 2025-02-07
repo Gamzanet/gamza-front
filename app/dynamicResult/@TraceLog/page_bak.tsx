@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CodeHighlighter from "@/components/form/CodeHighlighter";
 import { useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
@@ -95,22 +94,64 @@ export default function Page() {
   return (
     <>
       {!isCode && (
-        <div className="relative">
-          <Card className="relative">
+        <div>
+          <Card>
             <CardHeader>
               <CardTitle>
                 <div className="flex">
                   <h1 className="text-3xl my-2 mx-4">Trace Log</h1>
-                  <div className="py-2 flex items-end gap-3">
-                    {testNames.map((test) => (
+                  <div className="py-2 flex items-end">
+                    {/* <div className='gap-1 grid grid-rows-2 auto-rows-max grid-flow-col'> */}
+                    <div className="gap-3 flex">
+                      {testNames.map((test) =>
+                        <Button
+                          key={test.index}
+                          onClick={() => {
+                            setTestNumber(test.index);
+                            setIndexNumber(0);
+                          }}
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "0px",
+                            width: "158px",
+                            height: "20px",
+                            background: "",
+                            backdropFilter: "blur(2px)",
+                            borderRadius: "23px",
+                            flex: "none",
+                            order: 0,
+                            flexGrow: 0,
+                            fontFamily: "'SF Pro Display'",
+                            fontStyle: "italic",
+                            fontWeight: 600,
+                            fontSize: "13px",
+                            lineHeight: "16px",
+                            letterSpacing: "0.03em",
+                            color: "#EF7BF9",
+                            margin: "0px",
+                          }}
+                          className={`${test.index === testNumber ? "bg-primary-100" : "bg-[#rgba(239, 124, 249, 0.1)]"} opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        >
+                          {test.name === "Minimum_Test"
+                            ? "Minimum"
+                            : test.name === "Time-Based-Minimum_Test"
+                              ? "TimeLock"
+                              : test.name === "OnlyByPoolManager-Chk"
+                                ? "OnlyByPoolManager"
+                                : test.name === "double-Initialize-Test"
+                                  ? "Reinitialize"
+                                  : test.name === "Proxy-Test"
+                                    ? "HookFuncCall"
+                                    : "Loading..."}
+                        </Button>
+                      )}
                       <Button
-                        key={test.index}
-                        onClick={() => {
-                          setTestNumber(test.index);
-                          setIndexNumber(0);
-                        }}
                         style={{
                           display: "flex",
+                          flexDirection: "row",
                           justifyContent: "center",
                           alignItems: "center",
                           padding: "0px",
@@ -118,6 +159,9 @@ export default function Page() {
                           height: "20px",
                           backdropFilter: "blur(2px)",
                           borderRadius: "23px",
+                          flex: "none",
+                          order: 0,
+                          flexGrow: 0,
                           fontFamily: "'SF Pro Display'",
                           fontStyle: "italic",
                           fontWeight: 600,
@@ -127,75 +171,27 @@ export default function Page() {
                           color: "#EF7BF9",
                           margin: "0px",
                         }}
-                        className={`${test.index === testNumber
-                            ? "bg-primary-100"
-                            : "bg-[#rgba(239, 124, 249, 0.1)]"
-                          } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        className={`bg-[#rgba(239, 124, 249, 0.1)] opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        onClick={() => {
+                          setIndexNumber(
+                            (indexNumber + 1) %
+                            componentData[taskIds[testNumber]]?.result?.result?.failList
+                              ?.length
+                          );
+                        }}
                       >
-                        {test.name === "Minimum_Test"
-                          ? "Minimum"
-                          : test.name === "Time-Based-Minimum_Test"
-                            ? "TimeLock"
-                            : test.name === "OnlyByPoolManager-Chk"
-                              ? "OnlyByPoolManager"
-                              : test.name === "double-Initialize-Test"
-                                ? "Reinitialize"
-                                : test.name === "Proxy-Test"
-                                  ? "HookFuncCall"
-                                  : "Loading..."}
+                        Next Index
                       </Button>
-                    ))}
+                    </div>
                   </div>
                 </div>
               </CardTitle>
             </CardHeader>
-
-            <CardContent className="relative px-16">
-              {/* 🔽 Left Arrow Button */}
-              <button
-                onClick={() =>
-                  setIndexNumber(
-                    (indexNumber - 1 + componentData[taskIds[testNumber]]?.result?.result?.failList?.length) %
-                    componentData[taskIds[testNumber]]?.result?.result?.failList?.length
-                  )
-                }
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
-              >
-                <ChevronLeft size={30} />
-              </button>
-
+            <CardContent>
               <CodeHighlighter codeString={sampleTraceLog} />
-
-              {/* 🔼 Right Arrow Button */}
-              <button
-                onClick={() =>
-                  setIndexNumber(
-                    (indexNumber + 1) %
-                    componentData[taskIds[testNumber]]?.result?.result?.failList?.length
-                  )
-                }
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
-              >
-                <ChevronRight size={30} />
-              </button>
             </CardContent>
-                      {/* 🔵 Pagination Dots */}
-          <div className="flex justify-center gap-4 mb-4">
-            {componentData[taskIds[testNumber]]?.result?.result?.failList?.map(
-              (_: any, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setIndexNumber(idx)}
-                  className={`w-3 h-3 rounded-full ${idx === indexNumber
-                      ? "bg-primary-500 scale-110"
-                      : "bg-gray-300 hover:bg-gray-400"
-                    } transition-transform`}
-                ></button>
-              )
-            )}
-          </div>
           </Card>
-        </div>
+        </div >
       )}
     </>
   );
