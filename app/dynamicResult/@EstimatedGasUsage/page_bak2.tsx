@@ -61,18 +61,18 @@ function Component({
 
   const maxGas = chartData.reduce(
     (max, data) => (data.enableHook > max ? data.enableHook : max),
-    0
+    0,
   );
   const maxGasMethod = chartData.find(
-    (data) => data.enableHook === maxGas
+    (data) => data.enableHook === maxGas,
   )?.method;
 
   const minGas = chartData.reduce(
     (min, data) => (data.enableHook < min ? data.enableHook : min),
-    Infinity
+    Infinity,
   );
   const minGasMethod = chartData.find(
-    (data) => data.enableHook === minGas
+    (data) => data.enableHook === minGas,
   )?.method;
 
   const averageGas = (
@@ -167,10 +167,12 @@ function Component({
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Maximum gas: {maxGasMethod} {maxGas} <TrendingUp className="h-4 w-4" />
+          Maximum gas: {maxGasMethod} {maxGas}{" "}
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          min:{minGasMethod}:{minGas} | average:{averageGas} | median:{medianGas}
+          min:{minGasMethod}:{minGas} | average:{averageGas} | median:
+          {medianGas}
         </div>
         <div className="leading-none text-muted-foreground">{children}</div>
       </CardFooter>
@@ -208,7 +210,9 @@ export default function GasDifferenceChart() {
         const targetId = ids[2]; // 두 번째 인덱스의 ID 가져오기
 
         const fetchResult = async () => {
-          const response = await fetch(`http://localhost:7777/api/result/${targetId}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${targetId}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
           }
@@ -224,7 +228,9 @@ export default function GasDifferenceChart() {
         while (!resultData) {
           resultData = await fetchResult();
           if (!resultData) {
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
           }
         }
 
@@ -321,14 +327,22 @@ export default function GasDifferenceChart() {
   }) {
     if (chartData.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center">No data available</div>
+        <div className="flex flex-col items-center justify-center">
+          No data available
+        </div>
       );
     }
 
-    const maxGas = chartData.reduce((max, data) => (data.gas > max ? data.gas : max), 0);
+    const maxGas = chartData.reduce(
+      (max, data) => (data.gas > max ? data.gas : max),
+      0,
+    );
     const maxGasMethod = chartData.find((data) => data.gas === maxGas)?.method;
 
-    const minGas = chartData.reduce((min, data) => (data.gas < min ? data.gas : min), Infinity);
+    const minGas = chartData.reduce(
+      (min, data) => (data.gas < min ? data.gas : min),
+      Infinity,
+    );
     const minGasMethod = chartData.find((data) => data.gas === minGas)?.method;
 
     const averageGas = (
@@ -377,10 +391,12 @@ export default function GasDifferenceChart() {
         </CardContent>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex gap-2 font-medium leading-none">
-            Maximum gas gap: {maxGasMethod} {maxGas} <TrendingUp className="h-4 w-4" />
+            Maximum gas gap: {maxGasMethod} {maxGas}{" "}
+            <TrendingUp className="h-4 w-4" />
           </div>
           <div className="leading-none text-muted-foreground">
-            min:{minGasMethod}:{minGas} | average:{averageGas} | median:{medianGas}
+            min:{minGasMethod}:{minGas} | average:{averageGas} | median:
+            {medianGas}
           </div>
         </CardFooter>
       </Card>

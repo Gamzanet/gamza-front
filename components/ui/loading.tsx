@@ -1,7 +1,11 @@
 // components/ui/Loading.tsx
 import { MoonLoader } from "react-spinners";
 
-export default function Loading({ size = 50, color = "#ff00ed", containerClassName = "" }) {
+export default function Loading({
+  size = 50,
+  color = "#ff00ed",
+  containerClassName = "",
+}) {
   return (
     <div
       className={`flex justify-center items-center ${containerClassName}`}
@@ -12,10 +16,10 @@ export default function Loading({ size = 50, color = "#ff00ed", containerClassNa
   );
 }
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-center items-center w-[60vw] h-full p-4">
-  //       <MoonLoader size={30} color={"#ff00ed"} loading={loading} />
-  //     </div>
-  //   );
-  // }
+// if (loading) {
+//   return (
+//     <div className="flex justify-center items-center w-[60vw] h-full p-4">
+//       <MoonLoader size={30} color={"#ff00ed"} loading={loading} />
+//     </div>
+//   );
+// }

@@ -27,7 +27,9 @@ export default function Page() {
         for (const id of taskIds) {
           if (updatedData[id]?.status === "Success") continue; // 이미 성공한 경우 건너뜀
 
-          const response = await fetch(`http://localhost:7777/api/result/${id}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${id}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch result for ID: ${id}`);
           }
@@ -59,7 +61,10 @@ export default function Page() {
     const allIds = JSON.parse(decodeURIComponent(idsParam)); // URL 파라미터 디코딩 및 JSON 파싱
     const selectedIds = [0, 1, 4, 5, 6].map((index) => allIds[index]); // 필요한 ID만 선택
 
-    const interval = setInterval(() => fetchSelectedTaskStatuses(selectedIds), POLLING_INTERVAL);
+    const interval = setInterval(
+      () => fetchSelectedTaskStatuses(selectedIds),
+      POLLING_INTERVAL,
+    );
 
     fetchSelectedTaskStatuses(selectedIds).finally(() => setLoading(false)); // 초기 호출
 
@@ -103,7 +108,7 @@ export default function Page() {
                   <div className="py-2 flex items-end">
                     {/* <div className='gap-1 grid grid-rows-2 auto-rows-max grid-flow-col'> */}
                     <div className="gap-3 flex">
-                      {testNames.map((test) =>
+                      {testNames.map((test) => (
                         <Button
                           key={test.index}
                           onClick={() => {
@@ -147,7 +152,7 @@ export default function Page() {
                                     ? "HookFuncCall"
                                     : "Loading..."}
                         </Button>
-                      )}
+                      ))}
                       <Button
                         style={{
                           display: "flex",
@@ -175,8 +180,8 @@ export default function Page() {
                         onClick={() => {
                           setIndexNumber(
                             (indexNumber + 1) %
-                            componentData[taskIds[testNumber]]?.result?.result?.failList
-                              ?.length
+                              componentData[taskIds[testNumber]]?.result?.result
+                                ?.failList?.length,
                           );
                         }}
                       >
@@ -191,7 +196,7 @@ export default function Page() {
               <CodeHighlighter codeString={sampleTraceLog} />
             </CardContent>
           </Card>
-        </div >
+        </div>
       )}
     </>
   );

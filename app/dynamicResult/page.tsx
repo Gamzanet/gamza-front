@@ -195,7 +195,7 @@ function DynamicPoolKeyResult({
         <CardDescription>Component Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 w-[600px] grid-cols-[150px,auto] border gap-4 p-4">
+        <div className="grid grid-cols-2 w-[800px] grid-cols-[150px,auto] border gap-4 p-4">
           <p>Currency0</p> <p>{currency0}</p>
           <p>Currency1</p> <p>{currency1}</p>
           <p>Fee</p> <p>{fee}</p>

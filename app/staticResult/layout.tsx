@@ -2,7 +2,7 @@
 
 export default function Layout({
   children,
-  StaticAnalysis
+  StaticAnalysis,
 }: {
   children: React.ReactNode;
   StaticAnalysis: React.ReactNode;

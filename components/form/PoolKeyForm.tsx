@@ -122,11 +122,11 @@ export default function PoolKeyForm({
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setCurrency0("0x0197481B0F5237eF312a78528e79667D8b33Dcff");
-    setCurrency1("0xA56569Bd93dc4b9afCc871e251017dB0543920d4");
-    setFee("3000");
-    setTickSpacing("60");
-    setHooks("0x6da8f09885Bb7aaD2d45476179DbC75573984080");
+    setCurrency0("0x4200000000000000000000000000000000000006");
+    setCurrency1("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2");
+    setFee("8388608");
+    setTickSpacing("200");
+    setHooks("0x8dd4c756F183513850e874F7d1ffd0d7Cb498080");
     setDeployer("0x4e59b44847b379578588920cA78FbF26c0B4956C");
   };
 
@@ -145,12 +145,19 @@ export default function PoolKeyForm({
       },
     };
   }
-  
+
   const saveDataToLocalStorage = () => {
-    const poolKeyData = { currency0, currency1, fee, tickSpacing, hooks, deployer };
+    const poolKeyData = {
+      currency0,
+      currency1,
+      fee,
+      tickSpacing,
+      hooks,
+      deployer,
+    };
     localStorage.setItem("poolKeyData", JSON.stringify(poolKeyData));
   };
-  
+
   // API 요청 함수
   const sendApiRequest = async () => {
     setLoading(true);
@@ -171,9 +178,10 @@ export default function PoolKeyForm({
       const result = await response.json();
       const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
 
-      const query = new URLSearchParams({ ids: JSON.stringify(taskIds) }).toString();
+      const query = new URLSearchParams({
+        ids: JSON.stringify(taskIds),
+      }).toString();
       router.push(`/dynamicResult?${query}`);
-
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -241,7 +249,8 @@ export default function PoolKeyForm({
         >
           {loading ? "Sending..." : "Scan"}
         </Button>
-        {error && <p className="text-red-500 mt-2">{error}</p>} {"fail to send request"}
+        {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
+        {/* {"fail to send request"} */}
       </CardFooter>
     </Card>
   );

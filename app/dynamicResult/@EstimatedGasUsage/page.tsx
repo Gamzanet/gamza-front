@@ -59,41 +59,44 @@ function Component({
     return <div>No data available</div>;
   }
 
-  // ✅ 0보다 작은 값을 0으로 재설정한 새로운 데이터 배열 생성
+  // ✅ 음수 값을 0으로 보정하고 유효성 체크 추가
   const sanitizedChartData = chartData.map((data) => ({
     method: data.method,
     enableHook: data.enableHook < 0 ? 0 : data.enableHook,
     disableHook: data.disableHook < 0 ? 0 : data.disableHook,
-    isInvalid: data.enableHook < 0 || data.disableHook < 0, // ✅ 유효성 체크
+    isInvalid: data.enableHook < 0 || data.disableHook < 0, // 🚀 유효성 체크
   }));
 
-  const maxGas = sanitizedChartData.reduce(
-    (max, data) => (data.enableHook > max ? data.enableHook : max),
-    0
-  );
-  const maxGasMethod = sanitizedChartData.find(
-    (data) => data.enableHook === maxGas
-  )?.method;
+  // ✅ 유효한 데이터만 필터링
+  const validData = sanitizedChartData.filter((data) => !data.isInvalid);
+  const invalidData = sanitizedChartData.filter((data) => data.isInvalid);
 
-  const minGas = sanitizedChartData.reduce(
-    (min, data) => (data.enableHook < min ? data.enableHook : min),
-    Infinity
-  );
-  const minGasMethod = sanitizedChartData.find(
-    (data) => data.enableHook === minGas
-  )?.method;
+  // ✅ 최소/최대/평균/중앙값 계산
+  const maxGas = validData.length
+    ? Math.max(...validData.map((d) => d.enableHook))
+    : 0;
+  const maxGasMethod = validData.find((d) => d.enableHook === maxGas)?.method;
 
-  const averageGas = (
-    sanitizedChartData.reduce((sum, data) => sum + data.enableHook, 0) / sanitizedChartData.length
-  ).toFixed(2);
+  const minGas = validData.length
+    ? Math.min(...validData.map((d) => d.enableHook))
+    : 0;
+  const minGasMethod = validData.find((d) => d.enableHook === minGas)?.method;
 
-  const medianGas = (() => {
-    const sorted = [...sanitizedChartData].sort((a, b) => a.enableHook - b.enableHook);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0
-      ? ((sorted[mid - 1].enableHook + sorted[mid].enableHook) / 2).toFixed(2)
-      : sorted[mid].enableHook;
-  })();
+  const averageGas = validData.length
+    ? (
+      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+    ).toFixed(2)
+    : "0";
+
+  const medianGas = validData.length
+    ? (() => {
+      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 === 0
+        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+        : sorted[mid].toString();
+    })()
+    : "0";
 
   return (
     <Card className="p-4">
@@ -101,91 +104,89 @@ function Component({
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
       </CardHeader>
+
       <CardContent>
-        {sanitizedChartData.map((data, index) => (
-          <div key={index} className="flex items-center justify-center">
-            {data.isInvalid ? (
-              // ✅ 특정 메소드만 Invalid 메시지 출력
-              <div className="text-red-500 w-full">
-                <p className="text-sm">
-                  {data.method}: Invalid gas data
-                </p>
-              </div>
-            ) : (
-              <ChartContainer config={chartConfig}>
-                <BarChart
-                  accessibilityLayer
-                  data={chartData}
-                  layout="vertical"
-                  margin={{
-                    right: 16,
-                  }}
-                >
-                  <CartesianGrid horizontal={false} />
-                  <YAxis
-                    dataKey="method"
-                    type="category"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                    hide
-                  />
-                  <XAxis dataKey="enableHook" type="number" hide />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="line" />}
-                  />
-                  <Bar
-                    dataKey="enableHook"
-                    layout="vertical"
-                    fill="hsl(var(--chart-5))"
-                    className="opacity-50 hover:opacity-100"
-                    radius={4}
-                  >
-                    <LabelList
-                      dataKey="method"
-                      position="insideLeft"
-                      offset={8}
-                      className="fill-[--color-label]"
-                      fontSize={12}
-                    />
-                    <LabelList
-                      dataKey="enableHook"
-                      position="right"
-                      offset={8}
-                      className="fill-foreground"
-                      fontSize={12}
-                    />
-                  </Bar>
-                  <Bar
-                    dataKey="disableHook"
-                    layout="vertical"
-                    fill="hsl(var(--chart-1))"
-                    className="opacity-50 hover:opacity-100"
-                    radius={4}
-                  >
-                    <LabelList
-                      dataKey="method"
-                      position="insideLeft"
-                      offset={8}
-                      className="fill-[--color-label]"
-                      fontSize={12}
-                    />
-                    <LabelList
-                      dataKey="disableHook"
-                      position="right"
-                      offset={8}
-                      className="fill-foreground"
-                      fontSize={12}
-                    />
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            )}
+        {/* 🚀 차트 한 번만 렌더링 */}
+        {validData.length > 0 ? (
+          <ChartContainer config={chartConfig}>
+            <BarChart
+              accessibilityLayer
+              data={validData}
+              layout="vertical"
+              margin={{ right: 16 }}
+            >
+              <CartesianGrid horizontal={false} />
+              <YAxis
+                dataKey="method"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+                hide
+              />
+              <XAxis dataKey="enableHook" type="number" hide />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Bar
+                dataKey="enableHook"
+                layout="vertical"
+                fill="hsl(var(--chart-5))"
+                className="opacity-50 hover:opacity-100"
+                radius={4}
+              >
+                <LabelList
+                  dataKey="method"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-[--color-label]"
+                  fontSize={12}
+                />
+                <LabelList
+                  dataKey="enableHook"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+              <Bar
+                dataKey="disableHook"
+                layout="vertical"
+                fill="hsl(var(--chart-1))"
+                className="opacity-50 hover:opacity-100"
+                radius={4}
+              >
+                <LabelList
+                  dataKey="method"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-[--color-label]"
+                  fontSize={12}
+                />
+                <LabelList
+                  dataKey="disableHook"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <div className="text-red-500 w-full mb-4">
+            {invalidData.map((data, index) => (
+              <p key={index} className="text-sm">
+                {data.method}: No Data
+              </p>
+            ))}
           </div>
-        ))}
+        )}
       </CardContent>
+
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Maximum gas: {maxGasMethod} {maxGas} <TrendingUp className="h-4 w-4" />
@@ -198,7 +199,6 @@ function Component({
     </Card>
   );
 }
-
 interface GasData {
   method: string;
   hookGas: number;
@@ -229,7 +229,9 @@ export default function GasDifferenceChart() {
         const targetId = ids[2]; // 두 번째 인덱스의 ID 가져오기
 
         const fetchResult = async () => {
-          const response = await fetch(`http://localhost:7777/api/result/${targetId}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${targetId}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
           }
@@ -245,7 +247,9 @@ export default function GasDifferenceChart() {
         while (!resultData) {
           resultData = await fetchResult();
           if (!resultData) {
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
           }
         }
 
@@ -335,14 +339,22 @@ export default function GasDifferenceChart() {
   }) {
     if (chartData.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center">No data available</div>
+        <div className="flex flex-col items-center justify-center">
+          No data available
+        </div>
       );
     }
 
-    const maxGas = chartData.reduce((max, data) => (data.gas > max ? data.gas : max), 0);
+    const maxGas = chartData.reduce(
+      (max, data) => (data.gas > max ? data.gas : max),
+      0,
+    );
     const maxGasMethod = chartData.find((data) => data.gas === maxGas)?.method;
 
-    const minGas = chartData.reduce((min, data) => (data.gas < min ? data.gas : min), Infinity);
+    const minGas = chartData.reduce(
+      (min, data) => (data.gas < min ? data.gas : min),
+      Infinity,
+    );
     const minGasMethod = chartData.find((data) => data.gas === minGas)?.method;
 
     const averageGas = (
@@ -391,10 +403,12 @@ export default function GasDifferenceChart() {
         </CardContent>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex gap-2 font-medium leading-none">
-            Maximum gas gap: {maxGasMethod} {maxGas} <TrendingUp className="h-4 w-4" />
+            Maximum gas gap: {maxGasMethod} {maxGas}{" "}
+            <TrendingUp className="h-4 w-4" />
           </div>
           <div className="leading-none text-muted-foreground">
-            min:{minGasMethod}:{minGas} | average:{averageGas} | median:{medianGas}
+            min:{minGasMethod}:{minGas} | average:{averageGas} | median:
+            {medianGas}
           </div>
         </CardFooter>
       </Card>

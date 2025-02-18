@@ -31,7 +31,9 @@ export default function StaticAnalysisResultPage() {
         const targetId = ids[0];
 
         const fetchResult = async () => {
-          const response = await fetch(`http://localhost:7777/api/result/${targetId}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${targetId}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
           }
@@ -49,7 +51,9 @@ export default function StaticAnalysisResultPage() {
           resultData = await fetchResult();
           if (!resultData) {
             retries++;
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
           }
         }
 
@@ -102,7 +106,9 @@ export default function StaticAnalysisResultPage() {
         {hookCodeResult?.result?.result?.info?.data?.contract_scope?.name ? (
           <>
             <h2 className="text-lg font-bold mb-2">Source Code:</h2>
-            <ScrollableCode codeString={hookCodeResult?.result?.code || "No Code Available"} />
+            <ScrollableCode
+              codeString={hookCodeResult?.result?.code || "No Code Available"}
+            />
           </>
         ) : (
           <div>

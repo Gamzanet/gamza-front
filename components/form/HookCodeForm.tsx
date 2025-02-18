@@ -46,7 +46,7 @@ export default function HookCodeForm({
   const saveDataToLocalStorage = () => {
     const hookCodeData = { code };
     localStorage.setItem("hookCodeData", JSON.stringify(hookCodeData));
-  }
+  };
 
   // API 요청 함수
   const sendApiRequest = async () => {
@@ -68,9 +68,10 @@ export default function HookCodeForm({
       const result = await response.json();
       const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
 
-      const query = new URLSearchParams({ ids: JSON.stringify(taskIds) }).toString();
+      const query = new URLSearchParams({
+        ids: JSON.stringify(taskIds),
+      }).toString();
       router.push(`/staticResult?${query}`);
-
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -117,7 +118,8 @@ export default function HookCodeForm({
         >
           Scan
         </Button>
-        {error && <p className="text-red-500 mt-2">{error}</p>} {"fail to send request"}
+        {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
+        {"fail to send request"}
       </CardFooter>
     </Card>
   );

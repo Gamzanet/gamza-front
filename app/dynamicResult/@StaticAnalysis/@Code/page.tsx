@@ -23,7 +23,7 @@ export default function StaticAnalysisResultPage() {
       setLoading(false);
     }
   }, []);
-  
+
   useEffect(() => {
     const verifyContract = async () => {
       try {
@@ -31,7 +31,8 @@ export default function StaticAnalysisResultPage() {
         setError(null);
 
         const response = await fetch(
-          `https://unichain-sepolia.blockscout.com/api/v2/smart-contracts/${hookAddress}`
+          // `https://unichain-sepolia.blockscout.com/api/v2/smart-contracts/${hookAddress}`,
+          `https://base.blockscout.com/api/v2/smart-contracts/${hookAddress}`,
         );
 
         if (!response.ok) {

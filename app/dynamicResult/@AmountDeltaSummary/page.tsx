@@ -2,22 +2,35 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Tabs, TabsList, TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-  Card, CardHeader, CardTitle, CardDescription, CardContent,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
 } from "@/components/ui/card";
-import { RadioStateHandler, CheckBoxBooleanStateHandler } from "@/components/form/RadioStateHandler";
+import {
+  RadioStateHandler,
+  CheckBoxBooleanStateHandler,
+} from "@/components/form/RadioStateHandler";
 import Loading from "@/components/ui/loading";
 
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
 export default function ERC6909DeltaBurnResultPage() {
-  const [methodType, setMethodType] = useState<"Swap" | "AddLiquidity" | "RemoveLiquidity" | "Donate">("Swap");
+  const [methodType, setMethodType] = useState<
+    "Swap" | "AddLiquidity" | "RemoveLiquidity" | "Donate"
+  >("Swap");
   const [exactType, setExactType] = useState<"ExactIn" | "ExactOut">("ExactIn");
   const [isMint, setIsMint] = useState(false);
   const [isBurn, setIsBurn] = useState(false);
@@ -41,7 +54,9 @@ export default function ERC6909DeltaBurnResultPage() {
         const targetId = ids[3]; // 세 번째 인덱스의 ID 가져오기
 
         const fetchResult = async () => {
-          const response = await fetch(`http://localhost:7777/api/result/${targetId}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${targetId}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
           }
@@ -57,7 +72,9 @@ export default function ERC6909DeltaBurnResultPage() {
         while (!resultData) {
           resultData = await fetchResult();
           if (!resultData) {
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
           }
         }
 
@@ -88,14 +105,26 @@ export default function ERC6909DeltaBurnResultPage() {
   const getFilteredData = (method: string) => {
     if (method === "Swap") {
       return isMint || isBurn
-        ? filterData(deltaData.with6909.swap || [], isBurn, exactType === "ExactIn")
-        : filterData(deltaData.with20.swap || [], false, exactType === "ExactIn");
+        ? filterData(
+            deltaData.with6909.swap || [],
+            isBurn,
+            exactType === "ExactIn",
+          )
+        : filterData(
+            deltaData.with20.swap || [],
+            false,
+            exactType === "ExactIn",
+          );
     }
     if (method === "AddLiquidity") {
-      return isBurn ? [deltaData.with6909.addLiquidity] : [deltaData.with20.addLiquidity];
+      return isBurn
+        ? [deltaData.with6909.addLiquidity]
+        : [deltaData.with20.addLiquidity];
     }
     if (method === "RemoveLiquidity") {
-      return isMint ? [deltaData.with6909.removeLiquidity] : [deltaData.with20.removeLiquidity];
+      return isMint
+        ? [deltaData.with6909.removeLiquidity]
+        : [deltaData.with20.removeLiquidity];
     }
     if (method === "Donate") {
       return [deltaData.with20.donate];
@@ -103,7 +132,11 @@ export default function ERC6909DeltaBurnResultPage() {
     return [];
   };
 
-  const filterData = (data: any[], isBurn: boolean | null, isExactIn: boolean) => {
+  const filterData = (
+    data: any[],
+    isBurn: boolean | null,
+    isExactIn: boolean,
+  ) => {
     return data.filter((item) => {
       const burnMatch = isBurn === null || item.is_burn === isBurn;
       const exactInMatch = item.is_exactIn === isExactIn;
@@ -114,71 +147,72 @@ export default function ERC6909DeltaBurnResultPage() {
   const renderTableRows = (data: any[]) => {
     return Array.isArray(data)
       ? data.map((item, index) => (
-        <React.Fragment key={index}>
-          <TableRow
-            style={{
-              borderTop: "3px solid grey",
-            }}
-          >
-            <TableCell>General</TableCell>
-            <TableCell>Delta</TableCell>
-            <TableCell>{item.amount0delta || "0"}</TableCell>
-            <TableCell>{item.amount1delta || "0"}</TableCell>
-          </TableRow>
-          <TableRow
-            style={{
-              borderTop: "3px solid grey",
-            }}
-          >
-            <TableCell>ERC20</TableCell>
-            <TableCell>User</TableCell>
-            <TableCell>{item.userAmount0delta || "0"}</TableCell>
-            <TableCell>{item.userAmount1delta || "0"}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>ERC20</TableCell>
-            <TableCell>Manager</TableCell>
-            <TableCell>{item.managerAmount0delta || "0"}</TableCell>
-            <TableCell>{item.managerAmount1delta || "0"}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>ERC20</TableCell>
-            <TableCell>Hook</TableCell>
-            <TableCell>{item.hookAmount0delta || "0"}</TableCell>
-            <TableCell>{item.hookAmount1delta || "0"}</TableCell>
-          </TableRow>
-          <TableRow
-            style={{
-              borderTop: "3px solid grey",
-            }}
-          >
-            <TableCell>ERC6909</TableCell>
-            <TableCell>User</TableCell>
-            <TableCell>{item.user6909Amount0delta || "0"}</TableCell>
-            <TableCell>{item.user6909Amount1delta || "0"}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>ERC6909</TableCell>
-            <TableCell>Manager</TableCell>
-            <TableCell>{item.managerAmount0delta || "0"}</TableCell>
-            <TableCell>{item.managerAmount1delta || "0"}</TableCell>
-          </TableRow>
-        </React.Fragment>
-      ))
+          <React.Fragment key={index}>
+            <TableRow
+              style={{
+                borderTop: "3px solid grey",
+              }}
+            >
+              <TableCell>General</TableCell>
+              <TableCell>Delta</TableCell>
+              <TableCell>{item.amount0delta || "No data"}</TableCell>
+              <TableCell>{item.amount1delta || "No data"}</TableCell>
+            </TableRow>
+            <TableRow
+              style={{
+                borderTop: "3px solid grey",
+              }}
+            >
+              <TableCell>ERC20</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>{item.userAmount0delta || "No data"}</TableCell>
+              <TableCell>{item.userAmount1delta || "No data"}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>ERC20</TableCell>
+              <TableCell>Manager</TableCell>
+              <TableCell>{item.managerAmount0delta || "No data"}</TableCell>
+              <TableCell>{item.managerAmount1delta || "No data"}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>ERC20</TableCell>
+              <TableCell>Hook</TableCell>
+              <TableCell>{item.hookAmount0delta || "No data"}</TableCell>
+              <TableCell>{item.hookAmount1delta || "No data"}</TableCell>
+            </TableRow>
+            <TableRow
+              style={{
+                borderTop: "3px solid grey",
+              }}
+            >
+              <TableCell>ERC6909</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>{item.user6909Amount0delta || "No data"}</TableCell>
+              <TableCell>{item.user6909Amount1delta || "No data"}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>ERC6909</TableCell>
+              <TableCell>Manager</TableCell>
+              <TableCell>{item.managerAmount0delta || "No data"}</TableCell>
+              <TableCell>{item.managerAmount1delta || "No data"}</TableCell>
+            </TableRow>
+          </React.Fragment>
+        ))
       : Object.entries(data).map(([key, value]: any, index) => (
-        <TableRow key={index}>
-          <TableCell>{key}</TableCell>
-          <TableCell>Delta</TableCell>
-          <TableCell>{value.amount0delta || "0"}</TableCell>
-          <TableCell>{value.amount1delta || "0"}</TableCell>
-        </TableRow>
-      ));
+          <TableRow key={index}>
+            <TableCell>{key}</TableCell>
+            <TableCell>Delta</TableCell>
+            <TableCell>{value.amount0delta || "0"}</TableCell>
+            <TableCell>{value.amount1delta || "0"}</TableCell>
+          </TableRow>
+        ));
   };
 
   const selectedData = getFilteredData(methodType);
   const showExactType = methodType === "Swap"; // exactIn/Out 라디오 버튼 표시 여부
   const disableMint = methodType === "AddLiquidity" || methodType === "Donate";
-  const disableBurn = methodType === "RemoveLiquidity" || methodType === "Donate";
+  const disableBurn =
+    methodType === "RemoveLiquidity" || methodType === "Donate";
 
   const handleMintChange = (checked: boolean) => {
     if (checked) {
@@ -214,17 +248,19 @@ export default function ERC6909DeltaBurnResultPage() {
             <div className="flex gap-4 items-center">
               <Tabs defaultValue="Swap">
                 <TabsList>
-                  {["Swap", "AddLiquidity", "RemoveLiquidity", "Donate"].map((value) => (
-                    <TabsTrigger
-                      key={value}
-                      value={value}
-                      onClick={() => {
-                        setMethodType(value as any);
-                      }}
-                    >
-                      {value}
-                    </TabsTrigger>
-                  ))}
+                  {["Swap", "AddLiquidity", "RemoveLiquidity", "Donate"].map(
+                    (value) => (
+                      <TabsTrigger
+                        key={value}
+                        value={value}
+                        onClick={() => {
+                          setMethodType(value as any);
+                        }}
+                      >
+                        {value}
+                      </TabsTrigger>
+                    ),
+                  )}
                 </TabsList>
               </Tabs>
               <div className="flex items-center gap-8">
@@ -252,7 +288,9 @@ export default function ERC6909DeltaBurnResultPage() {
             </div>
 
             <Table className="font-fira-code">
-              <TableCaption>Amount0/1 Delta Summary for {methodType}</TableCaption>
+              <TableCaption>
+                Amount0/1 Delta Summary for {methodType}
+              </TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead>Asset</TableHead>
@@ -262,15 +300,18 @@ export default function ERC6909DeltaBurnResultPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {selectedData && selectedData.length > 0
-                  ? renderTableRows(selectedData)
-                  : (
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-center text-gray-500">
-                        No data available
-                      </TableCell>
-                    </TableRow>
-                  )}
+                {selectedData && selectedData.length > 0 ? (
+                  renderTableRows(selectedData)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="text-center text-gray-500"
+                    >
+                      No data available
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>

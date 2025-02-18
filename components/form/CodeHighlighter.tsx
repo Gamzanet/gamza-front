@@ -32,7 +32,7 @@ const CodeHighlighter = ({
           },
         }}
 
-      // @todo try wrap lines: checkout https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/
+        // @todo try wrap lines: checkout https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/
       >
         {codeString}
       </Prism>
