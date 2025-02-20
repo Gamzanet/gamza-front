@@ -132,10 +132,11 @@ export default function Page() {
                           color: "#EF7BF9",
                           margin: "0px",
                         }}
-                        className={`${test.index === testNumber
+                        className={`${
+                          test.index === testNumber
                             ? "bg-primary-100"
                             : "bg-[#rgba(239, 124, 249, 0.1)]"
-                          } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
                       >
                         {test.name === "Minimum_Test"
                           ? "Minimum"
@@ -160,12 +161,13 @@ export default function Page() {
               <div className="mb-4 p-4 bg-gray-100 rounded-lg">
                 <h2 className="text-lg font-bold text-gray-700">
                   Impact:{" "}
-                  {componentData[taskIds[testNumber]]?.result?.result?.failList?.[indexNumber]
-                    ?.impact || "No impact available"}
+                  {componentData[taskIds[testNumber]]?.result?.result
+                    ?.failList?.[indexNumber]?.impact || "No impact available"}
                 </h2>
                 <p className="text-base text-gray-600">
-                  {componentData[taskIds[testNumber]]?.result?.result?.failList?.[indexNumber]
-                    ?.description || "No description available"}
+                  {componentData[taskIds[testNumber]]?.result?.result
+                    ?.failList?.[indexNumber]?.description ||
+                    "No description available"}
                 </p>
               </div>
 
@@ -177,8 +179,8 @@ export default function Page() {
                       1 +
                       componentData[taskIds[testNumber]]?.result?.result
                         ?.failList?.length) %
-                    componentData[taskIds[testNumber]]?.result?.result
-                      ?.failList?.length,
+                      componentData[taskIds[testNumber]]?.result?.result
+                        ?.failList?.length,
                   )
                 }
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
@@ -193,8 +195,8 @@ export default function Page() {
                 onClick={() =>
                   setIndexNumber(
                     (indexNumber + 1) %
-                    componentData[taskIds[testNumber]]?.result?.result
-                      ?.failList?.length,
+                      componentData[taskIds[testNumber]]?.result?.result
+                        ?.failList?.length,
                   )
                 }
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
@@ -210,10 +212,11 @@ export default function Page() {
                 <button
                   key={idx}
                   onClick={() => setIndexNumber(idx)}
-                  className={`w-3 h-3 rounded-full ${idx === indexNumber
+                  className={`w-3 h-3 rounded-full ${
+                    idx === indexNumber
                       ? "bg-primary-500 scale-110"
                       : "bg-gray-300 hover:bg-gray-400"
-                    } transition-transform`}
+                  } transition-transform`}
                 ></button>
               ))}
             </div>

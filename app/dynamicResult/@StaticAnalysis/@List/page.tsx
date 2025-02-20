@@ -19,16 +19,16 @@ const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
 // 특정 위협의 상세 정보 매핑
 const threatDetails: Record<string, any> = {
-  "Minimum": {
+  Minimum: {
     title: "Minimum",
     description:
       "The 'Minimum' function in the Hook contract has been flagged for potential operational issues. If not properly configured, it may lead to restrictions in liquidity management, affecting user accessibility and overall pool efficiency.",
     impact:
       "If the Minimum function is not optimized, liquidity providers may experience unexpected limitations in depositing or withdrawing assets. This can reduce the usability of the liquidity pool and may lead to inefficient capital utilization. In extreme cases, liquidity could become inaccessible, causing trust issues among users and harming the DEX's reputation.",
     recommendation:
-      "To ensure seamless liquidity management, it is crucial to verify that the Minimum function is correctly implemented. Developers should conduct rigorous testing to prevent unintended asset locks and ensure that users can freely interact with the liquidity pool under all expected conditions. Additionally, continuous monitoring and updates should be applied to mitigate any operational risks."
+      "To ensure seamless liquidity management, it is crucial to verify that the Minimum function is correctly implemented. Developers should conduct rigorous testing to prevent unintended asset locks and ensure that users can freely interact with the liquidity pool under all expected conditions. Additionally, continuous monitoring and updates should be applied to mitigate any operational risks.",
   },
-  "TimeLock": {
+  TimeLock: {
     title: "TimeLock",
     description:
       "In some DEX scam cases, liquidity providers are prevented from reclaiming all their assets in the Liquidity Pool, or liquidity can only be added or removed at certain times or under certain conditions, leading to user inconvenience and potential loss. If Uniswap V4 Liquidity Pools become unusable after a certain time period, this can result in significant accessibility issues for users.",
@@ -46,7 +46,7 @@ const threatDetails: Record<string, any> = {
     recommendation:
       "Consider reviewing and optimizing the functions where gas grief may be occurring, particularly by reducing loops or heavy operations within commonly called functions. Additionally, consider implementing batching mechanisms or using layer-2 scaling solutions that can mitigate high gas fees by executing transactions off-chain, reducing the overall gas burden for users.",
   },
-  "OnlyPoolManager": {
+  OnlyPoolManager: {
     title: "OnlyPoolManager",
     description:
       "In the context of access control, OnlyPoolManager acts as a critical safeguard, ensuring that only authorized entities (specifically, those with the Pool Manager role) can perform specific actions within a contract. When callback functions are involved, this restriction becomes even more essential. Callback functions allow one contract to call another function as part of a transaction flow, often executing actions based on external conditions or events. If these callbacks are not adequately restricted, they can be exploited by unauthorized parties, leading to unexpected or malicious behavior. The OnlyPoolManager modifier can prevent unauthorized callbacks by enforcing strict access checks.",
@@ -58,7 +58,7 @@ const threatDetails: Record<string, any> = {
     recommendation:
       "Implement the OnlyPoolManager modifier on any Hook callback functions to ensure they are only callable by authorized entities or under predefined conditions. Additionally, consider adding other safeguards like non-reentrant checks to prevent reentrancy attacks. Conduct regular audits of callback functions, focusing on who can call them and under what circumstances, to ensure there are no vulnerabilities. Using a well-defined ACL system around callbacks can prevent unauthorized access, protect contract integrity, and maintain user trust in the system.",
   },
-  "ReInitialize": {
+  ReInitialize: {
     title: "ReInitialize",
     description:
       "The reinitialize keyword is used in smart contract design to allow re-execution of initialization functions under controlled conditions. It is particularly relevant for another `poolKey`, where developers may need to add new initialization logic. the initialize function is typically called only once to set up the contract state.",
@@ -70,7 +70,7 @@ const threatDetails: Record<string, any> = {
     recommendation:
       "Carefully plan each initialize to avoid overlapping storage variables or conflicting logic, and only allow reinitialize functions for setting up newly added state variables rather than altering any previous initialization values. Conduct thorough testing and audits for each re-initialization to avoid any security risks and preserve data integrity.",
   },
-  "Upgradeability": {
+  Upgradeability: {
     title: "Upgradeability",
     description:
       "The hook contract for that pool key has been identified as a proxy contract.",
@@ -110,7 +110,9 @@ export default function StaticAnalysisResultPage() {
         // 개별 `taskID`에 대해 API 호출 (폴링 방식)
         const fetchResult = async (taskId: string) => {
           while (true) {
-            const response = await fetch(`http://localhost:7777/api/result/${taskId}`);
+            const response = await fetch(
+              `http://localhost:7777/api/result/${taskId}`,
+            );
             if (!response.ok) {
               throw new Error(`Failed to fetch data for taskID: ${taskId}`);
             }
@@ -121,7 +123,9 @@ export default function StaticAnalysisResultPage() {
               return result;
             }
 
-            await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
           }
         };
 
@@ -130,18 +134,20 @@ export default function StaticAnalysisResultPage() {
 
         // `threats` 데이터 변환 및 threat 위협 추가
         let formattedThreats = results.flatMap((res, index) => {
-          let threatsList = res.result?.result?.threats?.map((threat: any) => ({
-            name: threat.detector,
-            description: threat.data.description,
-            severity: threat.data.impact,
-            type: "custom",
-          })) || [];
+          let threatsList =
+            res.result?.result?.threats?.map((threat: any) => ({
+              name: threat.detector,
+              description: threat.data.description,
+              severity: threat.data.impact,
+              type: "custom",
+            })) || [];
 
           // ✅ Minimum(0번 인덱스)에서 `FAIL >= 1` 이면 `Minimum` 위협 추가
           if (index === 0 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "Minimum",
-              description: "Unexpected behavior detected in one or more Hook functions (Swap, Donate, AddLiquidity, RemoveLiquidity).",
+              description:
+                "Unexpected behavior detected in one or more Hook functions (Swap, Donate, AddLiquidity, RemoveLiquidity).",
               severity: "Info",
               type: "custom",
             });
@@ -151,7 +157,8 @@ export default function StaticAnalysisResultPage() {
           if (index === 1 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "TimeLock",
-              description: "This pool key does not appear to be a pool key that can be used at any time.",
+              description:
+                "This pool key does not appear to be a pool key that can be used at any time.",
               severity: "Medium",
               type: "custom",
             });
@@ -161,7 +168,8 @@ export default function StaticAnalysisResultPage() {
           if (index === 2 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "Gas Grief",
-              description: "Running the basic function of the pool key could not estimate gas.",
+              description:
+                "Running the basic function of the pool key could not estimate gas.",
               severity: "Low",
               type: "custom",
             });
@@ -171,7 +179,8 @@ export default function StaticAnalysisResultPage() {
           if (index === 4 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "OnlyPoolManager",
-              description: "In addition to the PoolManager, the hook contract can call hook function, which requires attention.",
+              description:
+                "In addition to the PoolManager, the hook contract can call hook function, which requires attention.",
               severity: "Medium",
               type: "custom",
             });
@@ -181,7 +190,8 @@ export default function StaticAnalysisResultPage() {
           if (index === 5 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "ReInitialize",
-              description: "This pool key has no limitation on initialize, and storage management is found to be inadequate.",
+              description:
+                "This pool key has no limitation on initialize, and storage management is found to be inadequate.",
               severity: "Medium",
               type: "custom",
             });
@@ -191,7 +201,8 @@ export default function StaticAnalysisResultPage() {
           if (index === 6 && res.result?.result?.FAIL >= 1) {
             threatsList.push({
               name: "Upgradeability",
-              description: "The hook contract for that pool key has been identified as a proxy contract.",
+              description:
+                "The hook contract for that pool key has been identified as a proxy contract.",
               severity: "Critical",
               type: "custom",
             });
@@ -220,7 +231,7 @@ export default function StaticAnalysisResultPage() {
   }
 
   const filteredThreats = threats.filter((item) =>
-    JSON.stringify(item).toLowerCase().includes(query.toLowerCase())
+    JSON.stringify(item).toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
@@ -236,19 +247,22 @@ export default function StaticAnalysisResultPage() {
         />
       </div>
       <ScrollableWindow className="space-y-2 h-full">
-      {filteredThreats.length > 0 ? (
-        // ✅ 1️⃣ 심각도 기준으로 정렬하여 표시
-        [...filteredThreats]
-          .sort((a, b) => getSeverityLevel(b.severity) - getSeverityLevel(a.severity)) // 내림차순 정렬 (Critical → High → Medium → Low → Info)
-          .map((item, index) => (
-            <AnalysisResultLog
-              key={index}
-              title={item.name}
-              description={item.description}
-              severity={item.severity}
-              detail={threatDetails[item.name]}
-            />
-          ))
+        {filteredThreats.length > 0 ? (
+          // ✅ 1️⃣ 심각도 기준으로 정렬하여 표시
+          [...filteredThreats]
+            .sort(
+              (a, b) =>
+                getSeverityLevel(b.severity) - getSeverityLevel(a.severity),
+            ) // 내림차순 정렬 (Critical → High → Medium → Low → Info)
+            .map((item, index) => (
+              <AnalysisResultLog
+                key={index}
+                title={item.name}
+                description={item.description}
+                severity={item.severity}
+                detail={threatDetails[item.name]}
+              />
+            ))
         ) : (
           <p className="text-gray-500 text-center">No threats detected.</p>
         )}

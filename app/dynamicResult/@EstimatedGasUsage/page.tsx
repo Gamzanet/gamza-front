@@ -84,18 +84,18 @@ function Component({
 
   const averageGas = validData.length
     ? (
-      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-    ).toFixed(2)
+        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+      ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 === 0
-        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-        : sorted[mid].toString();
-    })()
+        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+          : sorted[mid].toString();
+      })()
     : "0";
 
   return (
@@ -189,10 +189,12 @@ function Component({
 
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Maximum gas: {maxGasMethod} {maxGas} <TrendingUp className="h-4 w-4" />
+          Maximum gas: {maxGasMethod} {maxGas}{" "}
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          min:{minGasMethod}:{minGas} | average:{averageGas} | median:{medianGas}
+          min:{minGasMethod}:{minGas} | average:{averageGas} | median:
+          {medianGas}
         </div>
         <div className="leading-none text-muted-foreground">{children}</div>
       </CardFooter>

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import TaskCreationRequest from "@/types/request/api/tasks/TaskCreationRequest";
+import { doRequest } from "@/utils/SimpleRequest";
 
 import { Button } from "../ui/button";
 import {
@@ -15,7 +16,6 @@ import {
   CardContent,
   CardFooter,
 } from "../ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export { AddressInput, NumberInput };
 
@@ -106,13 +106,14 @@ function NumberInput({
 export default function PoolKeyForm({
   router,
 }: Readonly<{ router: AppRouterInstance }>) {
+  // TODO: send request to server based on the input
+
   const [currency0, setCurrency0] = useState<string>("");
   const [currency1, setCurrency1] = useState<string>("");
   const [fee, setFee] = useState<string>("");
   const [tickSpacing, setTickSpacing] = useState<string>("");
   const [hooks, setHooks] = useState<string>("");
   const [deployer, setDeployer] = useState<string>("");
-  const [chain, setChain] = useState<string>("eth");
 
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
   const [error, setError] = useState<string | null>(null); // 에러 메시지 추가
@@ -127,7 +128,6 @@ export default function PoolKeyForm({
     setTickSpacing("200");
     setHooks("0x8dd4c756F183513850e874F7d1ffd0d7Cb498080");
     setDeployer("0x4e59b44847b379578588920cA78FbF26c0B4956C");
-    setChain("base");
   };
 
   function makePoolKeyRequestBody(): TaskCreationRequest {
@@ -141,8 +141,7 @@ export default function PoolKeyForm({
           hooks,
         },
         mode: 2, // TODO: support other modes
-        deployer: deployer || "0x4e59b44847b379578588920cA78FbF26c0B4956C", // 기본값 적용
-        chain: chain, // 선택한 체인 추가
+        // deployer,
       },
     };
   }
@@ -232,18 +231,6 @@ export default function PoolKeyForm({
           state={deployer}
           onChange={setDeployer}
         />
-        {/* 🔽 Chain 선택 (Dropdown) */}
-        <Label>Chain</Label>
-        <Select value={chain} onValueChange={setChain}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select chain" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="eth">Ethereum</SelectItem>
-            <SelectItem value="uni">Unichain</SelectItem>
-            <SelectItem value="base">Base</SelectItem>
-          </SelectContent>
-        </Select>
         <button
           onClick={onClickSamplePoolKeyHandler}
           className="text-xs cursor-pointer hover:underline"
