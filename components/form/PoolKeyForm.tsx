@@ -15,7 +15,13 @@ import {
   CardContent,
   CardFooter,
 } from "../ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export { AddressInput, NumberInput };
 
@@ -149,6 +155,7 @@ export default function PoolKeyForm({
 
   const saveDataToLocalStorage = () => {
     const poolKeyData = {
+      chain,
       currency0,
       currency1,
       fee,

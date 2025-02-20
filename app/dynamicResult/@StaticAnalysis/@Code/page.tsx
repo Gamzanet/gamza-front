@@ -11,13 +11,25 @@ export default function StaticAnalysisResultPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hookAddress, setHookAddress] = useState<string | null>(null);
+  const [chain, setChain] = useState<string | null>(null);
 
+    // ✅ 체인별 Blockscout API URL 매핑
+    const blockscoutUrls: Record<string, string> = {
+      eth: "https://eth.blockscout.com",
+      uni: "https://unichain-sepolia.blockscout.com",
+      base: "https://base.blockscout.com",
+    };
+  
+    // ✅ 올바른 체인인지 확인 후 base URL 설정
+    const blockscoutBaseUrl = blockscoutUrls[chain] || "";
+  
   useEffect(() => {
     // `localStorage`에서 poolKeyData 가져오기
     const savedPoolKeyData = localStorage.getItem("poolKeyData");
     if (savedPoolKeyData) {
-      const { hooks } = JSON.parse(savedPoolKeyData);
+      const { hooks, chain } = JSON.parse(savedPoolKeyData);
       setHookAddress(hooks); // hooks 주소 설정
+      setChain(chain || "eth");
     } else {
       setError("No pool key data found in local storage.");
       setLoading(false);
@@ -30,10 +42,14 @@ export default function StaticAnalysisResultPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
-          // `https://unichain-sepolia.blockscout.com/api/v2/smart-contracts/${hookAddress}`,
-          `https://base.blockscout.com/api/v2/smart-contracts/${hookAddress}`,
-        );
+        // ✅ 유효하지 않은 체인일 경우 에러 표시 후 요청 중단
+        if (!blockscoutBaseUrl) {
+          setError("Invalid chain selected.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`${blockscoutBaseUrl}/api/v2/smart-contracts/${hookAddress}`);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch contract data: ${response.status}`);
@@ -97,11 +113,11 @@ export default function StaticAnalysisResultPage() {
                       ? "Contract Not Found"
                       : "Unverified Contract"}
                 </h2>
-                {hookAddress && (
+                {hookAddress && blockscoutBaseUrl && (
                   <a
                     className="text-info-500 hover:underline cursor-pointer max-w-[100px] truncate"
                     target="_blank"
-                    href={`https://unichain-sepolia.blockscout.com/address/${hookAddress}?tab=contract`}
+                    href={`${blockscoutBaseUrl}/address/${hookAddress}?tab=contract`}
                   >
                     {hookAddress}
                   </a>

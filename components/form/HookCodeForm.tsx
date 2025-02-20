@@ -119,7 +119,6 @@ export default function HookCodeForm({
           Scan
         </Button>
         {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
-        {"fail to send request"}
       </CardFooter>
     </Card>
   );
