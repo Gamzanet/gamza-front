@@ -13,16 +13,16 @@ export default function StaticAnalysisResultPage() {
   const [hookAddress, setHookAddress] = useState<string | null>(null);
   const [chain, setChain] = useState<string | null>(null);
 
-    // ✅ 체인별 Blockscout API URL 매핑
-    const blockscoutUrls: Record<string, string> = {
-      eth: "https://eth.blockscout.com",
-      uni: "https://unichain-sepolia.blockscout.com",
-      base: "https://base.blockscout.com",
-    };
-  
-    // ✅ 올바른 체인인지 확인 후 base URL 설정
-    const blockscoutBaseUrl = blockscoutUrls[chain] || "";
-  
+  // ✅ 체인별 Blockscout API URL 매핑
+  const blockscoutUrls: Record<string, string> = {
+    eth: "https://eth.blockscout.com",
+    uni: "https://unichain.blockscout.com",
+    base: "https://base.blockscout.com",
+  };
+
+  // ✅ 올바른 체인인지 확인 후 base URL 설정
+  const blockscoutBaseUrl = blockscoutUrls[chain] || "";
+
   useEffect(() => {
     // `localStorage`에서 poolKeyData 가져오기
     const savedPoolKeyData = localStorage.getItem("poolKeyData");
@@ -49,7 +49,9 @@ export default function StaticAnalysisResultPage() {
           return;
         }
 
-        const response = await fetch(`${blockscoutBaseUrl}/api/v2/smart-contracts/${hookAddress}`);
+        const response = await fetch(
+          `${blockscoutBaseUrl}/api/v2/smart-contracts/${hookAddress}`,
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to fetch contract data: ${response.status}`);
