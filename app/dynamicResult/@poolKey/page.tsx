@@ -31,11 +31,13 @@ export default function PoolKeyInformationResultPage() {
       {!isCode && (
         <div className="text-xs w-fit-content">
           <DynamicPoolKeyResult
+            chain={poolKeyData.chain || "Not provided"}
             currency0={poolKeyData.currency0 || "Not provided"}
             currency1={poolKeyData.currency1 || "Not provided"}
-            fee={poolKeyData.fee || "Not provided"}
+            fee={Number(poolKeyData.fee) === 0x800000 ? "dynamicFee" : poolKeyData.fee || "Not provided"}
             tickSpacing={poolKeyData.tickSpacing || "Not provided"}
             hooks={poolKeyData.hooks || "Not provided"}
+            deployer={poolKeyData.deployer || "Not provided"}
           />
         </div>
       )}

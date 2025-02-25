@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,8 +46,7 @@ function DynamicERC20DeltaDifferenceResult({
     );
   };
   const getButtonClass = (currentMethod: string) =>
-    `rounded-[15px] ${
-      method === currentMethod ? "bg-primary" : "bg-primary-300 bg-opacity-50"
+    `rounded-[15px] ${method === currentMethod ? "bg-primary" : "bg-primary-300 bg-opacity-50"
     }`;
 
   return (
@@ -167,25 +166,33 @@ function DynamicTransactionGasResult({
 }
 
 function DynamicPoolKeyResult({
+  chain,
   currency0,
   currency1,
   fee,
   tickSpacing,
   hooks,
+  deployer
 }: PoolKeyType) {
   return (
-    <Card className="rounded-[15px] border m-2">
+    <Card className="rounded-[15px] border m-2 w-auto min-w-[500px] max-w-[700px] min-h-[330px] flex flex-col">
       <CardHeader>
-        <CardTitle>PoolKey</CardTitle>
-        {/* <CardDescription>Component Description</CardDescription> */}
+        <div className="flex justify-between items-center">
+          <CardTitle>PoolKey</CardTitle>
+          <CardDescription className="text-sm text-gray-500">Chain: {chain}</CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="font-fira-code">
-        <div className="grid grid-cols-[auto,1fr] border gap-4 p-4">
+        <div className="grid grid-cols-[minmax(120px,auto),1fr] border gap-4 p-4">
           <p className="font-bold">Currency0</p> <p>{currency0}</p>
           <p className="font-bold">Currency1</p> <p>{currency1}</p>
           <p className="font-bold">Fee</p> <p>{fee}</p>
           <p className="font-bold">TickSpacing</p> <p>{tickSpacing}</p>
           <p className="font-bold">Hooks</p> <p>{hooks}</p>
+        </div>
+
+        <div className="grid grid-cols-[minmax(120px,auto),1fr] gap-4 p-4">
+          <p className="font-bold">Deployer</p> <p>{deployer}</p>
         </div>
       </CardContent>
     </Card>
@@ -193,57 +200,61 @@ function DynamicPoolKeyResult({
 }
 
 function DynamicTokenPriceResult({
-  realPrice,
-  expectedPrice,
+  swappedPrice,
+  fee,
   oraclePrice,
 }: TokenPriceProps) {
-  // const [oraclePrice, setOraclePrice] = useState(0);
-  // const [currentTime, setCurrentTime] = useState<string>();
+  const [lastUpdated, setLastUpdated] = useState<string>("");
 
-  const expectedDiff = ((expectedPrice / realPrice) * 100).toFixed(2);
-  const oracleDiff = ((oraclePrice / realPrice) * 100).toFixed(2);
+  useEffect(() => {
+    setLastUpdated(new Date().toLocaleTimeString()); // 한 번만 실행
+  }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const data = await getPythEthUsdPrice();
-  //     setOraclePrice(parseInt(data) ** 2 / 1e8);
-  //     setCurrentTime(new Date().toLocaleTimeString());
-
-  //     const interval = setInterval(async () => {
-  //       const data = await getPythEthUsdPrice();
-  //       setOraclePrice(parseInt(data) ** 2 / 1e8);
-  //       setCurrentTime(new Date().toLocaleTimeString());
-  //     }, 10000);
-  //     return () => clearInterval(interval);
-  //   };
-  //   fetchData();
-  // }, []);
+  const priceDiff = ((swappedPrice / oraclePrice) * 100 - 100).toFixed(2);
 
   return (
-    <Card>
+    <Card className="rounded-[15px] border m-2 w-auto min-w-[500px] max-w-[700px] min-h-[330px] flex flex-col">
       <CardHeader>
         <CardTitle>Token Price</CardTitle>
-        {/* <CardDescription>Component Description</CardDescription> */}
+        <CardDescription className="text-sm text-gray-500">
+          Overview of ExactIn-Swap and oracle price data
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-flow-row grid-cols-2  gap-4 border p-4 w-[500px]">
-          <p>Real Price</p> <p>{realPrice}</p>
-          <p>Expected Price</p>
-          <p>
-            <span>{expectedPrice} </span>
-            <span className="text-xs"> ({expectedDiff}%)</span>
+      <CardContent className="font-fira-code">
+        <div className="grid grid-cols-[auto,1fr] gap-y-4 border p-4 gap-x-8">
+          {/* ✅ Swapped Price */}
+          <div>
+            <p className="font-bold">Swapped Price:</p>
+            <p className="text-sm text-gray-500">Included Fee:</p>
+          </div>
+          <div>
+            <p>{swappedPrice}</p>
+            <p className="text-sm text-gray-500">{fee} ({fee / 10000}%)</p>
+          </div>
+
+          {/* ✅ Oracle Price */}
+          <div>
+            <p className="font-bold">Oracle Price:</p>
+            <p className="text-sm text-gray-500">Oracle Source:</p>
+          </div>
+          <div>
+            <p>{oraclePrice}</p>
+            <p className="text-sm text-gray-500">Pyth</p>
+          </div>
+
+          {/* ✅ Price Difference */}
+          <p className="font-bold">Price Difference:</p>
+          <p
+            className={`text-lg font-semibold ${parseFloat(priceDiff) >= 5 ? "text-red-500" : "text-green-500"
+              }`}
+          >
+            {priceDiff}%
           </p>
-          <p>Oracle Price</p>
-          <p>
-            <span>{oraclePrice} </span>
-            <span
-              className={`text-xs ${parseFloat(oracleDiff) >= 105 ? "text-primary" : ""}`}
-            >
-              ({oracleDiff}%)
-            </span>
-            {/* <br /> */}
-            {/* <span className='text-xs'> at {currentTime}</span> */}
-          </p>
+        </div>
+
+        {/* ✅ 조회 시간 */}
+        <div className="mt-2 text-xs text-gray-500 text-right">
+          Last Updated at: {lastUpdated}
         </div>
       </CardContent>
     </Card>
