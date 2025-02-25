@@ -16,11 +16,10 @@ const testNameMapping: Record<string, string> = {
   "Minimum_Remove": "RemoveLiquidity",
   "Minimum_Swap": "Swap",
   "Minimum_Donate": "Donate",
-  "Minimum_Test": "Minimum",
   "Time-Based-Minimum_Test": "TimeLock",
   "OnlyByPoolManager-Chk": "OnlyByPoolManager",
   "double-Initialize-Test": "Reinitialize",
-  "Proxy-Test": "HookFuncCall",
+  "Proxy-Test": "ProxyContract",
 };
 
 export default function Page() {
@@ -71,7 +70,7 @@ export default function Page() {
     }
 
     const allIds = JSON.parse(decodeURIComponent(idsParam)); // URL 파라미터 디코딩 및 JSON 파싱
-    const selectedIds = [7,8,9,10, 0, 1, 4, 5, 6].map((index) => allIds[index]); // 필요한 ID만 선택
+    const selectedIds = [0, 1, 2, 3, 4, 5, 6, 7].map((index) => allIds[index]); // 필요한 ID만 선택
 
     const interval = setInterval(
       () => fetchSelectedTaskStatuses(selectedIds),

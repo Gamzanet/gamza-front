@@ -35,15 +35,15 @@ export default function Layout({
           <ResizablePanel defaultSize={75} className="rounded-[15px]">
             <div className="flex flex-col gap-4 rounded-[15px]">
               <div className="flex justify-between rounded-[15px]">
-                <div>{poolKey}</div>
-                <div>{TokenPrice}</div>
+                {poolKey}
+                {TokenPrice}
               </div>
-              <div>{AmountDeltaSummary}</div>
+              {AmountDeltaSummary}
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle className="rounded-[15px]" />
           <ResizablePanel defaultSize={32} className="rounded-[15px]">
-            <div>{EstimatedGasUsage}</div>
+            {EstimatedGasUsage}
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

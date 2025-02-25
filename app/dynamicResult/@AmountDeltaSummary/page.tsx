@@ -51,7 +51,7 @@ export default function ERC6909DeltaBurnResultPage() {
         }
 
         const ids = JSON.parse(decodeURIComponent(idsParam));
-        const targetId = ids[3]; // 세 번째 인덱스의 ID 가져오기
+        const targetId = ids[9]; // 아홉 번째 인덱스의 ID 가져오기
 
         const fetchResult = async () => {
           const response = await fetch(

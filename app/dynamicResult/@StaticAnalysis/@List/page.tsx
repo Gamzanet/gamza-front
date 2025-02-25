@@ -28,6 +28,42 @@ const threatDetails: Record<string, any> = {
     recommendation:
       "To ensure seamless liquidity management, it is crucial to verify that the Minimum function is correctly implemented. Developers should conduct rigorous testing to prevent unintended asset locks and ensure that users can freely interact with the liquidity pool under all expected conditions. Additionally, continuous monitoring and updates should be applied to mitigate any operational risks.",
   },
+  AddLiquidity: {
+    title: "Unexpected Behavior in Add Liquidity Due to Hook",
+    description:
+      "The Hook function for adding liquidity may not be properly handling liquidity additions, leading to potential discrepancies in the pool balance.",
+    impact:
+      "Improper liquidity handling can cause pool imbalances, leading to inaccurate token pricing and unexpected user experiences.",
+    recommendation:
+      "Ensure that the Hook function correctly accounts for all liquidity additions, properly updating the pool state and handling edge cases."
+  },
+  RemoveLiquidity: {
+    title: "Unexpected Behavior in Remove Liquidity Due to Hook",
+    description:
+      "The Hook function for removing liquidity may not be correctly adjusting the pool’s liquidity balance, which could impact future transactions.",
+    impact:
+      "Incorrect liquidity removal may result in leftover or unclaimed liquidity, leading to fund misallocation or incorrect pool behavior.",
+    recommendation:
+      "Verify that the Hook function accurately tracks liquidity removals, properly adjusting token balances and ensuring smooth exits for liquidity providers."
+  },
+  Swap: {
+    title: "Unexpected Behavior in Swap Due to Hook",
+    description:
+      "The Hook function might not be correctly processing swap input/output amounts, possibly affecting price calculations.",
+    impact:
+      "Improper swap execution can lead to incorrect token amounts being received, price oracle inaccuracies, or arbitrage opportunities that negatively impact users.",
+    recommendation:
+      "Ensure that swap logic follows expected behavior, maintaining accurate pricing mechanisms and preventing potential miscalculations."
+  },
+  Donate: {
+    title: "Unexpected Behavior in Donate Due to Hook",
+    description:
+      "The Hook function may not be properly recording or handling donations, potentially leading to accounting mismatches.",
+    impact:
+      "Improper donation handling can result in incorrect pool accounting, potentially leading to misplaced funds or unexpected token distributions.",
+    recommendation:
+      "Verify that the Hook function correctly records and applies donations, ensuring they are properly allocated and reflected in the pool’s balance."
+  },
   TimeLock: {
     title: "TimeLock",
     description:
@@ -99,17 +135,18 @@ export default function StaticAnalysisResultPage() {
         setLoading(true);
         setError(null);
 
-        // URL에서 IDs 가져오기
+        // ✅ URL에서 IDs 가져오기
         const idsParam = searchParams.get("ids");
         if (!idsParam) {
           throw new Error("No task IDs provided");
         }
 
         const ids = JSON.parse(decodeURIComponent(idsParam));
+        let completedIds = new Set<string>(); // 이미 완료된 Task ID 저장
 
-        // 개별 `taskID`에 대해 API 호출 (폴링 방식)
-        const fetchResult = async (taskId: string) => {
-          while (true) {
+        // ✅ 개별 `taskId` 별로 폴링하며, 성공한 데이터는 즉시 업데이트
+        const fetchResult = async (taskId: string, index: number) => {
+          while (!completedIds.has(taskId)) {
             const response = await fetch(
               `http://localhost:7777/api/result/${taskId}`,
             );
@@ -120,7 +157,8 @@ export default function StaticAnalysisResultPage() {
             const result = await response.json();
 
             if (result.status === "Success") {
-              return result;
+              completedIds.add(taskId); // 완료된 taskId 저장
+              return { result, index }; // 인덱스를 함께 반환
             }
 
             await new Promise((resolve) =>
@@ -129,89 +167,139 @@ export default function StaticAnalysisResultPage() {
           }
         };
 
-        // 모든 `taskID`에 대한 결과 가져오기
-        const results = await Promise.all(ids.map(fetchResult));
+        // ✅ 비동기 폴링으로 개별 데이터 업데이트
+        ids.forEach(async (taskId, index) => {
+          try {
+            const response = await fetchResult(taskId, index);
+            if (response) {
+              const { result, index } = response;
+              setThreats((prevThreats) => {
+                // `threats` 데이터 변환 및 threat 위협 추가
+                let threatsList =
+                  result.result?.result?.threats?.map((threat: any) => ({
+                    name: threat.detector,
+                    description: threat.data.description,
+                    severity: threat.data.impact,
+                    type: "custom",
+                  })) || [];
 
-        // `threats` 데이터 변환 및 threat 위협 추가
-        let formattedThreats = results.flatMap((res, index) => {
-          let threatsList =
-            res.result?.result?.threats?.map((threat: any) => ({
-              name: threat.detector,
-              description: threat.data.description,
-              severity: threat.data.impact,
-              type: "custom",
-            })) || [];
+                // ✅ addLP(0번 인덱스)에서 `FAIL >= 1` 이면 `AddLiquidity` 위협 추가
+                if (index === 0 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "AddLiquidity",
+                    description:
+                      "Unexpected behavior detected when adding liquidity. Hook function may not be properly handling liquidity additions, leading to potential discrepancies.",
+                    severity: "Info",
+                    type: "custom",
+                  });
+                }
 
-          // ✅ Minimum(0번 인덱스)에서 `FAIL >= 1` 이면 `Minimum` 위협 추가
-          if (index === 0 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "Minimum",
-              description:
-                "Unexpected behavior detected in one or more Hook functions (Swap, Donate, AddLiquidity, RemoveLiquidity).",
-              severity: "Info",
-              type: "custom",
-            });
+                // ✅ removeLP(1번 인덱스)에서 `FAIL >= 1` 이면 `RemoveLiquidity` 위협 추가
+                if (index === 1 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "RemoveLiquidity",
+                    description:
+                      "Unexpected behavior detected when removing liquidity. Hook function may not be correctly adjusting the pool’s liquidity balance, which could impact future transactions.",
+                    severity: "Info",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ swap(2번 인덱스)에서 `FAIL >= 1` 이면 `Swap` 위협 추가
+                if (index === 2 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "Swap",
+                    description:
+                      "Unexpected behavior detected during token swaps. Hook function might not be correctly processing input/output amounts, possibly affecting price calculations.",
+                    severity: "Info",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ donate(3번 인덱스)에서 `FAIL >= 1` 이면 `Donate` 위협 추가
+                if (index === 3 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "Donate",
+                    description:
+                      "Unexpected behavior detected in the donation process. Hook function may not be properly recording or handling donations, potentially leading to accounting mismatches.",
+                    severity: "Info",
+                    type: "custom",
+                  });
+                }
+
+
+                // ✅ TimeLock(4번 인덱스)에서 `FAIL >= 1` 이면 `TimeLock` 위협 추가
+                if (index === 4 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "TimeLock",
+                    description:
+                      "This pool key does not appear to be a pool key that can be used at any time.",
+                    severity: "Medium",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ OnlyByPoolManager-Chk(5번 인덱스)에서 `FAIL >= 1` 이면 `OnlyPoolManager` 위협 추가
+                if (index === 5 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "OnlyPoolManager",
+                    description:
+                      "In addition to the PoolManager, the hook contract can call hook function, which requires attention.",
+                    severity: "Medium",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ double-Initialize-Test(6번 인덱스)에서 `FAIL >= 1` 이면 `ReInitialize` 위협 추가
+                if (index === 6 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "ReInitialize",
+                    description:
+                      "This pool key has no limitation on initialize, and storage management is found to be inadequate.",
+                    severity: "Medium",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ Proxy-Test(7번 인덱스)에서 `FAIL >= 1` 이면 `Upgradeability` 위협 추가
+                if (index === 7 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "Upgradeability",
+                    description:
+                      "The hook contract for that pool key has been identified as a proxy contract.",
+                    severity: "Critical",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ Gas Grief(8번 인덱스)에서 `FAIL >= 1` 이면 `Gas Grief` 위협 추가
+                if (index === 8 && result.result?.result?.FAIL >= 1) {
+                  threatsList.push({
+                    name: "Gas Grief",
+                    description:
+                      "Running the basic function of the pool key could not estimate gas.",
+                    severity: "Low",
+                    type: "custom",
+                  });
+                }
+
+                // ✅ 기존 데이터와 합쳐서 업데이트 (중복 방지)
+                const uniqueThreats = [
+                  ...prevThreats,
+                  ...threatsList.filter(
+                    (newThreat) =>
+                      !prevThreats.some(
+                        (existingThreat) => existingThreat.name === newThreat.name,
+                      ),
+                  ),
+                ];
+                return uniqueThreats;
+              });
+            }
+          } catch (err: any) {
+            setError(err.message || "An unexpected error occurred.");
           }
-
-          // ✅ TimeLock(1번 인덱스)에서 `FAIL >= 1` 이면 `TimeLock` 위협 추가
-          if (index === 1 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "TimeLock",
-              description:
-                "This pool key does not appear to be a pool key that can be used at any time.",
-              severity: "Medium",
-              type: "custom",
-            });
-          }
-
-          // ✅ Gas Grief(2번 인덱스)에서 `FAIL >= 1` 이면 `Gas Grief` 위협 추가
-          if (index === 2 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "Gas Grief",
-              description:
-                "Running the basic function of the pool key could not estimate gas.",
-              severity: "Low",
-              type: "custom",
-            });
-          }
-
-          // ✅ OnlyByPoolManager-Chk(4번 인덱스)에서 `FAIL >= 1` 이면 `OnlyPoolManager` 위협 추가
-          if (index === 4 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "OnlyPoolManager",
-              description:
-                "In addition to the PoolManager, the hook contract can call hook function, which requires attention.",
-              severity: "Medium",
-              type: "custom",
-            });
-          }
-
-          // ✅ double-Initialize-Test(5번 인덱스)에서 `FAIL >= 1` 이면 `ReInitialize` 위협 추가
-          if (index === 5 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "ReInitialize",
-              description:
-                "This pool key has no limitation on initialize, and storage management is found to be inadequate.",
-              severity: "Medium",
-              type: "custom",
-            });
-          }
-
-          // ✅ Proxy-Test(6번 인덱스)에서 `FAIL >= 1` 이면 `Upgradeability` 위협 추가
-          if (index === 6 && res.result?.result?.FAIL >= 1) {
-            threatsList.push({
-              name: "Upgradeability",
-              description:
-                "The hook contract for that pool key has been identified as a proxy contract.",
-              severity: "Critical",
-              type: "custom",
-            });
-          }
-
-          return threatsList;
         });
-
-        setThreats(formattedThreats);
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
       } finally {

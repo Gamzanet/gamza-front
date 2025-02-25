@@ -132,10 +132,11 @@ export default function StaticAnalysisResultPage() {
         }
 
         const ids = JSON.parse(decodeURIComponent(idsParam));
+        let completedIds = new Set<string>(); // 이미 완료된 Task ID 저장
 
-        // 개별 `taskID`에 대해 API 호출 (폴링 방식)
-        const fetchResult = async (taskId: string) => {
-          while (true) {
+        // ✅ 개별 `taskId` 별로 폴링하며, 성공한 데이터는 즉시 업데이트
+        const fetchResult = async (taskId: string, index: number) => {
+          while (!completedIds.has(taskId)) {
             const response = await fetch(
               `http://localhost:7777/api/result/${taskId}`,
             );
@@ -146,7 +147,8 @@ export default function StaticAnalysisResultPage() {
             const result = await response.json();
 
             if (result.status === "Success") {
-              return result;
+              completedIds.add(taskId); // 완료된 taskId 저장
+              return { result, index }; // 인덱스를 함께 반환
             }
 
             await new Promise((resolve) =>
@@ -155,35 +157,41 @@ export default function StaticAnalysisResultPage() {
           }
         };
 
-        // 모든 `taskID`에 대한 결과 가져오기
-        const results = await Promise.all(ids.map(fetchResult));
+        // ✅ 비동기 폴링으로 개별 데이터 업데이트
+        ids.forEach(async (taskId, index) => {
+          try {
+            const response = await fetchResult(taskId, index);
+            if (response) {
+              const { result, index } = response;
+              setThreats((prevThreats) => {
+                // `threats` 데이터 변환 및 threat 위협 추가
+                let threatsList =
+                  result.result?.result?.threats?.map((threat: any) => ({
+                    name: threat.detector,
+                    description: threat.data.description,
+                    severity:
+                      threat.data.impact.charAt(0).toUpperCase() +
+                      threat.data.impact.slice(1).toLowerCase(),
+                    type: "custom",
+                  })) || [];
 
-        // `threats` 데이터 변환 및 threat 위협 추가
-        let formattedThreats = results.flatMap((res, index) => {
-          let threatsList =
-            res.result?.result?.threats?.map((threat: any) => ({
-              name: threat.detector,
-              description: threat.data.description,
-              severity:
-                threat.data.impact.charAt(0).toUpperCase() +
-                threat.data.impact.slice(1).toLowerCase(),
-              type: "custom",
-            })) || [];
-
-          // ✅ Minimum(0번 인덱스)에서 `FAIL >= 1` 이면 `Minimum` 위협 추가
-          // if (index === 0 && res.result?.result?.FAIL >= 1) {
-          //   threatsList.push({
-          //     name: "Minimum",
-          //     description: "Unexpected behavior detected in one or more Hook functions (Swap, Donate, AddLiquidity, RemoveLiquidity).",
-          //     severity: "Info",
-          //     type: "custom",
-          //   });
-          // }
-
-          return threatsList;
+                // ✅ 기존 데이터와 합쳐서 업데이트 (중복 방지)
+                const uniqueThreats = [
+                  ...prevThreats,
+                  ...threatsList.filter(
+                    (newThreat) =>
+                      !prevThreats.some(
+                        (existingThreat) => existingThreat.name === newThreat.name,
+                      ),
+                  ),
+                ];
+                return uniqueThreats;
+              });
+            }
+          } catch (err: any) {
+            setError(err.message || "An unexpected error occurred.");
+          }
         });
-
-        setThreats(formattedThreats);
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
       } finally {

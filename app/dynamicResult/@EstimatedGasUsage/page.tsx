@@ -228,7 +228,7 @@ export default function GasDifferenceChart() {
         }
 
         const ids = JSON.parse(decodeURIComponent(idsParam));
-        const targetId = ids[2]; // 두 번째 인덱스의 ID 가져오기
+        const targetId = ids[8]; // 여덟 번째 인덱스의 ID 가져오기
 
         const fetchResult = async () => {
           const response = await fetch(
