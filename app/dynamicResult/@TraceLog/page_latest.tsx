@@ -10,19 +10,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
-// ✅ 테스트 이름 매핑 객체 (Dict 활용)
-const testNameMapping: Record<string, string> = {
-  "Minimum_Add": "AddLiquidity",
-  "Minimum_Remove": "RemoveLiquidity",
-  "Minimum_Swap": "Swap",
-  "Minimum_Donate": "Donate",
-  "Minimum_Test": "Minimum",
-  "Time-Based-Minimum_Test": "TimeLock",
-  "OnlyByPoolManager-Chk": "OnlyByPoolManager",
-  "double-Initialize-Test": "Reinitialize",
-  "Proxy-Test": "HookFuncCall",
-};
-
 export default function Page() {
   const [testNumber, setTestNumber] = useState(0);
   const [indexNumber, setIndexNumber] = useState(0);
@@ -41,7 +28,9 @@ export default function Page() {
         for (const id of taskIds) {
           if (updatedData[id]?.status === "Success") continue; // 이미 성공한 경우 건너뜀
 
-          const response = await fetch(`http://localhost:7777/api/result/${id}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${id}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch result for ID: ${id}`);
           }
@@ -71,7 +60,7 @@ export default function Page() {
     }
 
     const allIds = JSON.parse(decodeURIComponent(idsParam)); // URL 파라미터 디코딩 및 JSON 파싱
-    const selectedIds = [7,8,9,10, 0, 1, 4, 5, 6].map((index) => allIds[index]); // 필요한 ID만 선택
+    const selectedIds = [0, 1, 4, 5, 6].map((index) => allIds[index]); // 필요한 ID만 선택
 
     const interval = setInterval(
       () => fetchSelectedTaskStatuses(selectedIds),
@@ -87,7 +76,7 @@ export default function Page() {
 
   const testNames = useMemo(() => {
     return taskIds.map((id, index) => ({
-      name: testNameMapping[componentData[id]?.result?.result?.name] || `Loading...`,
+      name: componentData[id]?.result?.result?.name || `Test ${index + 1}`,
       index,
     }));
   }, [componentData, taskIds]);
@@ -149,7 +138,17 @@ export default function Page() {
                             : "bg-[#rgba(239, 124, 249, 0.1)]"
                         } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
                       >
-                        {test.name}
+                        {test.name === "Minimum_Test"
+                          ? "Minimum"
+                          : test.name === "Time-Based-Minimum_Test"
+                            ? "TimeLock"
+                            : test.name === "OnlyByPoolManager-Chk"
+                              ? "OnlyByPoolManager"
+                              : test.name === "double-Initialize-Test"
+                                ? "Reinitialize"
+                                : test.name === "Proxy-Test"
+                                  ? "HookFuncCall"
+                                  : "Loading..."}
                       </Button>
                     ))}
                   </div>

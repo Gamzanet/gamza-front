@@ -21,12 +21,12 @@ const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 const threatDetails: Record<string, any> = {
   "Missing token transfer while burnt": {
     title: "Missing Token Burn in Redeem Function",
-    description: 
+    description:
       "The `_burn` function is not called before or after a token transfer in the `redeem` function. This could result in tokens not being properly removed from circulation, leading to inconsistencies in token accounting.",
-    impact: 
+    impact:
       "If tokens are not correctly burned during redemption, it can lead to inflationary issues or unintended token accumulation. This could allow users to retain redeemable tokens even after they should have been burned, potentially introducing security vulnerabilities and economic inconsistencies.",
-    recommendation: 
-      "Ensure that the `_burn` function is properly invoked in the `redeem` function, either before or after the transfer operation, to maintain correct token supply and prevent unintended token retention."
+    recommendation:
+      "Ensure that the `_burn` function is properly invoked in the `redeem` function, either before or after the transfer operation, to maintain correct token supply and prevent unintended token retention.",
   },
   "Using Slot0 directly to return price data as an oracle": {
     title: "Price Oracle Manipulation Risk",
@@ -39,33 +39,39 @@ const threatDetails: Record<string, any> = {
   },
   "Low call": {
     title: "Usage of Low-Level Call",
-    description: 
+    description:
       "The contract makes use of low-level `call` instead of `transfer` or `send`. While `call` is more flexible and can be used to interact with non-standard contracts, it bypasses important security checks and requires manual handling of return values.",
-    impact: 
+    impact:
       "Using `call` without proper validation may lead to security vulnerabilities, such as reentrancy attacks or unintended failures if the call is unsuccessful. Additionally, since `call` does not forward a fixed amount of gas like `transfer`, it can make the contract susceptible to gas griefing attacks.",
-    recommendation: 
-      "Consider using `transfer` or `send` where possible to ensure safer Ether transfers. If `call` is necessary, implement proper checks for return values and handle failures appropriately to mitigate potential security risks."
+    recommendation:
+      "Consider using `transfer` or `send` where possible to ensure safer Ether transfers. If `call` is necessary, implement proper checks for return values and handle failures appropriately to mitigate potential security risks.",
   },
   "Missing onlyPoolManager modifier": {
     title: "Missing onlyPoolManager Modifier",
-    description: 
+    description:
       "The hook functions should be restricted to be called only by the PoolManager. Without this restriction, unauthorized entities might invoke critical functions, leading to unintended behaviors or security vulnerabilities.",
-    impact: 
+    impact:
       "If the hook functions can be called by any contract or external account, it may result in unauthorized access, manipulation of pool parameters, or even financial loss. Attackers could exploit this to execute arbitrary operations, disrupting the protocol's integrity.",
-    recommendation: 
-      "Ensure that all relevant hook functions include an `onlyPoolManager` modifier to restrict access exclusively to the PoolManager contract. Additionally, conduct a security audit to verify that no functions are unintentionally exposed to unauthorized callers."
+    recommendation:
+      "Ensure that all relevant hook functions include an `onlyPoolManager` modifier to restrict access exclusively to the PoolManager contract. Additionally, conduct a security audit to verify that no functions are unintentionally exposed to unauthorized callers.",
   },
   "Misconfigured Hook": {
     title: "Misconfigured Hook",
-    description: "Some hook functions are not implemented, yet their corresponding flags in 'getHookPermissions()' are set to true. This misconfiguration can lead to unexpected behavior when the PoolManager attempts to call these functions.",
-    impact: "If a hook function is expected to be executed but is missing, it may cause transaction failures or undefined behavior. This could disrupt the pool’s operation, prevent proper execution of trades or liquidity management, and introduce security risks.",
-    recommendation: "Ensure that all hook functions marked as active in 'getHookPermissions()' are properly implemented. If certain hooks are not required, set their respective flags to false to prevent unintended contract interactions."
+    description:
+      "Some hook functions are not implemented, yet their corresponding flags in 'getHookPermissions()' are set to true. This misconfiguration can lead to unexpected behavior when the PoolManager attempts to call these functions.",
+    impact:
+      "If a hook function is expected to be executed but is missing, it may cause transaction failures or undefined behavior. This could disrupt the pool’s operation, prevent proper execution of trades or liquidity management, and introduce security risks.",
+    recommendation:
+      "Ensure that all hook functions marked as active in 'getHookPermissions()' are properly implemented. If certain hooks are not required, set their respective flags to false to prevent unintended contract interactions.",
   },
   "Using tx.origin": {
     title: "Using tx.origin for Access Control",
-    description: "Using tx.origin to enforce access control can make the contract vulnerable to phishing attacks. Attackers can trick users into initiating transactions from a trusted contract, which can then execute malicious operations on their behalf.",
-    impact: "Contracts relying on tx.origin for authentication can be compromised by phishing attacks. If a user interacts with a malicious contract, it can initiate transactions on their behalf, bypassing security checks and leading to asset loss or unauthorized access.",
-    recommendation: "Avoid using tx.origin for access control. Instead, use msg.sender, which ensures that only the immediate caller (rather than the original transaction initiator) has access. Implement role-based access control (RBAC) or OpenZeppelin's Ownable pattern for secure authentication."
+    description:
+      "Using tx.origin to enforce access control can make the contract vulnerable to phishing attacks. Attackers can trick users into initiating transactions from a trusted contract, which can then execute malicious operations on their behalf.",
+    impact:
+      "Contracts relying on tx.origin for authentication can be compromised by phishing attacks. If a user interacts with a malicious contract, it can initiate transactions on their behalf, bypassing security checks and leading to asset loss or unauthorized access.",
+    recommendation:
+      "Avoid using tx.origin for access control. Instead, use msg.sender, which ensures that only the immediate caller (rather than the original transaction initiator) has access. Implement role-based access control (RBAC) or OpenZeppelin's Ownable pattern for secure authentication.",
   },
   "non-payable-constructor": {
     title: "Non-Payable Constructor Gas Inefficiency",

@@ -46,7 +46,8 @@ function DynamicERC20DeltaDifferenceResult({
     );
   };
   const getButtonClass = (currentMethod: string) =>
-    `rounded-[15px] ${method === currentMethod ? "bg-primary" : "bg-primary-300 bg-opacity-50"
+    `rounded-[15px] ${
+      method === currentMethod ? "bg-primary" : "bg-primary-300 bg-opacity-50"
     }`;
 
   return (
@@ -172,14 +173,16 @@ function DynamicPoolKeyResult({
   fee,
   tickSpacing,
   hooks,
-  deployer
+  deployer,
 }: PoolKeyType) {
   return (
     <Card className="rounded-[15px] border m-2 w-auto min-w-[500px] max-w-[700px] min-h-[330px] flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>PoolKey</CardTitle>
-          <CardDescription className="text-sm text-gray-500">Chain: {chain}</CardDescription>
+          <CardDescription className="text-sm text-gray-500">
+            Chain: {chain}
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="font-fira-code">
@@ -229,7 +232,9 @@ function DynamicTokenPriceResult({
           </div>
           <div>
             <p>{swappedPrice}</p>
-            <p className="text-sm text-gray-500">{fee} ({fee / 10000}%)</p>
+            <p className="text-sm text-gray-500">
+              {fee} ({fee / 10000}%)
+            </p>
           </div>
 
           {/* ✅ Oracle Price */}
@@ -245,8 +250,9 @@ function DynamicTokenPriceResult({
           {/* ✅ Price Difference */}
           <p className="font-bold">Price Difference:</p>
           <p
-            className={`text-lg font-semibold ${parseFloat(priceDiff) >= 5 ? "text-red-500" : "text-green-500"
-              }`}
+            className={`text-lg font-semibold ${
+              parseFloat(priceDiff) >= 5 ? "text-red-500" : "text-green-500"
+            }`}
           >
             {priceDiff}%
           </p>

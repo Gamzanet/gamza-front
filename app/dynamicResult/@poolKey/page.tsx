@@ -34,7 +34,11 @@ export default function PoolKeyInformationResultPage() {
             chain={poolKeyData.chain || "Not provided"}
             currency0={poolKeyData.currency0 || "Not provided"}
             currency1={poolKeyData.currency1 || "Not provided"}
-            fee={Number(poolKeyData.fee) === 0x800000 ? "dynamicFee" : poolKeyData.fee || "Not provided"}
+            fee={
+              Number(poolKeyData.fee) === 0x800000
+                ? "dynamicFee"
+                : poolKeyData.fee || "Not provided"
+            }
             tickSpacing={poolKeyData.tickSpacing || "Not provided"}
             hooks={poolKeyData.hooks || "Not provided"}
             deployer={poolKeyData.deployer || "Not provided"}
