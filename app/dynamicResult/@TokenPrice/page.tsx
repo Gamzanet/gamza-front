@@ -57,13 +57,14 @@ export default function ERC6909DeltaBurnResultPage() {
           throw new Error("No matching swap data found");
         }
 
+        const formattedPrice =
+        resultData?.result?.price && resultData.result.price > 0
+          ? resultData.result.price.toFixed(18)
+          : "No Data";
+
         // ✅ 필요한 값 설정
-        setSwappedPrice(
-          Math.abs(
-            validSwapData.userAmount0delta / validSwapData.userAmount1delta,
-          ),
-        );
-        setOraclePrice(validSwapData.calc.price_expected);
+        setSwappedPrice(Math.abs(validSwapData.userAmount0delta / validSwapData.userAmount1delta),);
+        setOraclePrice(formattedPrice);
         setFee(validSwapData["for-expected-current-fee"]);
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");

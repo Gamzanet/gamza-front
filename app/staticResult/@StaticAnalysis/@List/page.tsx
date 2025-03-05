@@ -14,103 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import ScrollableWindow from "@/components/ScorllableWindow";
 import Loading from "@/components/ui/loading";
+import { threatDetails } from "@/utils/ThreatDetails";
 
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
-
-// 특정 위협의 상세 정보 매핑
-const threatDetails: Record<string, any> = {
-  "Missing token transfer while burnt": {
-    title: "Missing Token Burn in Redeem Function",
-    description:
-      "The `_burn` function is not called before or after a token transfer in the `redeem` function. This could result in tokens not being properly removed from circulation, leading to inconsistencies in token accounting.",
-    impact:
-      "If tokens are not correctly burned during redemption, it can lead to inflationary issues or unintended token accumulation. This could allow users to retain redeemable tokens even after they should have been burned, potentially introducing security vulnerabilities and economic inconsistencies.",
-    recommendation:
-      "Ensure that the `_burn` function is properly invoked in the `redeem` function, either before or after the transfer operation, to maintain correct token supply and prevent unintended token retention.",
-  },
-  "Using Slot0 directly to return price data as an oracle": {
-    title: "Price Oracle Manipulation Risk",
-    description:
-      "Using Slot0 directly to return price data as an oracle can introduce vulnerabilities due to its susceptibility to manipulation. Slot0 reflects the most recent liquidity and price state, but it can be influenced by flash loans or other temporary liquidity shifts, leading to inaccurate price feeds.",
-    impact:
-      "If an attacker exploits this weakness, they could manipulate the price oracle by momentarily shifting the liquidity pool’s state. This could result in incorrect price data being used in smart contracts relying on the oracle, potentially causing loss of funds, miscalculations in DeFi protocols, or market instability.",
-    recommendation:
-      "To mitigate this risk, consider implementing time-weighted average price (TWAP) calculations instead of relying solely on Slot0. Additionally, integrating multiple data sources or safeguards against flash loan attacks can help improve price oracle reliability and security.",
-  },
-  "Low call": {
-    title: "Usage of Low-Level Call",
-    description:
-      "The contract makes use of low-level `call` instead of `transfer` or `send`. While `call` is more flexible and can be used to interact with non-standard contracts, it bypasses important security checks and requires manual handling of return values.",
-    impact:
-      "Using `call` without proper validation may lead to security vulnerabilities, such as reentrancy attacks or unintended failures if the call is unsuccessful. Additionally, since `call` does not forward a fixed amount of gas like `transfer`, it can make the contract susceptible to gas griefing attacks.",
-    recommendation:
-      "Consider using `transfer` or `send` where possible to ensure safer Ether transfers. If `call` is necessary, implement proper checks for return values and handle failures appropriately to mitigate potential security risks.",
-  },
-  "Missing onlyPoolManager modifier": {
-    title: "Missing onlyPoolManager Modifier",
-    description:
-      "The hook functions should be restricted to be called only by the PoolManager. Without this restriction, unauthorized entities might invoke critical functions, leading to unintended behaviors or security vulnerabilities.",
-    impact:
-      "If the hook functions can be called by any contract or external account, it may result in unauthorized access, manipulation of pool parameters, or even financial loss. Attackers could exploit this to execute arbitrary operations, disrupting the protocol's integrity.",
-    recommendation:
-      "Ensure that all relevant hook functions include an `onlyPoolManager` modifier to restrict access exclusively to the PoolManager contract. Additionally, conduct a security audit to verify that no functions are unintentionally exposed to unauthorized callers.",
-  },
-  "Misconfigured Hook": {
-    title: "Misconfigured Hook",
-    description:
-      "Some hook functions are not implemented, yet their corresponding flags in 'getHookPermissions()' are set to true. This misconfiguration can lead to unexpected behavior when the PoolManager attempts to call these functions.",
-    impact:
-      "If a hook function is expected to be executed but is missing, it may cause transaction failures or undefined behavior. This could disrupt the pool’s operation, prevent proper execution of trades or liquidity management, and introduce security risks.",
-    recommendation:
-      "Ensure that all hook functions marked as active in 'getHookPermissions()' are properly implemented. If certain hooks are not required, set their respective flags to false to prevent unintended contract interactions.",
-  },
-  "Using tx.origin": {
-    title: "Using tx.origin for Access Control",
-    description:
-      "Using tx.origin to enforce access control can make the contract vulnerable to phishing attacks. Attackers can trick users into initiating transactions from a trusted contract, which can then execute malicious operations on their behalf.",
-    impact:
-      "Contracts relying on tx.origin for authentication can be compromised by phishing attacks. If a user interacts with a malicious contract, it can initiate transactions on their behalf, bypassing security checks and leading to asset loss or unauthorized access.",
-    recommendation:
-      "Avoid using tx.origin for access control. Instead, use msg.sender, which ensures that only the immediate caller (rather than the original transaction initiator) has access. Implement role-based access control (RBAC) or OpenZeppelin's Ownable pattern for secure authentication.",
-  },
-  "non-payable-constructor": {
-    title: "Non-Payable Constructor Gas Inefficiency",
-    description:
-      "The constructor of this contract is marked as non-payable. Making the constructor payable can save gas costs because it removes an additional check for zero ETH transfers, reducing transaction overhead.",
-    impact:
-      "If the constructor is non-payable, the contract incurs additional gas costs due to the implicit check for zero ETH transfers. This inefficiency can be significant in high-deployment scenarios, leading to unnecessary expenses.",
-    recommendation:
-      "Consider marking the constructor as payable if the contract does not require an explicit check for zero ETH transfers. This optimization can reduce gas costs during deployment, improving overall efficiency.",
-  },
-  "state-variable-read-in-a-loop": {
-    title: "State Variable Read in a Loop",
-    description:
-      "Reading or writing state variables inside loops is inefficient because each access requires an additional storage read or write operation, which incurs high gas costs. This can significantly impact contract performance and increase transaction fees.",
-    impact:
-      "Frequent state variable reads and writes inside loops increase gas costs due to multiple interactions with Ethereum's storage, making transactions more expensive and inefficient. This can especially be problematic in functions that iterate over large datasets.",
-    recommendation:
-      "Store state variable values in a local variable before entering the loop, then use the local variable inside the loop to reduce repeated storage accesses. This optimization minimizes gas costs and improves execution efficiency.",
-  },
-  "use-nested-if": {
-    title: "Use Nested If Statements for Efficiency",
-    description:
-      "Using nested if statements is often more gas-efficient compared to combining multiple conditions with logical AND (&&). This approach can lead to lower execution costs and improved contract performance.",
-    impact:
-      "Logical AND (&&) requires evaluating all conditions, even when an earlier condition fails, leading to unnecessary computation and increased gas consumption. Nested if statements allow for short-circuit evaluation, reducing the number of operations executed.",
-    recommendation:
-      "Instead of chaining multiple conditions using &&, structure conditions using nested if statements where applicable. This optimizes execution flow, improves readability, and enhances test coverage.",
-  },
-  "use-prefix-decrement-not-postfix": {
-    title: "Use Prefix Decrement Instead of Postfix",
-    description:
-      "Using the prefix decrement (--i) instead of the postfix decrement (i--) is more gas-efficient when the return value is not needed. The prefix decrement modifies the value before returning it, avoiding unnecessary temporary storage.",
-    impact:
-      "Postfix decrement (i--) creates an additional temporary variable to hold the previous value before decrementing, which leads to increased gas usage. Using prefix decrement (--i) eliminates this overhead, reducing transaction costs.",
-    recommendation:
-      "If the return value of the decrement operation is not required, use the prefix form (--i) instead of the postfix form (i--) to optimize gas efficiency.",
-  },
-  // 다른 위협 상세 정보 추가 가능
-};
 
 export default function StaticAnalysisResultPage() {
   const searchParams = useSearchParams();
@@ -181,7 +87,8 @@ export default function StaticAnalysisResultPage() {
                   ...threatsList.filter(
                     (newThreat) =>
                       !prevThreats.some(
-                        (existingThreat) => existingThreat.name === newThreat.name,
+                        (existingThreat) =>
+                          existingThreat.name === newThreat.name,
                       ),
                   ),
                 ];

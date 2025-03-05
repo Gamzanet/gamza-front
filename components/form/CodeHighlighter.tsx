@@ -7,6 +7,7 @@ import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useState } from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { Button } from "../ui/button";
+import { Copy } from "lucide-react"; // 아이콘 추가
 
 // @todo replace library to https://github.com/FormidableLabs/prism-react-renderer
 
@@ -32,7 +33,7 @@ const CodeHighlighter = ({
           },
         }}
 
-        // @todo try wrap lines: checkout https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/
+      // @todo try wrap lines: checkout https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/
       >
         {codeString}
       </Prism>
@@ -50,10 +51,32 @@ const ScrollableCode = ({
   codeString: string;
 }) => {
   const [fontSize, setFontSize] = useState(1.0);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(codeString);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500); // 1.5초 후 다시 원래 상태로 변경
+    } catch (err) {
+      console.error("Failed to copy text:", err);
+    }
+  };
+
   return (
     <ScrollArea.Root
       className={`h-[500px] h-max-[30vh] w-full overflow-hidden rounded bg-white shadow-[0_2px_10px] shadow-blackA4 relative ${className}`}
     >
+      {/* ✅ Copy 버튼 추가 */}
+      <div className="absolute right-3 top-3 flex items-center gap-2">
+        <Button
+          className="flex items-center gap-1 bg-gray-300 hover:bg-gray-400 text-xs px-2 py-1 rounded-md transition"
+          onClick={handleCopy}
+        >
+          <Copy size={14} />
+          {copied ? "Copied!" : "Copy"}
+        </Button>
+      </div>
       {/* <div className="py-2 absolute right-0 top-0">
         <Button
           className="rounded-[15px] p-2 m-2 text-xl w-fit-content text-align-center bg-blue-500 text-white hover:bg-blue-600 select-none"

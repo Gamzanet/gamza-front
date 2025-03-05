@@ -12,10 +12,10 @@ const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
 // ✅ 테스트 이름 매핑 객체 (Dict 활용)
 const testNameMapping: Record<string, string> = {
-  "Minimum_Add": "AddLiquidity",
-  "Minimum_Remove": "RemoveLiquidity",
-  "Minimum_Swap": "Swap",
-  "Minimum_Donate": "Donate",
+  Minimum_Add: "AddLiquidity",
+  Minimum_Remove: "RemoveLiquidity",
+  Minimum_Swap: "Swap",
+  Minimum_Donate: "Donate",
   "Time-Based-Minimum_Test": "TimeLock",
   "OnlyByPoolManager-Chk": "OnlyByPoolManager",
   "double-Initialize-Test": "Reinitialize",
@@ -40,7 +40,9 @@ export default function Page() {
         for (const id of taskIds) {
           if (updatedData[id]?.status === "Success") continue; // 이미 성공한 경우 건너뜀
 
-          const response = await fetch(`http://localhost:7777/api/result/${id}`);
+          const response = await fetch(
+            `http://localhost:7777/api/result/${id}`,
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch result for ID: ${id}`);
           }
@@ -86,7 +88,9 @@ export default function Page() {
 
   const testNames = useMemo(() => {
     return taskIds.map((id, index) => ({
-      name: testNameMapping[componentData[id]?.result?.result?.name] || `Loading...`,
+      name:
+        testNameMapping[componentData[id]?.result?.result?.name] ||
+        `Loading...`,
       index,
     }));
   }, [componentData, taskIds]);

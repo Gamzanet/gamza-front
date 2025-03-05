@@ -84,19 +84,21 @@ function Component({
 
   const averageGas = validData.length
     ? (
-        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-      ).toFixed(2)
+      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+    ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-        const mid = Math.floor(sorted.length / 2);
-        return sorted.length % 2 === 0
-          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-          : sorted[mid].toString();
-      })()
+      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 === 0
+        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+        : sorted[mid].toString();
+    })()
     : "0";
+
+  const maxValue = Math.max(...validData.map((d) => Math.max(d.enableHook, d.disableHook))) * 1.2; // 최대값보다 약간 더 여유 공간 추가
 
   return (
     <Card className="p-4">
@@ -125,7 +127,7 @@ function Component({
                 tickFormatter={(value) => value.slice(0, 3)}
                 hide
               />
-              <XAxis dataKey="enableHook" type="number" hide />
+              <XAxis domain={[0, maxValue]} type="number" hide />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
@@ -193,8 +195,7 @@ function Component({
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          min:{minGasMethod}:{minGas} | average:{averageGas} | median:
-          {medianGas}
+          min:{minGas} | average:{averageGas} | median:{medianGas}
         </div>
         <div className="leading-none text-muted-foreground">{children}</div>
       </CardFooter>
@@ -207,6 +208,89 @@ interface GasData {
   noHookGas: number;
   difference: number;
 }
+
+function GasDifferenceSummary({
+  chartData = [],
+}: {
+  chartData: { method: string; gas: number }[];
+}) {
+  if (chartData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        No data available
+      </div>
+    );
+  }
+
+  const maxGas = chartData.reduce(
+    (max, data) => (data.gas > max ? data.gas : max),
+    0,
+  );
+  const maxGasMethod = chartData.find((data) => data.gas === maxGas)?.method;
+
+  const minGas = chartData.reduce(
+    (min, data) => (data.gas < min ? data.gas : min),
+    Infinity,
+  );
+  const minGasMethod = chartData.find((data) => data.gas === minGas)?.method;
+
+  const averageGas = (
+    chartData.reduce((sum, data) => sum + data.gas, 0) / chartData.length
+  ).toFixed(2);
+
+  const medianGas = (() => {
+    const sorted = [...chartData].sort((a, b) => a.gas - b.gas);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0
+      ? ((sorted[mid - 1].gas + sorted[mid].gas) / 2).toFixed(2)
+      : sorted[mid].gas;
+  })();
+
+  const chartConfig2 = {
+    method: {
+      label: "method",
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Gas Difference Summary</CardTitle>
+        <CardDescription></CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig2}>
+          <BarChart accessibilityLayer data={chartData}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="method"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 6)}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar dataKey="gas" fill="hsl(var(--chart-3))" radius={8} />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Maximum gas gap: {maxGasMethod} {maxGas}{" "}
+          <TrendingUp className="h-4 w-4" />
+        </div>
+        <div className="leading-none text-muted-foreground">
+          min:{minGas} | average:{averageGas} | median:{medianGas}
+        </div>
+      </CardFooter>
+    </Card>
+  );
+}
+
 const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
 export default function GasDifferenceChart() {
@@ -215,6 +299,7 @@ export default function GasDifferenceChart() {
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [isCode, setIsCode] = useState<boolean>(false);
+  const [gasPrice, setGasPrice] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchGasData = async () => {
@@ -258,34 +343,36 @@ export default function GasDifferenceChart() {
         // `hook`과 `noHook` 데이터 정리
         const hook = resultData.result.result.hook;
         const noHook = resultData.result.result.noHook;
+        const gasPrice = resultData.result.result.gasPrice;
 
         const formattedData: GasData[] = [
           {
-            method: "AddLiquidity",
+            method: "Add",
             hookGas: Number(hook.add.gas),
             noHookGas: Number(noHook.add.gas),
-            difference: Number(hook.add.gas) - Number(noHook.add.gas),
+            difference: (Number(hook.add.gas) - Number(noHook.add.gas)),
           },
           {
-            method: "RemoveLiquidity",
+            method: "Remove",
             hookGas: Number(hook.remove.gas),
             noHookGas: Number(noHook.remove.gas),
-            difference: Number(hook.remove.gas) - Number(noHook.remove.gas),
+            difference: (Number(hook.remove.gas) - Number(noHook.remove.gas)),
           },
           {
             method: "Donate",
             hookGas: Number(hook.donate.gas),
             noHookGas: Number(noHook.donate.gas),
-            difference: Number(hook.donate.gas) - Number(noHook.donate.gas),
+            difference: (Number(hook.donate.gas) - Number(noHook.donate.gas)),
           },
           {
             method: "Swap",
             hookGas: Number(hook.swap.gas),
             noHookGas: Number(noHook.swap.gas),
-            difference: Number(hook.swap.gas) - Number(noHook.swap.gas),
+            difference: (Number(hook.swap.gas) - Number(noHook.swap.gas)),
           },
         ];
 
+        setGasPrice(gasPrice);
         setGasData(formattedData);
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
@@ -313,6 +400,16 @@ export default function GasDifferenceChart() {
     <>
       {!isCode && (
         <div className="flex flex-col items-center justify-center">
+          {/* ✅ 현재 체인의 가스비 표시 */}
+          <div className="mt-4 p-2 border rounded-lg bg-gray-100 text-sm text-gray-700">
+            {gasPrice ? (
+              <p>
+                <strong>Current Gas Price:</strong> {gasPrice} wei
+              </p>
+            ) : (
+              <p>Loading gas price...</p>
+            )}
+          </div>
           <Component
             cardTitle="Estimated Gas Usage"
             cardDescription="per method gas consumption enabled/disabled hooks"
@@ -333,87 +430,4 @@ export default function GasDifferenceChart() {
       )}
     </>
   );
-
-  function GasDifferenceSummary({
-    chartData = [],
-  }: {
-    chartData: { method: string; gas: number }[];
-  }) {
-    if (chartData.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center">
-          No data available
-        </div>
-      );
-    }
-
-    const maxGas = chartData.reduce(
-      (max, data) => (data.gas > max ? data.gas : max),
-      0,
-    );
-    const maxGasMethod = chartData.find((data) => data.gas === maxGas)?.method;
-
-    const minGas = chartData.reduce(
-      (min, data) => (data.gas < min ? data.gas : min),
-      Infinity,
-    );
-    const minGasMethod = chartData.find((data) => data.gas === minGas)?.method;
-
-    const averageGas = (
-      chartData.reduce((sum, data) => sum + data.gas, 0) / chartData.length
-    ).toFixed(2);
-
-    const medianGas = (() => {
-      const sorted = [...chartData].sort((a, b) => a.gas - b.gas);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 === 0
-        ? ((sorted[mid - 1].gas + sorted[mid].gas) / 2).toFixed(2)
-        : sorted[mid].gas;
-    })();
-
-    const chartConfig2 = {
-      method: {
-        label: "method",
-        color: "hsl(var(--chart-3))",
-      },
-    } satisfies ChartConfig;
-
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Gas Difference Summary</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig2}>
-            <BarChart accessibilityLayer data={chartData}>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="method"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => value.slice(0, 6)}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Bar dataKey="gas" fill="hsl(var(--chart-3))" radius={8} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          <div className="flex gap-2 font-medium leading-none">
-            Maximum gas gap: {maxGasMethod} {maxGas}{" "}
-            <TrendingUp className="h-4 w-4" />
-          </div>
-          <div className="leading-none text-muted-foreground">
-            min:{minGasMethod}:{minGas} | average:{averageGas} | median:
-            {medianGas}
-          </div>
-        </CardFooter>
-      </Card>
-    );
-  }
 }

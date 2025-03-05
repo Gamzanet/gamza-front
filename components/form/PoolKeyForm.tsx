@@ -154,6 +154,7 @@ export default function PoolKeyForm({
   }
 
   const saveDataToLocalStorage = () => {
+    localStorage.removeItem("taskIDs"); // 기존 데이터 삭제
     const poolKeyData = {
       chain,
       currency0,
