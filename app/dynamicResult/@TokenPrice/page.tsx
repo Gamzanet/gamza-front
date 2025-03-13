@@ -8,8 +8,8 @@ import Loading from "@/components/ui/loading";
 const POLLING_INTERVAL = 5000; // 5초마다 상태 확인
 
 export default function ERC6909DeltaBurnResultPage() {
-  const [swappedPrice, setSwappedPrice] = useState<number | null>(null);
-  const [oraclePrice, setOraclePrice] = useState<number | null>(null);
+  const [swappedPrice, setSwappedPrice] = useState<string | null>(null);
+  const [oraclePrice, setOraclePrice] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [fee, setFee] = useState<number | null>(null);
@@ -57,13 +57,19 @@ export default function ERC6909DeltaBurnResultPage() {
           throw new Error("No matching swap data found");
         }
 
+        // ✅ Oracle Price 값 검증 후 변환 (wei → ether 단위)
+        const price = Number(resultData?.result?.price);
         const formattedPrice =
-        resultData?.result?.price && resultData.result.price > 0
-          ? resultData.result.price.toFixed(18)
-          : "No Data";
+          !isNaN(price) && price > 0 ? price.toFixed(18) : "No Data";
+
+        // ✅ Swapped Price 검증 후 변환 (wei → ether 단위)
+        const swappedValue = Math.abs(validSwapData.userAmount0delta / validSwapData.userAmount1delta);
+        const formattedSwappedPrice =
+          !isNaN(swappedValue) && swappedValue > 0
+            ? swappedValue.toFixed(18) : "No Data";
 
         // ✅ 필요한 값 설정
-        setSwappedPrice(Math.abs(validSwapData.userAmount0delta / validSwapData.userAmount1delta),);
+        setSwappedPrice(formattedSwappedPrice);
         setOraclePrice(formattedPrice);
         setFee(validSwapData["for-expected-current-fee"]);
       } catch (err: any) {

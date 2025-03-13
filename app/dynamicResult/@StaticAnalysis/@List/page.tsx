@@ -24,6 +24,7 @@ export default function StaticAnalysisResultPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // ✅ 최초 1회 로딩 추가
 
   useEffect(() => {
     const fetchAnalysisResults = async () => {
@@ -33,10 +34,14 @@ export default function StaticAnalysisResultPage() {
 
         // ✅ URL에서 `taskIDs` 가져오기
         const idsParam = searchParams.get("ids");
-        const urlTaskIDs = idsParam ? JSON.parse(decodeURIComponent(idsParam)) : [];
+        const urlTaskIDs = idsParam
+          ? JSON.parse(decodeURIComponent(idsParam))
+          : [];
 
         // ✅ 로컬 스토리지에서 `taskIDs` 가져오기
-        const storedTaskIDs = JSON.parse(localStorage.getItem("taskIDs") || "[]");
+        const storedTaskIDs = JSON.parse(
+          localStorage.getItem("taskIDs") || "[]",
+        );
         console.log(storedTaskIDs);
 
         // ✅ URL `taskIDs` + 로컬 스토리지 `taskIDs` 병합 (중복 제거)
@@ -64,6 +69,7 @@ export default function StaticAnalysisResultPage() {
               setTimeout(resolve, POLLING_INTERVAL),
             );
           }
+          setIsFirstLoad(false);
         };
 
         // ✅ 비동기 폴링으로 개별 데이터 업데이트
@@ -194,6 +200,11 @@ export default function StaticAnalysisResultPage() {
                       ),
                   ),
                 ];
+
+                if (uniqueThreats.length > 0) {
+                  setIsFirstLoad(false);
+                }
+
                 return uniqueThreats;
               });
             }
@@ -211,9 +222,18 @@ export default function StaticAnalysisResultPage() {
     fetchAnalysisResults();
   }, [searchParams]);
 
-  if (loading) {
-    return <Loading />;
+  // ✅ 최초 1회만 로딩 UI 표시
+  if (isFirstLoad) {
+    return (
+      <div className="w-full h-full">
+        <Loading containerClassName="h-full" />
+      </div>
+    );
   }
+
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   if (error) {
     return <div className="text-red-500">Error: {error}</div>;

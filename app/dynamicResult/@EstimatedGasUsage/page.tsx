@@ -404,7 +404,7 @@ export default function GasDifferenceChart() {
           <div className="mt-4 p-2 border rounded-lg bg-gray-100 text-sm text-gray-700">
             {gasPrice ? (
               <p>
-                <strong>Current Gas Price:</strong> {gasPrice} wei
+                <strong>Current Gas Price:</strong> {gasPrice > 0 ? gasPrice+" wei" : "No Data"}
               </p>
             ) : (
               <p>Loading gas price...</p>

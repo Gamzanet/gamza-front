@@ -228,7 +228,7 @@ function DynamicTokenPriceResult({
           {/* ✅ Swapped Price */}
           <div>
             <p className="font-bold">Swapped Price:</p>
-            <p className="text-sm text-gray-500">Included Fee:</p>
+            <p className="text-sm text-gray-500">Included Hook Fee:</p>
           </div>
           <div>
             <p>{swappedPrice}</p>

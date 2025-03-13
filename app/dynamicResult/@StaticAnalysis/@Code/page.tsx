@@ -18,6 +18,7 @@ export default function StaticAnalysisResultPage() {
     eth: "https://eth.blockscout.com",
     uni: "https://unichain.blockscout.com",
     base: "https://base.blockscout.com",
+    arb: "https://arbitrum.blockscout.com",
   };
 
   // ✅ 올바른 체인인지 확인 후 base URL 설정
@@ -67,7 +68,6 @@ export default function StaticAnalysisResultPage() {
             saveTaskIDToLocalStorage(taskId); // ✅ taskID 로컬 스토리지 저장
           }
         }
-
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
       } finally {
@@ -87,11 +87,11 @@ export default function StaticAnalysisResultPage() {
     try {
       const requestBody = {
         data: {
-          source: sourceCode, 
+          source: sourceCode,
           mode: 4,
         },
       };
-  
+
       const response = await fetch("http://localhost:7777/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,14 +100,14 @@ export default function StaticAnalysisResultPage() {
       if (!response.ok) {
         throw new Error(`Failed to create task: ${response.status}`);
       }
-  
+
       const result = await response.json();
       const taskId = result.info.tasks.map((task: any) => task.id); // id 추출
 
       if (!taskId) {
         throw new Error("Failed to retrieve taskID.");
       }
-  
+
       return taskId; // 완료된 taskID 반환
     } catch (err: any) {
       setError(err.message || "Failed to create task.");
@@ -119,7 +119,9 @@ export default function StaticAnalysisResultPage() {
   const saveTaskIDToLocalStorage = (taskID: string) => {
     try {
       const existingTaskIDs = localStorage.getItem("taskIDs");
-      let taskIDList: string[] = existingTaskIDs ? JSON.parse(existingTaskIDs) : [];
+      let taskIDList: string[] = existingTaskIDs
+        ? JSON.parse(existingTaskIDs)
+        : [];
 
       // 중복 추가 방지
       if (!taskIDList.includes(taskID)) {

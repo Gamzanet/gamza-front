@@ -248,8 +248,9 @@ export default function PoolKeyForm({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="eth">Ethereum</SelectItem>
-            <SelectItem value="uni">Unichain</SelectItem>
             <SelectItem value="base">Base</SelectItem>
+            <SelectItem value="arb">Arbitrum</SelectItem>
+            <SelectItem value="uni">Unichain</SelectItem>
           </SelectContent>
         </Select>
         <button
