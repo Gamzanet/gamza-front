@@ -85,18 +85,18 @@ function Component({
 
   const averageGas = validData.length
     ? (
-      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-    ).toFixed(2)
+        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+      ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 === 0
-        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-        : sorted[mid].toString();
-    })()
+        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+          : sorted[mid].toString();
+      })()
     : "0";
 
   const maxValue =
@@ -315,10 +315,30 @@ export default function GasDifferenceChart() {
   const hook = data.result.result.hook;
   const noHook = data.result.result.noHook;
   const formattedData: GasData[] = [
-    { method: "Add", hookGas: Number(hook.add.gas), noHookGas: Number(noHook.add.gas), difference: Number(hook.add.gas) - Number(noHook.add.gas) },
-    { method: "Remove", hookGas: Number(hook.remove.gas), noHookGas: Number(noHook.remove.gas), difference: Number(hook.remove.gas) - Number(noHook.remove.gas) },
-    { method: "Donate", hookGas: Number(hook.donate.gas), noHookGas: Number(noHook.donate.gas), difference: Number(hook.donate.gas) - Number(noHook.donate.gas) },
-    { method: "Swap", hookGas: Number(hook.swap.gas), noHookGas: Number(noHook.swap.gas), difference: Number(hook.swap.gas) - Number(noHook.swap.gas) },
+    {
+      method: "Add",
+      hookGas: Number(hook.add.gas),
+      noHookGas: Number(noHook.add.gas),
+      difference: Number(hook.add.gas) - Number(noHook.add.gas),
+    },
+    {
+      method: "Remove",
+      hookGas: Number(hook.remove.gas),
+      noHookGas: Number(noHook.remove.gas),
+      difference: Number(hook.remove.gas) - Number(noHook.remove.gas),
+    },
+    {
+      method: "Donate",
+      hookGas: Number(hook.donate.gas),
+      noHookGas: Number(noHook.donate.gas),
+      difference: Number(hook.donate.gas) - Number(noHook.donate.gas),
+    },
+    {
+      method: "Swap",
+      hookGas: Number(hook.swap.gas),
+      noHookGas: Number(noHook.swap.gas),
+      difference: Number(hook.swap.gas) - Number(noHook.swap.gas),
+    },
   ];
   const gasPrice = data.result.result.gasPrice;
   const gasData = formattedData;

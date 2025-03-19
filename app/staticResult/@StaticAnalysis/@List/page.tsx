@@ -41,7 +41,9 @@ export default function StaticAnalysisResultPage() {
     }
 
     // ✅ SSE 연결 설정
-    const eventSource = new EventSource(`${SSE_URL}/${timeHash}/${hooks}/${mode}/0`);
+    const eventSource = new EventSource(
+      `${SSE_URL}/${timeHash}/${hooks}/${mode}/0`,
+    );
 
     eventSource.onmessage = async (event) => {
       try {
@@ -83,8 +85,8 @@ export default function StaticAnalysisResultPage() {
               ...newThreats.filter(
                 (newThreat) =>
                   !prevThreats.some(
-                    (existingThreat) => existingThreat.name === newThreat.name
-                  )
+                    (existingThreat) => existingThreat.name === newThreat.name,
+                  ),
               ),
             ];
           });

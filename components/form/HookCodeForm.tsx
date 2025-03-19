@@ -25,7 +25,7 @@ export default function HookCodeForm() {
   const [error, setError] = useState<string | null>(null);
 
   const onClickSamplePoolKeyHandler = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     setCode(sampleCodeTakeProfitHook);
@@ -52,33 +52,37 @@ export default function HookCodeForm() {
       sessionStorage.removeItem("staticResultData");
       sessionStorage.removeItem("dynamicResultData");
       saveDataToLocalStorage(); // 기존 데이터 저장
-  
+
       const requestBody = makeHookCodeRequestBody();
       const response = await fetch(`${TASK_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
-  
+
       const result = await response.json();
-      if (!result.info || !result.info.tasks || result.info.tasks.length === 0) {
+      if (
+        !result.info ||
+        !result.info.tasks ||
+        result.info.tasks.length === 0
+      ) {
         throw new Error("No tasks found in response.");
       }
-  
+
       const { hooks, timeHash, tasks } = result.info;
       const taskIDs = tasks.map((task: any) => task.id);
       const mode = 4; // ✅ mode 추가
-  
+
       // ✅ 데이터를 Session Storage에 저장
       sessionStorage.setItem(
         "staticResultData",
-        JSON.stringify({ hooks, timeHash, mode, taskIDs })
+        JSON.stringify({ hooks, timeHash, mode, taskIDs }),
       );
-  
+
       router.push(`/staticResult`);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");

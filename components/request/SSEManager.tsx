@@ -28,7 +28,11 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
     let expectedCount = 0;
 
     if (staticData) {
-      const { hooks: staticHooks, timeHash: staticTimeHash, taskIDs: staticTaskIDs } = JSON.parse(staticData);
+      const {
+        hooks: staticHooks,
+        timeHash: staticTimeHash,
+        taskIDs: staticTaskIDs,
+      } = JSON.parse(staticData);
       sseGroups.push({
         timeHash: staticTimeHash,
         hooks: staticHooks,
@@ -41,11 +45,36 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (dynamicData) {
-      const { hooks: dynamicHooks, timeHash: dynamicTimeHash, taskIDs: dynamicTaskIDs } = JSON.parse(dynamicData);
+      const {
+        hooks: dynamicHooks,
+        timeHash: dynamicTimeHash,
+        taskIDs: dynamicTaskIDs,
+      } = JSON.parse(dynamicData);
       sseGroups.push(
-        { timeHash: dynamicTimeHash, hooks: dynamicHooks, group: 0, taskIDs: dynamicTaskIDs, mode: 2, type: "dynamic" },
-        { timeHash: dynamicTimeHash, hooks: dynamicHooks, group: 1, taskIDs: dynamicTaskIDs, mode: 2, type: "dynamic" },
-        { timeHash: dynamicTimeHash, hooks: dynamicHooks, group: 2, taskIDs: dynamicTaskIDs, mode: 2, type: "dynamic" }
+        {
+          timeHash: dynamicTimeHash,
+          hooks: dynamicHooks,
+          group: 0,
+          taskIDs: dynamicTaskIDs,
+          mode: 2,
+          type: "dynamic",
+        },
+        {
+          timeHash: dynamicTimeHash,
+          hooks: dynamicHooks,
+          group: 1,
+          taskIDs: dynamicTaskIDs,
+          mode: 2,
+          type: "dynamic",
+        },
+        {
+          timeHash: dynamicTimeHash,
+          hooks: dynamicHooks,
+          group: 2,
+          taskIDs: dynamicTaskIDs,
+          mode: 2,
+          type: "dynamic",
+        },
       );
       expectedCount += 8 + 1 + 1; // dynamic: 0-0 ~ 0-7 (8개) + 1-0 (1개) + 2-0 (1개)
     }
@@ -55,12 +84,17 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
     const eventSources: EventSource[] = [];
 
     sseGroups.forEach(({ timeHash, hooks, group, taskIDs, mode, type }) => {
-      const eventSource = new EventSource(`${SSE_URL}/${timeHash}/${hooks}/${mode}/${group}`);
+      const eventSource = new EventSource(
+        `${SSE_URL}/${timeHash}/${hooks}/${mode}/${group}`,
+      );
       eventSources.push(eventSource);
 
       eventSource.onmessage = async (event) => {
         try {
-          console.log(`SSE Received (${type}, Group ${group}, Mode ${mode}):`, event.data);
+          console.log(
+            `SSE Received (${type}, Group ${group}, Mode ${mode}):`,
+            event.data,
+          );
           const match = event.data.match(/idx: (\d+), task-id: ([a-z0-9-]+)/);
           if (!match) return;
 
@@ -74,7 +108,8 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
 
           // ✅ Fetch result for the received task ID
           const response = await fetch(`${RESULT_API_URL}/${taskId}`);
-          if (!response.ok) throw new Error(`Failed to fetch result for taskID: ${taskId}`);
+          if (!response.ok)
+            throw new Error(`Failed to fetch result for taskID: ${taskId}`);
 
           const resultData = await response.json();
           const key = `${type}-${group}-${idx}`; // 🔥 키 네이밍 변경
@@ -93,7 +128,9 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
 
             // ✅ 모든 데이터 수신 시 SSE 종료
             if (newSet.size === expectedCount) {
-              console.log(`✅ All expected data (${expectedCount}) received. Closing all SSE.`);
+              console.log(
+                `✅ All expected data (${expectedCount}) received. Closing all SSE.`,
+              );
               eventSources.forEach((source) => source.close());
             }
 
@@ -106,7 +143,10 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
       };
 
       eventSource.onerror = (event) => {
-        console.error(`SSE Connection Error (${type}, Group ${group}, Mode ${mode}):`, event);
+        console.error(
+          `SSE Connection Error (${type}, Group ${group}, Mode ${mode}):`,
+          event,
+        );
         setError("Failed to connect to SSE.");
         eventSource.close();
       };

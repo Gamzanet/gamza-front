@@ -100,7 +100,11 @@ export default function StaticAnalysisResultPage() {
       }
 
       const result = await response.json();
-      if (!result.info || !result.info.tasks || result.info.tasks.length === 0) {
+      if (
+        !result.info ||
+        !result.info.tasks ||
+        result.info.tasks.length === 0
+      ) {
         throw new Error("No tasks found in response.");
       }
 
@@ -111,9 +115,8 @@ export default function StaticAnalysisResultPage() {
       // ✅ 데이터를 Session Storage에 저장
       sessionStorage.setItem(
         "staticResultData",
-        JSON.stringify({ hooks, timeHash, mode, taskIDs })
+        JSON.stringify({ hooks, timeHash, mode, taskIDs }),
       );
-
     } catch (err: any) {
       setError(err.message || "Failed to create task.");
       return null;

@@ -24,7 +24,7 @@ export default function Page() {
   const [indexNumber, setIndexNumber] = useState(0);
   const [isCode, setIsCode] = useState<boolean>(false);
   const { taskResults, error } = useSSE();
-  
+
   if (error) {
     return <div style={{ color: "red" }}>Error: {error}</div>;
   }
@@ -41,7 +41,9 @@ export default function Page() {
     return Array(8)
       .fill(0)
       .map((_, idx) => ({
-        name: testNameMapping[traceLogData[idx]?.result?.result?.name] || `Loading...`,
+        name:
+          testNameMapping[traceLogData[idx]?.result?.result?.name] ||
+          `Loading...`,
         index: idx,
       }));
   }, [traceLogData]);
@@ -49,7 +51,10 @@ export default function Page() {
   // ✅ 선택한 `TraceLog` 데이터 가져오기
   const sampleTraceLog = useMemo(() => {
     if (!traceLogData[testNumber]) return "Loading...";
-    return traceLogData[testNumber]?.result?.result?.failList[indexNumber]?.trace || "No Trace Data Available";
+    return (
+      traceLogData[testNumber]?.result?.result?.failList[indexNumber]?.trace ||
+      "No Trace Data Available"
+    );
   }, [traceLogData, testNumber, indexNumber]);
 
   return (
@@ -87,10 +92,11 @@ export default function Page() {
                           color: "#EF7BF9",
                           margin: "0px",
                         }}
-                        className={`${test.index === testNumber
+                        className={`${
+                          test.index === testNumber
                             ? "bg-primary-100"
                             : "bg-[#rgba(239, 124, 249, 0.1)]"
-                          } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
                       >
                         {test.name}
                       </Button>
@@ -105,10 +111,14 @@ export default function Page() {
               <div className="mb-4 p-4 bg-gray-100 rounded-lg">
                 <h2 className="text-lg font-bold text-gray-700">
                   Impact:{" "}
-                  {taskResults[testNumber]?.result?.result?.failList?.[indexNumber]?.impact || "No impact available"}
+                  {taskResults[testNumber]?.result?.result?.failList?.[
+                    indexNumber
+                  ]?.impact || "No impact available"}
                 </h2>
                 <p className="text-base text-gray-600">
-                  {taskResults[testNumber]?.result?.result?.failList?.[indexNumber]?.description || "No description available"}
+                  {taskResults[testNumber]?.result?.result?.failList?.[
+                    indexNumber
+                  ]?.description || "No description available"}
                 </p>
               </div>
 
@@ -116,7 +126,8 @@ export default function Page() {
               <button
                 onClick={() =>
                   setIndexNumber(
-                    (indexNumber - 1) % taskResults[testNumber]?.result?.result?.failList?.length,
+                    (indexNumber - 1) %
+                      taskResults[testNumber]?.result?.result?.failList?.length,
                   )
                 }
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
@@ -130,7 +141,8 @@ export default function Page() {
               <button
                 onClick={() =>
                   setIndexNumber(
-                    (indexNumber + 1) % taskResults[testNumber]?.result?.result?.failList?.length,
+                    (indexNumber + 1) %
+                      taskResults[testNumber]?.result?.result?.failList?.length,
                   )
                 }
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 shadow-md"
@@ -140,16 +152,19 @@ export default function Page() {
             </CardContent>
             {/* 🔵 Pagination Dots */}
             <div className="flex justify-center gap-4 mb-4">
-              {taskResults[testNumber]?.result?.result?.failList?.map((_: any, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setIndexNumber(idx)}
-                  className={`w-3 h-3 rounded-full ${idx === indexNumber
-                      ? "bg-primary-500 scale-110"
-                      : "bg-gray-300 hover:bg-gray-400"
+              {taskResults[testNumber]?.result?.result?.failList?.map(
+                (_: any, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setIndexNumber(idx)}
+                    className={`w-3 h-3 rounded-full ${
+                      idx === indexNumber
+                        ? "bg-primary-500 scale-110"
+                        : "bg-gray-300 hover:bg-gray-400"
                     } transition-transform`}
-                ></button>
-              ))}
+                  ></button>
+                ),
+              )}
             </div>
           </Card>
         </div>

@@ -55,14 +55,26 @@ export default function AmountDeltaSummaryPage() {
   const getFilteredData = (method: string) => {
     if (method === "Swap") {
       return isMint || isBurn
-        ? filterData(deltaData.with6909.swap || [], isBurn, exactType === "ExactIn")
-        : filterData(deltaData.with20.swap || [], false, exactType === "ExactIn");
+        ? filterData(
+            deltaData.with6909.swap || [],
+            isBurn,
+            exactType === "ExactIn",
+          )
+        : filterData(
+            deltaData.with20.swap || [],
+            false,
+            exactType === "ExactIn",
+          );
     }
     if (method === "AddLiquidity") {
-      return isBurn ? [deltaData.with6909.addLiquidity] : [deltaData.with20.addLiquidity];
+      return isBurn
+        ? [deltaData.with6909.addLiquidity]
+        : [deltaData.with20.addLiquidity];
     }
     if (method === "RemoveLiquidity") {
-      return isMint ? [deltaData.with6909.removeLiquidity] : [deltaData.with20.removeLiquidity];
+      return isMint
+        ? [deltaData.with6909.removeLiquidity]
+        : [deltaData.with20.removeLiquidity];
     }
     if (method === "Donate") {
       return [deltaData.with20.donate];
@@ -70,7 +82,11 @@ export default function AmountDeltaSummaryPage() {
     return [];
   };
 
-  const filterData = (data: any[], isBurn: boolean | null, isExactIn: boolean) => {
+  const filterData = (
+    data: any[],
+    isBurn: boolean | null,
+    isExactIn: boolean,
+  ) => {
     return data.filter((item) => {
       const burnMatch = isBurn === null || item.is_burn === isBurn;
       const exactInMatch = item.is_exactIn === isExactIn;

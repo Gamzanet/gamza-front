@@ -6,7 +6,7 @@ import Loading from "@/components/ui/loading";
 
 export default function TokenPrice() {
   const { taskResults, error } = useSSE();
-  console.log("[TokenPrice] taskResults:", taskResults); // 🔍 Check taskResults
+
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -21,7 +21,7 @@ export default function TokenPrice() {
   }
 
   const resultData = data?.result?.data?.with_20?.swap?.find(
-    (item: any) => !item.is_burn && item.is_exactIn
+    (item: any) => !item.is_burn && item.is_exactIn,
   );
 
   if (!resultData) {
@@ -29,13 +29,16 @@ export default function TokenPrice() {
   }
 
   const price = Number(data.result?.price);
-  const formattedPrice = !isNaN(price) && price > 0 ? price.toFixed(18) : "No Data";
+  const formattedPrice =
+    !isNaN(price) && price > 0 ? price.toFixed(18) : "No Data";
 
   const swappedValue = Math.abs(
-    resultData.userAmount0delta / resultData.userAmount1delta
+    resultData.userAmount0delta / resultData.userAmount1delta,
   );
   const formattedSwappedPrice =
-    !isNaN(swappedValue) && swappedValue > 0 ? swappedValue.toFixed(18) : "No Data";
+    !isNaN(swappedValue) && swappedValue > 0
+      ? swappedValue.toFixed(18)
+      : "No Data";
 
   return (
     <DynamicTokenPriceResult
