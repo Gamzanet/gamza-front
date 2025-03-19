@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TASK_API_URL } from "@/utils/APIreqeust";
 
 export { AddressInput, NumberInput };
 
@@ -172,10 +173,12 @@ export default function PoolKeyForm({
     setLoading(true);
     setError(null); // 에러 초기화
     try {
+      sessionStorage.removeItem("staticResultData");
+      sessionStorage.removeItem("dynamicResultData");
       saveDataToLocalStorage(); // 입력 데이터를 localStorage에 저장
 
       const requestBody = makePoolKeyRequestBody();
-      const response = await fetch("http://localhost:7777/api/tasks", {
+      const response = await fetch(`${TASK_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -185,12 +188,21 @@ export default function PoolKeyForm({
       }
 
       const result = await response.json();
-      const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
+      if (!result.info || !result.info.tasks || result.info.tasks.length === 0) {
+        throw new Error("No tasks found in response.");
+      }
 
-      const query = new URLSearchParams({
-        ids: JSON.stringify(taskIds),
-      }).toString();
-      router.push(`/dynamicResult?${query}`);
+      const { hooks, timeHash, tasks } = result.info;
+      const taskIDs = tasks.map((task: any) => task.id);
+      const mode = 2; // ✅ mode 추가
+
+      // ✅ 데이터를 Session Storage에 저장
+      sessionStorage.setItem(
+        "dynamicResultData",
+        JSON.stringify({ hooks, timeHash, mode, taskIDs })
+      );
+
+      router.push(`/dynamicResult`);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {

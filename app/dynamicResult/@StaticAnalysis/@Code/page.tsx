@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ScrollableCode from "@/components/form/CodeHighlighter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
+import { TASK_API_URL } from "@/utils/APIreqeust";
 
 export default function StaticAnalysisResultPage() {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -63,10 +64,7 @@ export default function StaticAnalysisResultPage() {
 
         // ✅ 검증된 경우 API 요청하여 taskID 받아오기
         if (data.source_code) {
-          const taskId = await createTask(data.source_code);
-          if (taskId) {
-            saveTaskIDToLocalStorage(taskId); // ✅ taskID 로컬 스토리지 저장
-          }
+          createTask(data.source_code);
         }
       } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
@@ -91,45 +89,34 @@ export default function StaticAnalysisResultPage() {
           mode: 4,
         },
       };
-
-      const response = await fetch("http://localhost:7777/api/tasks", {
+      const response = await fetch(`${TASK_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
+
       if (!response.ok) {
         throw new Error(`Failed to create task: ${response.status}`);
       }
 
       const result = await response.json();
-      const taskId = result.info.tasks.map((task: any) => task.id); // id 추출
-
-      if (!taskId) {
-        throw new Error("Failed to retrieve taskID.");
+      if (!result.info || !result.info.tasks || result.info.tasks.length === 0) {
+        throw new Error("No tasks found in response.");
       }
 
-      return taskId; // 완료된 taskID 반환
+      const { hooks, timeHash, tasks } = result.info;
+      const taskIDs = tasks.map((task: any) => task.id);
+      const mode = 4; // ✅ mode 추가
+
+      // ✅ 데이터를 Session Storage에 저장
+      sessionStorage.setItem(
+        "staticResultData",
+        JSON.stringify({ hooks, timeHash, mode, taskIDs })
+      );
+
     } catch (err: any) {
       setError(err.message || "Failed to create task.");
       return null;
-    }
-  };
-
-  // ✅ taskID를 로컬 스토리지에 저장하는 함수
-  const saveTaskIDToLocalStorage = (taskID: string) => {
-    try {
-      const existingTaskIDs = localStorage.getItem("taskIDs");
-      let taskIDList: string[] = existingTaskIDs
-        ? JSON.parse(existingTaskIDs)
-        : [];
-
-      // 중복 추가 방지
-      if (!taskIDList.includes(taskID)) {
-        taskIDList.push(taskID);
-        localStorage.setItem("taskIDs", JSON.stringify(taskIDList));
-      }
-    } catch (err) {
-      console.error("Failed to save taskID to localStorage:", err);
     }
   };
 

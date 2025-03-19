@@ -1,11 +1,9 @@
 "use client";
 
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { TaskCreationSourceOnlyRequest } from "@/types/request/api/tasks/TaskCreationRequest";
 import { sampleCodeTakeProfitHook } from "@/utils/Constants";
-import { doRequest } from "@/utils/SimpleRequest";
 
 import { Button } from "../ui/button";
 import {
@@ -18,17 +16,16 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import ScrollableCode from "./CodeHighlighter";
+import { TASK_API_URL } from "@/utils/APIreqeust";
 
-export default function HookCodeForm({
-  router,
-}: Readonly<{ router: AppRouterInstance }>) {
-  // TODO: send request to server based on the input
+export default function HookCodeForm() {
+  const router = useRouter();
   const [code, setCode] = useState<string>("");
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
-  const [error, setError] = useState<string | null>(null); // 에러 메시지 추가
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onClickSamplePoolKeyHandler = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     setCode(sampleCodeTakeProfitHook);
@@ -38,7 +35,7 @@ export default function HookCodeForm({
     return {
       data: {
         source: code,
-        mode: 4,
+        mode: 4, // ✅ mode는 직접 설정
       },
     };
   }
@@ -48,36 +45,48 @@ export default function HookCodeForm({
     localStorage.setItem("hookCodeData", JSON.stringify(hookCodeData));
   };
 
-  // API 요청 함수
   const sendApiRequest = async () => {
     setLoading(true);
-    setError(null); // 에러 초기화
+    setError(null);
     try {
-      saveDataToLocalStorage(); // 입력 데이터를 localStorage에 저장
-
+      sessionStorage.removeItem("staticResultData");
+      sessionStorage.removeItem("dynamicResultData");
+      saveDataToLocalStorage(); // 기존 데이터 저장
+  
       const requestBody = makeHookCodeRequestBody();
-      const response = await fetch("http://localhost:7777/api/tasks", {
+      const response = await fetch(`${TASK_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
+  
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
-
+  
       const result = await response.json();
-      const taskIds = result.info.tasks.map((task: any) => task.id); // id 추출
-
-      const query = new URLSearchParams({
-        ids: JSON.stringify(taskIds),
-      }).toString();
-      router.push(`/staticResult?${query}`);
+      if (!result.info || !result.info.tasks || result.info.tasks.length === 0) {
+        throw new Error("No tasks found in response.");
+      }
+  
+      const { hooks, timeHash, tasks } = result.info;
+      const taskIDs = tasks.map((task: any) => task.id);
+      const mode = 4; // ✅ mode 추가
+  
+      // ✅ 데이터를 Session Storage에 저장
+      sessionStorage.setItem(
+        "staticResultData",
+        JSON.stringify({ hooks, timeHash, mode, taskIDs })
+      );
+  
+      router.push(`/staticResult`);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <Card className="w-[500px] border-4">
       <CardHeader>
@@ -115,10 +124,11 @@ export default function HookCodeForm({
             e.preventDefault();
             sendApiRequest();
           }}
+          disabled={loading}
         >
-          Scan
+          {loading ? "Processing..." : "Scan"}
         </Button>
-        {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </CardFooter>
     </Card>
   );

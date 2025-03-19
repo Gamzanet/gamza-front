@@ -2,7 +2,6 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 
@@ -15,99 +14,107 @@ import {
 import ScrollableWindow from "@/components/ScorllableWindow";
 import Loading from "@/components/ui/loading";
 import { threatDetails } from "@/utils/ThreatDetails";
-
-const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
+import { SSE_URL, RESULT_API_URL } from "@/utils/APIreqeust";
 
 export default function StaticAnalysisResultPage() {
-  const searchParams = useSearchParams();
   const [threats, setThreats] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    const fetchAnalysisResults = async () => {
+    // ✅ sessionStorage에서 저장된 Task 정보 가져오기
+    const storedData = sessionStorage.getItem("staticResultData");
+    if (!storedData) {
+      setError("No task data found in session storage.");
+      setLoading(false);
+      return;
+    }
+
+    const { hooks, timeHash, taskIDs } = JSON.parse(storedData);
+    const mode = 4; // ✅ 정적 분석 (Static Analysis) 모드
+
+    if (!hooks || !timeHash || !taskIDs || taskIDs.length === 0) {
+      setError("Missing required parameters.");
+      setLoading(false);
+      return;
+    }
+
+    // ✅ SSE 연결 설정
+    const eventSource = new EventSource(`${SSE_URL}/${timeHash}/${hooks}/${mode}/0`);
+
+    eventSource.onmessage = async (event) => {
       try {
-        setLoading(true);
-        setError(null);
+        console.log("SSE Received:", event.data);
 
-        // URL에서 IDs 가져오기
-        const idsParam = searchParams.get("ids");
-        if (!idsParam) {
-          throw new Error("No task IDs provided");
+        // ✅ "complete idx: X, task-id: Y" 형태의 데이터를 파싱
+        const match = event.data.match(/idx: (\d+), task-id: ([a-z0-9-]+)/);
+        if (match) {
+          const idx = parseInt(match[1]);
+          const taskId = match[2];
+
+          if (!taskIDs.includes(taskId)) {
+            console.warn(`Received taskID (${taskId}) not in stored session.`);
+            return;
+          }
+
+          // ✅ 해당 taskId의 결과 요청
+          const response = await fetch(`${RESULT_API_URL}/${taskId}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch result for taskID: ${taskId}`);
+          }
+
+          const resultData = await response.json();
+
+          // ✅ 새로운 위협 데이터 파싱
+          const newThreats =
+            resultData.result?.result?.threats?.map((threat: any) => ({
+              name: threat.detector,
+              description: threat.data.description,
+              severity:
+                threat.data.impact.charAt(0).toUpperCase() +
+                threat.data.impact.slice(1).toLowerCase(),
+              type: "custom",
+            })) || [];
+
+          setThreats((prevThreats) => {
+            return [
+              ...prevThreats,
+              ...newThreats.filter(
+                (newThreat) =>
+                  !prevThreats.some(
+                    (existingThreat) => existingThreat.name === newThreat.name
+                  )
+              ),
+            ];
+          });
+
+          setLoading(false); // ✅ 첫 번째 데이터 수신 시 로딩 해제
         }
-
-        const ids = JSON.parse(decodeURIComponent(idsParam));
-        let completedIds = new Set<string>(); // 이미 완료된 Task ID 저장
-
-        // ✅ 개별 `taskId` 별로 폴링하며, 성공한 데이터는 즉시 업데이트
-        const fetchResult = async (taskId: string, index: number) => {
-          while (!completedIds.has(taskId)) {
-            const response = await fetch(
-              `http://localhost:7777/api/result/${taskId}`,
-            );
-            if (!response.ok) {
-              throw new Error(`Failed to fetch data for taskID: ${taskId}`);
-            }
-
-            const result = await response.json();
-
-            if (result.status === "Success") {
-              completedIds.add(taskId); // 완료된 taskId 저장
-              return { result, index }; // 인덱스를 함께 반환
-            }
-
-            await new Promise((resolve) =>
-              setTimeout(resolve, POLLING_INTERVAL),
-            );
-          }
-        };
-
-        // ✅ 비동기 폴링으로 개별 데이터 업데이트
-        ids.forEach(async (taskId, index) => {
-          try {
-            const response = await fetchResult(taskId, index);
-            if (response) {
-              const { result, index } = response;
-              setThreats((prevThreats) => {
-                // `threats` 데이터 변환 및 threat 위협 추가
-                let threatsList =
-                  result.result?.result?.threats?.map((threat: any) => ({
-                    name: threat.detector,
-                    description: threat.data.description,
-                    severity:
-                      threat.data.impact.charAt(0).toUpperCase() +
-                      threat.data.impact.slice(1).toLowerCase(),
-                    type: "custom",
-                  })) || [];
-
-                // ✅ 기존 데이터와 합쳐서 업데이트 (중복 방지)
-                const uniqueThreats = [
-                  ...prevThreats,
-                  ...threatsList.filter(
-                    (newThreat) =>
-                      !prevThreats.some(
-                        (existingThreat) =>
-                          existingThreat.name === newThreat.name,
-                      ),
-                  ),
-                ];
-                return uniqueThreats;
-              });
-            }
-          } catch (err: any) {
-            setError(err.message || "An unexpected error occurred.");
-          }
-        });
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
+      } catch (error) {
+        console.error("Error processing SSE data:", error);
+        setError("Error receiving or processing data from server.");
       } finally {
-        setLoading(false);
+        eventSource.close();
       }
     };
 
-    fetchAnalysisResults();
-  }, [searchParams]);
+    eventSource.onerror = (event) => {
+      // ✅ SSE 연결이 닫혔을 때 (정상 종료인 경우 무시)
+      if (eventSource.readyState === EventSource.CLOSED) {
+        console.log("SSE connection closed normally.");
+        return;
+      }
+
+      console.error("SSE Connection Error:", event);
+      setError("Failed to connect to SSE.");
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close(); // ✅ 컴포넌트 언마운트 시 SSE 연결 해제
+    };
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -157,7 +164,6 @@ export default function StaticAnalysisResultPage() {
     </div>
   );
 }
-// @remind RightSide - potential issues
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";

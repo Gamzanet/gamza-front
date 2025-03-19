@@ -2,7 +2,6 @@
 
 import { TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   CartesianGrid,
   YAxis,
@@ -26,7 +25,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
 import Loading from "@/components/ui/loading";
+import { useSSE } from "@/components/request/SSEManager";
 
 export const description = "A bar chart with a custom label";
 
@@ -98,7 +99,9 @@ function Component({
     })()
     : "0";
 
-  const maxValue = Math.max(...validData.map((d) => Math.max(d.enableHook, d.disableHook))) * 1.2; // 최대값보다 약간 더 여유 공간 추가
+  const maxValue =
+    Math.max(...validData.map((d) => Math.max(d.enableHook, d.disableHook))) *
+    1.2; // 최대값보다 약간 더 여유 공간 추가
 
   return (
     <Card className="p-4">
@@ -291,100 +294,16 @@ function GasDifferenceSummary({
   );
 }
 
-const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
-
 export default function GasDifferenceChart() {
-  const [gasData, setGasData] = useState<GasData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
   const [isCode, setIsCode] = useState<boolean>(false);
-  const [gasPrice, setGasPrice] = useState<number | null>(null);
+  const { taskResults, error } = useSSE();
 
-  useEffect(() => {
-    const fetchGasData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
-        const idsParam = searchParams.get("ids");
-        if (!idsParam) {
-          throw new Error("No task IDs provided");
-        }
-
-        const ids = JSON.parse(decodeURIComponent(idsParam));
-        const targetId = ids[8]; // 여덟 번째 인덱스의 ID 가져오기
-
-        const fetchResult = async () => {
-          const response = await fetch(
-            `http://localhost:7777/api/result/${targetId}`,
-          );
-          if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.status}`);
-          }
-
-          const result = await response.json();
-          if (result.status === "Pending") {
-            return null; // 아직 결과가 준비되지 않음
-          }
-          return result;
-        };
-
-        let resultData = null;
-        while (!resultData) {
-          resultData = await fetchResult();
-          if (!resultData) {
-            await new Promise((resolve) =>
-              setTimeout(resolve, POLLING_INTERVAL),
-            );
-          }
-        }
-
-        // `hook`과 `noHook` 데이터 정리
-        const hook = resultData.result.result.hook;
-        const noHook = resultData.result.result.noHook;
-        const gasPrice = resultData.result.result.gasPrice;
-
-        const formattedData: GasData[] = [
-          {
-            method: "Add",
-            hookGas: Number(hook.add.gas),
-            noHookGas: Number(noHook.add.gas),
-            difference: (Number(hook.add.gas) - Number(noHook.add.gas)),
-          },
-          {
-            method: "Remove",
-            hookGas: Number(hook.remove.gas),
-            noHookGas: Number(noHook.remove.gas),
-            difference: (Number(hook.remove.gas) - Number(noHook.remove.gas)),
-          },
-          {
-            method: "Donate",
-            hookGas: Number(hook.donate.gas),
-            noHookGas: Number(noHook.donate.gas),
-            difference: (Number(hook.donate.gas) - Number(noHook.donate.gas)),
-          },
-          {
-            method: "Swap",
-            hookGas: Number(hook.swap.gas),
-            noHookGas: Number(noHook.swap.gas),
-            difference: (Number(hook.swap.gas) - Number(noHook.swap.gas)),
-          },
-        ];
-
-        setGasPrice(gasPrice);
-        setGasData(formattedData);
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGasData();
-  }, [searchParams]);
-
-  if (loading) {
+  const data = taskResults["dynamic-1-8"];
+  if (!data) {
     return (
       <div className="w-full h-full">
         <Loading containerClassName="h-full" />
@@ -392,9 +311,17 @@ export default function GasDifferenceChart() {
     );
   }
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  // ✅ `hook`과 `noHook` 데이터 정리
+  const hook = data.result.result.hook;
+  const noHook = data.result.result.noHook;
+  const formattedData: GasData[] = [
+    { method: "Add", hookGas: Number(hook.add.gas), noHookGas: Number(noHook.add.gas), difference: Number(hook.add.gas) - Number(noHook.add.gas) },
+    { method: "Remove", hookGas: Number(hook.remove.gas), noHookGas: Number(noHook.remove.gas), difference: Number(hook.remove.gas) - Number(noHook.remove.gas) },
+    { method: "Donate", hookGas: Number(hook.donate.gas), noHookGas: Number(noHook.donate.gas), difference: Number(hook.donate.gas) - Number(noHook.donate.gas) },
+    { method: "Swap", hookGas: Number(hook.swap.gas), noHookGas: Number(noHook.swap.gas), difference: Number(hook.swap.gas) - Number(noHook.swap.gas) },
+  ];
+  const gasPrice = data.result.result.gasPrice;
+  const gasData = formattedData;
 
   return (
     <>
@@ -404,7 +331,8 @@ export default function GasDifferenceChart() {
           <div className="mt-4 p-2 border rounded-lg bg-gray-100 text-sm text-gray-700">
             {gasPrice ? (
               <p>
-                <strong>Current Gas Price:</strong> {gasPrice > 0 ? gasPrice+" wei" : "No Data"}
+                <strong>Current Gas Price:</strong>{" "}
+                {gasPrice > 0 ? gasPrice + " wei" : "No Data"}
               </p>
             ) : (
               <p>Loading gas price...</p>

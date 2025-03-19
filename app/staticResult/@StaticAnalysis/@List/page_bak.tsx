@@ -2,6 +2,7 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 
@@ -14,113 +15,108 @@ import {
 import ScrollableWindow from "@/components/ScorllableWindow";
 import Loading from "@/components/ui/loading";
 import { threatDetails } from "@/utils/ThreatDetails";
-import { useSSE } from "@/components/request/SSEManager";
+
+const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
 
 export default function StaticAnalysisResultPage() {
-  const { taskResults, error } = useSSE();
+  const searchParams = useSearchParams();
+  const [threats, setThreats] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
+  useEffect(() => {
+    const fetchAnalysisResults = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // URL에서 IDs 가져오기
+        const idsParam = searchParams.get("ids");
+        if (!idsParam) {
+          throw new Error("No task IDs provided");
+        }
+
+        const ids = JSON.parse(decodeURIComponent(idsParam));
+        let completedIds = new Set<string>(); // 이미 완료된 Task ID 저장
+
+        // ✅ 개별 `taskId` 별로 폴링하며, 성공한 데이터는 즉시 업데이트
+        const fetchResult = async (taskId: string, index: number) => {
+          while (!completedIds.has(taskId)) {
+            const response = await fetch(
+              `http://localhost:7777/api/result/${taskId}`,
+            );
+            if (!response.ok) {
+              throw new Error(`Failed to fetch data for taskID: ${taskId}`);
+            }
+
+            const result = await response.json();
+
+            if (result.status === "Success") {
+              completedIds.add(taskId); // 완료된 taskId 저장
+              return { result, index }; // 인덱스를 함께 반환
+            }
+
+            await new Promise((resolve) =>
+              setTimeout(resolve, POLLING_INTERVAL),
+            );
+          }
+        };
+
+        // ✅ 비동기 폴링으로 개별 데이터 업데이트
+        ids.forEach(async (taskId, index) => {
+          try {
+            const response = await fetchResult(taskId, index);
+            if (response) {
+              const { result, index } = response;
+              setThreats((prevThreats) => {
+                // `threats` 데이터 변환 및 threat 위협 추가
+                let threatsList =
+                  result.result?.result?.threats?.map((threat: any) => ({
+                    name: threat.detector,
+                    description: threat.data.description,
+                    severity:
+                      threat.data.impact.charAt(0).toUpperCase() +
+                      threat.data.impact.slice(1).toLowerCase(),
+                    type: "custom",
+                  })) || [];
+
+                // ✅ 기존 데이터와 합쳐서 업데이트 (중복 방지)
+                const uniqueThreats = [
+                  ...prevThreats,
+                  ...threatsList.filter(
+                    (newThreat) =>
+                      !prevThreats.some(
+                        (existingThreat) =>
+                          existingThreat.name === newThreat.name,
+                      ),
+                  ),
+                ];
+                return uniqueThreats;
+              });
+            }
+          } catch (err: any) {
+            setError(err.message || "An unexpected error occurred.");
+          }
+        });
+      } catch (err: any) {
+        setError(err.message || "An unexpected error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalysisResults();
+  }, [searchParams]);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="text-red-500">Error: {error}</div>;
   }
 
-  if (!taskResults || Object.keys(taskResults).length === 0) {
-    return <Loading containerClassName="h-full" />;
-  }
-
-  // ✅ 받은 데이터를 기반으로 위협 목록 생성
-  const threats = Object.entries(taskResults).flatMap(([key, data]) => {
-    const [type, group, idx] = key.split("-").map(Number);
-    const mode = group === 0 ? 2 : 4; // group 0은 Dynamic(2), 나머지는 Static(4)
-
-    let threatsList =
-      data?.result?.result?.threats?.map((threat: any) => ({
-        name: threat.detector,
-        description: threat.data.description,
-        severity:
-          threat.data.impact.charAt(0).toUpperCase() +
-          threat.data.impact.slice(1).toLowerCase(),
-        type: mode === 2 ? "Dynamic" : "Static",
-      })) || [];
-
-    // ✅ 특정 인덱스에 따라 추가적인 위협 감지
-    if (idx === 0 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "AddLiquidity",
-        description: "Unexpected behavior detected when adding liquidity.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 1 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "RemoveLiquidity",
-        description: "Unexpected behavior detected when removing liquidity.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 2 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Swap",
-        description: "Unexpected behavior detected during token swaps.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 3 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Donate",
-        description: "Unexpected behavior detected in the donation process.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 4 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "TimeLock",
-        description: "This pool key may not be usable at any time.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 5 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "OnlyPoolManager",
-        description: "Hook contract can call functions besides PoolManager.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 6 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "ReInitialize",
-        description: "No limitation on initialize, potential storage issues.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 7 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Upgradeability",
-        description: "Identified as a proxy contract.",
-        severity: "Critical",
-        type: "custom",
-      });
-    }
-    if (idx === 8 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Gas Grief",
-        description: "Could not estimate gas for basic function.",
-        severity: "Low",
-        type: "custom",
-      });
-    }
-
-    return threatsList;
-  });
-
-  // ✅ 검색어 필터 적용
   const filteredThreats = threats.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(query.toLowerCase()),
   );
@@ -187,6 +183,17 @@ export function AnalysisResultLog({
     recommendation: string;
   };
 }) {
+  // const regex = new RegExp(
+  //   `\\-? \\[([\\s\\S]+?)\\]\\(\\S+${contractName}\\.sol#L(\\d+)\\)`,
+  //   "g",
+  // );
+
+  // const matches = markdown ? [...markdown.matchAll(regex)] : [];
+  // const results = matches.map((match) => ({
+  //   text: match[1],
+  //   lineNumber: match[2],
+  // }));
+  // const badgeStyles = severity && getBadgeStyles(severity);
   const titleMatch = markdown
     ? markdown.match(/\s([\s\w]+?)\W+\[/)
     : description.match(/\s([\s\w]+?)\w+\[/);

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -24,73 +23,25 @@ import {
   CheckBoxBooleanStateHandler,
 } from "@/components/form/RadioStateHandler";
 import Loading from "@/components/ui/loading";
+import { useSSE } from "@/components/request/SSEManager";
 
-const POLLING_INTERVAL = 5000; // 5초 간격으로 상태 확인
-
-export default function ERC6909DeltaBurnResultPage() {
+export default function AmountDeltaSummaryPage() {
   const [methodType, setMethodType] = useState<
     "Swap" | "AddLiquidity" | "RemoveLiquidity" | "Donate"
   >("Swap");
   const [exactType, setExactType] = useState<"ExactIn" | "ExactOut">("ExactIn");
   const [isMint, setIsMint] = useState(false);
   const [isBurn, setIsBurn] = useState(false);
-  const [deltaData, setDeltaData] = useState<any>({ with6909: [], with20: [] });
+  // const [deltaData, setDeltaData] = useState<any>({ with6909: [], with20: [] });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
+  const { taskResults, error } = useSSE();
 
-  useEffect(() => {
-    const fetchDeltaData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
-        const idsParam = searchParams.get("ids");
-        if (!idsParam) {
-          throw new Error("No task IDs provided in the URL.");
-        }
-
-        const ids = JSON.parse(decodeURIComponent(idsParam));
-        const targetId = ids[9]; // 아홉 번째 인덱스의 ID 가져오기
-
-        const fetchResult = async () => {
-          const response = await fetch(
-            `http://localhost:7777/api/result/${targetId}`,
-          );
-          if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.status}`);
-          }
-
-          const result = await response.json();
-          if (result.status === "Pending") {
-            return null;
-          }
-          return result;
-        };
-
-        let resultData = null;
-        while (!resultData) {
-          resultData = await fetchResult();
-          if (!resultData) {
-            await new Promise((resolve) =>
-              setTimeout(resolve, POLLING_INTERVAL),
-            );
-          }
-        }
-
-        const { with_6909: with6909, with_20: with20 } = resultData.result.data;
-        setDeltaData({ with6909, with20 });
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDeltaData();
-  }, [searchParams]);
-
-  if (loading) {
+  const data = taskResults["dynamic-2-9"];
+  if (!data) {
     return (
       <div className="w-full h-full">
         <Loading containerClassName="h-full" />
@@ -98,33 +49,20 @@ export default function ERC6909DeltaBurnResultPage() {
     );
   }
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  const { with_6909: with6909, with_20: with20 } = data.result.data;
+  const deltaData = { with6909, with20 };
 
   const getFilteredData = (method: string) => {
     if (method === "Swap") {
       return isMint || isBurn
-        ? filterData(
-            deltaData.with6909.swap || [],
-            isBurn,
-            exactType === "ExactIn",
-          )
-        : filterData(
-            deltaData.with20.swap || [],
-            false,
-            exactType === "ExactIn",
-          );
+        ? filterData(deltaData.with6909.swap || [], isBurn, exactType === "ExactIn")
+        : filterData(deltaData.with20.swap || [], false, exactType === "ExactIn");
     }
     if (method === "AddLiquidity") {
-      return isBurn
-        ? [deltaData.with6909.addLiquidity]
-        : [deltaData.with20.addLiquidity];
+      return isBurn ? [deltaData.with6909.addLiquidity] : [deltaData.with20.addLiquidity];
     }
     if (method === "RemoveLiquidity") {
-      return isMint
-        ? [deltaData.with6909.removeLiquidity]
-        : [deltaData.with20.removeLiquidity];
+      return isMint ? [deltaData.with6909.removeLiquidity] : [deltaData.with20.removeLiquidity];
     }
     if (method === "Donate") {
       return [deltaData.with20.donate];
@@ -132,11 +70,7 @@ export default function ERC6909DeltaBurnResultPage() {
     return [];
   };
 
-  const filterData = (
-    data: any[],
-    isBurn: boolean | null,
-    isExactIn: boolean,
-  ) => {
+  const filterData = (data: any[], isBurn: boolean | null, isExactIn: boolean) => {
     return data.filter((item) => {
       const burnMatch = isBurn === null || item.is_burn === isBurn;
       const exactInMatch = item.is_exactIn === isExactIn;
