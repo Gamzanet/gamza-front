@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import ScrollableCode from "@/components/form/CodeHighlighter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
-import { TASK_API_URL } from "@/utils/APIreqeust";
 
 export default function StaticAnalysisResultPage() {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -26,102 +25,30 @@ export default function StaticAnalysisResultPage() {
   const blockscoutBaseUrl = blockscoutUrls[chain] || "";
 
   useEffect(() => {
-    // `localStorage`에서 poolKeyData 가져오기
-    const savedPoolKeyData = localStorage.getItem("poolKeyData");
-    if (savedPoolKeyData) {
-      const { hooks, chain } = JSON.parse(savedPoolKeyData);
-      setHookAddress(hooks); // hooks 주소 설정
-      setChain(chain || "eth");
-    } else {
-      setError("No pool key data found in local storage.");
+    try {
+      // ✅ `localStorage`에서 poolKeyData 가져오기
+      const savedPoolKeyData = localStorage.getItem("poolKeyData");
+      if (savedPoolKeyData) {
+        const { hooks, chain } = JSON.parse(savedPoolKeyData);
+        setHookAddress(hooks); // hooks 주소 설정
+        setChain(chain || "eth");
+      }
+
+      // ✅ `hookCodeData` 가져오기
+      const hookCodeData = localStorage.getItem("hookCodeData");
+      if (hookCodeData) {
+        const parsedCodeData = JSON.parse(hookCodeData);
+
+        if (parsedCodeData && Object.keys(parsedCodeData).length > 0) {
+          setVerificationResult(parsedCodeData);
+        }
+      }
+    } catch (err) {
+      setError("An unexpected error occurred while loading data.");
+    } finally {
       setLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    const verifyContract = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // ✅ 유효하지 않은 체인일 경우 에러 표시 후 요청 중단
-        if (!blockscoutBaseUrl) {
-          setError("Invalid chain selected.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(
-          `${blockscoutBaseUrl}/api/v2/smart-contracts/${hookAddress}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch contract data: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setVerificationResult(data);
-
-        // ✅ 검증된 경우 API 요청하여 taskID 받아오기
-        if (data.source_code) {
-          createTask(data.source_code);
-        }
-      } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (hookAddress) {
-      verifyContract();
-    } else {
-      setError("No hook address provided.");
-      setLoading(false);
-    }
-  }, [hookAddress]);
-
-  const createTask = async (sourceCode: string) => {
-    try {
-      const requestBody = {
-        data: {
-          source: sourceCode,
-          mode: 4,
-        },
-      };
-      const response = await fetch(`${TASK_API_URL}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to create task: ${response.status}`);
-      }
-
-      const result = await response.json();
-      if (
-        !result.info ||
-        !result.info.tasks ||
-        result.info.tasks.length === 0
-      ) {
-        throw new Error("No tasks found in response.");
-      }
-
-      const { hooks, timeHash, tasks } = result.info;
-      const taskIDs = tasks.map((task: any) => task.id);
-      const mode = 4; // ✅ mode 추가
-
-      // ✅ 데이터를 Session Storage에 저장
-      sessionStorage.setItem(
-        "staticResultData",
-        JSON.stringify({ hooks, timeHash, mode, taskIDs }),
-      );
-    } catch (err: any) {
-      setError(err.message || "Failed to create task.");
-      return null;
-    }
-  };
 
   if (loading) {
     return (

@@ -32,8 +32,6 @@ export default function AmountDeltaSummaryPage() {
   const [exactType, setExactType] = useState<"ExactIn" | "ExactOut">("ExactIn");
   const [isMint, setIsMint] = useState(false);
   const [isBurn, setIsBurn] = useState(false);
-  // const [deltaData, setDeltaData] = useState<any>({ with6909: [], with20: [] });
-  const [loading, setLoading] = useState(true);
   const { taskResults, error } = useSSE();
 
   if (error) {
