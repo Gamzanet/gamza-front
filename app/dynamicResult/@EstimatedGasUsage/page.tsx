@@ -86,18 +86,18 @@ function Component({
 
   const averageGas = validData.length
     ? (
-      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-    ).toFixed(2)
+        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+      ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 === 0
-        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-        : sorted[mid].toString();
-    })()
+        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+          : sorted[mid].toString();
+      })()
     : "0";
 
   const maxValue =
@@ -300,7 +300,7 @@ export default function GasDifferenceChart() {
   const { taskResults, error } = useSSE();
   const { theme } = useTheme(); // ✅ 현재 테마 가져오기
   const isDarkMode = theme === "dark";
-  
+
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -352,10 +352,11 @@ export default function GasDifferenceChart() {
         <div className="flex flex-col items-center justify-center">
           {/* ✅ 현재 체인의 가스비 표시 */}
           <div
-            className={`mt-4 p-2 border rounded-lg text-sm transition-colors duration-200 ${isDarkMode
-              ? "bg-gray-800 text-white border-gray-600"
-              : "bg-gray-100 text-gray-700 border-gray-300"
-              }`}
+            className={`mt-4 p-2 border rounded-lg text-sm transition-colors duration-200 ${
+              isDarkMode
+                ? "bg-gray-800 text-white border-gray-600"
+                : "bg-gray-100 text-gray-700 border-gray-300"
+            }`}
           >
             {gasPrice ? (
               <p>

@@ -65,7 +65,7 @@ export default function Page() {
     const failList = traceLogData[testNumber]?.result?.result?.failList || [];
     if (failList.length === 0) return;
     setIndexNumber((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : failList.length - 1
+      prevIndex > 0 ? prevIndex - 1 : failList.length - 1,
     );
   };
 
@@ -74,10 +74,10 @@ export default function Page() {
     const failList = traceLogData[testNumber]?.result?.result?.failList || [];
     if (failList.length === 0) return;
     setIndexNumber((prevIndex) =>
-      prevIndex < failList.length - 1 ? prevIndex + 1 : 0
+      prevIndex < failList.length - 1 ? prevIndex + 1 : 0,
     );
   };
-  
+
   return (
     <>
       {!isCode && (
@@ -113,10 +113,11 @@ export default function Page() {
                           color: "#EF7BF9",
                           margin: "0px",
                         }}
-                        className={`${test.index === testNumber
-                          ? "bg-primary-100"
-                          : "bg-[#rgba(239, 124, 249, 0.1)]"
-                          } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
+                        className={`${
+                          test.index === testNumber
+                            ? "bg-primary-100"
+                            : "bg-[#rgba(239, 124, 249, 0.1)]"
+                        } opacity-80 hover:bg-primary-100 select-none border dark:border-white`}
                       >
                         {test.name}
                       </Button>
@@ -129,35 +130,41 @@ export default function Page() {
             <CardContent className="relative px-16">
               {/* 🔹 Impact & Description 추가 */}
               <div
-                className={`mb-4 p-4 rounded-lg border transition-colors duration-200 ${isDarkMode
-                  ? "bg-gray-800 text-white border-gray-600"
-                  : "bg-gray-100 text-gray-700 border-gray-300"
-                  }`}
+                className={`mb-4 p-4 rounded-lg border transition-colors duration-200 ${
+                  isDarkMode
+                    ? "bg-gray-800 text-white border-gray-600"
+                    : "bg-gray-100 text-gray-700 border-gray-300"
+                }`}
               >
                 <h2
-                  className={`text-lg font-bold transition-colors duration-200 ${isDarkMode ? "text-white" : "text-gray-700"
-                    }`}
+                  className={`text-lg font-bold transition-colors duration-200 ${
+                    isDarkMode ? "text-white" : "text-gray-700"
+                  }`}
                 >
                   Impact:{" "}
-                  {taskResults[testNumber]?.result?.result?.failList?.[indexNumber]?.impact ||
-                    "No impact available"}
+                  {taskResults[testNumber]?.result?.result?.failList?.[
+                    indexNumber
+                  ]?.impact || "No impact available"}
                 </h2>
                 <p
-                  className={`text-base transition-colors duration-200 ${isDarkMode ? "text-gray-300" : "text-gray-600"
-                    }`}
+                  className={`text-base transition-colors duration-200 ${
+                    isDarkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
                 >
-                  {taskResults[testNumber]?.result?.result?.failList?.[indexNumber]
-                    ?.description || "No description available"}
+                  {taskResults[testNumber]?.result?.result?.failList?.[
+                    indexNumber
+                  ]?.description || "No description available"}
                 </p>
               </div>
 
               {/* 🔽 Left Arrow Button */}
               <button
                 onClick={handlePrev}
-                className={`absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${isDarkMode
+                className={`absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${
+                  isDarkMode
                     ? "bg-gray-700 text-white hover:bg-gray-600"
                     : "bg-gray-200 text-black hover:bg-gray-300"
-                  }`}
+                }`}
               >
                 <ChevronLeft size={30} />
               </button>
@@ -167,10 +174,11 @@ export default function Page() {
               {/* 🔼 Right Arrow Button */}
               <button
                 onClick={handleNext}
-                className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${isDarkMode
-                  ? "bg-gray-700 text-white hover:bg-gray-600"
-                  : "bg-gray-200 text-black hover:bg-gray-300"
-                  }`}
+                className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${
+                  isDarkMode
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "bg-gray-200 text-black hover:bg-gray-300"
+                }`}
               >
                 <ChevronRight size={30} />
               </button>
@@ -183,14 +191,15 @@ export default function Page() {
                   <button
                     key={idx}
                     onClick={() => setIndexNumber(idx)}
-                    className={`w-3 h-3 rounded-full transition-transform ${idx === indexNumber
-                      ? "bg-primary-500 scale-110"
-                      : isDarkMode
-                        ? "bg-gray-500 hover:bg-gray-400"
-                        : "bg-gray-300 hover:bg-gray-400"
-                      }`}
+                    className={`w-3 h-3 rounded-full transition-transform ${
+                      idx === indexNumber
+                        ? "bg-primary-500 scale-110"
+                        : isDarkMode
+                          ? "bg-gray-500 hover:bg-gray-400"
+                          : "bg-gray-300 hover:bg-gray-400"
+                    }`}
                   ></button>
-                )
+                ),
               )}
             </div>
           </Card>

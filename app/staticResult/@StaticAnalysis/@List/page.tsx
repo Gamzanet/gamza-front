@@ -140,8 +140,11 @@ export default function StaticAnalysisResultPage() {
         <Input
           defaultValue={query}
           onChange={(e) => setQuery(e.target.value)}
-          className={`pl-10 transition-colors duration-200 ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"
-            }`}
+          className={`pl-10 transition-colors duration-200 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-600"
+              : "bg-white text-black border-gray-300"
+          }`}
         />
       </div>
       <ScrollableWindow className="space-y-2 h-full">
@@ -210,23 +213,25 @@ export function AnalysisResultLog({
           <AlertTitle className="flex">
             <ExclamationTriangleIcon className="h-8 w-8 mx-2 opacity-100 text-yellow-700" />
             <span
-              className={`text-[15px] font-bold flex flex-col break-words ${isDarkMode ? "text-white" : "text-black"
-                }`}
+              className={`text-[15px] font-bold flex flex-col break-words ${
+                isDarkMode ? "text-white" : "text-black"
+              }`}
             >
               <div className="flex items-end gap-x-2">
                 {extractedTitle.charAt(0).toUpperCase() +
                   extractedTitle.slice(1)}
                 <Badge
                   className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
-                    severity
+                    severity,
                   )}`}
                 >
                   {severity}
                 </Badge>
               </div>
               <span
-                className={`text-xs ${isDarkMode ? "text-gray-300" : "text-gray-400"
-                  }`}
+                className={`text-xs ${
+                  isDarkMode ? "text-gray-300" : "text-gray-400"
+                }`}
               >
                 {description.slice(0, 60)}...
               </span>
@@ -240,13 +245,14 @@ export function AnalysisResultLog({
         ${isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white text-black border-gray-300"}`}
       >
         <DialogTitle
-          className={`text-2xl font-semibold p-4 transition ${isDarkMode ? "text-white" : "text-black"
-            }`}
+          className={`text-2xl font-semibold p-4 transition ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}
         >
           {titleMatch ? titleMatch : title}
           <Badge
             className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ml-2 ${getBadgeStyles(
-              severity
+              severity,
             )}`}
           >
             {severity}
@@ -254,39 +260,52 @@ export function AnalysisResultLog({
         </DialogTitle>
 
         <div
-          className={`divide-y rounded-lg border overflow-hidden ${isDarkMode
+          className={`divide-y rounded-lg border overflow-hidden ${
+            isDarkMode
               ? "divide-gray-700 border-gray-700 bg-gray-900"
               : "divide-gray-300 border-gray-300 bg-gray-100"
-            }`}
+          }`}
         >
           {/* Description Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Description</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {description}
             </div>
           </div>
 
           {/* Impact Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Impact</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {detail?.impact &&
                 detail.impact.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -295,23 +314,29 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  )
+                  ),
                 )}
             </div>
           </div>
 
           {/* Recommendation Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Recommendation</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {detail?.recommendation &&
                 detail.recommendation.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -320,7 +345,7 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  )
+                  ),
                 )}
             </div>
           </div>
@@ -354,7 +379,6 @@ const getCardStyles = (severity: string, isDarkMode: boolean) => {
       return `${baseStyles} ${themeStyles} border-gray-500`;
   }
 };
-
 
 const getSeverityLevel = (severity: string) => {
   switch (severity) {

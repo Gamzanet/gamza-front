@@ -1,14 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-
 import { Menubar, MenubarMenu } from "@/components/ui/menubar";
 
 export function TopStickMenuBar() {
   const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
+  const [mounted, setMounted] = useState(false); // ✅ 클라이언트 마운트 확인용 상태
+
+  useEffect(() => {
+    setMounted(true); // ✅ 마운트 완료 후 클라이언트에서만 테마 적용
+  }, []);
+
+  const isDarkMode = mounted && theme === "dark"; // ✅ 마운트 이후에만 테마 적용
 
   const SimpleRouteMenubarMenu = () => {
     const routes = ["Scan"];
@@ -31,7 +37,6 @@ export function TopStickMenuBar() {
             alignItems: "center",
             textAlign: "center",
           }}
-          key={`Link-${route}`}
         >
           {route}
         </Link>
@@ -46,15 +51,16 @@ export function TopStickMenuBar() {
       }`}
     >
       <Link href="/" className="pr-8 ml-6">
-        <Image
-          src="/Logo.svg"
-          alt="Logo"
-          width={200}
-          height={71}
-          className={`transition ${
-            isDarkMode ? "invert" : "" /* Dark mode에서 색 반전 */
-          }`}
-        />
+        {/* ✅ 서버 렌더링 시 Hydration Error 방지 */}
+        {mounted && (
+          <Image
+            src="/Logo.svg"
+            alt="Logo"
+            width={200}
+            height={71}
+            className={`transition ${isDarkMode ? "invert" : ""}`}
+          />
+        )}
       </Link>
       {SimpleRouteMenubarMenu()}
       <Link
