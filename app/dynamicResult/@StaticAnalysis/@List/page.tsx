@@ -19,6 +19,8 @@ import { useSSE } from "@/components/request/SSEManager";
 export default function StaticAnalysisResultPage() {
   const { taskResults, error } = useSSE();
   const [query, setQuery] = useState("");
+  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const isDarkMode = theme === "dark";
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
@@ -134,7 +136,8 @@ export default function StaticAnalysisResultPage() {
         <Input
           defaultValue={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="bg-white text-black pl-10"
+          className={`pl-10 transition-colors duration-200 ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"
+            }`}
         />
       </div>
       <ScrollableWindow className="space-y-2 h-full">
@@ -165,7 +168,7 @@ export default function StaticAnalysisResultPage() {
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-
+import { useTheme } from "next-themes"; // ✅ 다크모드 감지
 export function AnalysisResultLog({
   title,
   description,
@@ -187,6 +190,9 @@ export function AnalysisResultLog({
     recommendation: string;
   };
 }) {
+  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const isDarkMode = theme === "dark";
+
   const titleMatch = markdown
     ? markdown.match(/\s([\s\w]+?)\W+\[/)
     : description.match(/\s([\s\w]+?)\w+\[/);
@@ -195,22 +201,30 @@ export function AnalysisResultLog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Alert className={`max-w-[35vw] ${getCardStyles(severity)} mx-2 mb-4 `}>
-          <AlertTitle className="flex ">
-            <ExclamationTriangleIcon className="h-8 w-8 mx-2 opacity-100 text-yellow-700 " />
-
-            <span className="text-[15px] text-black font-bold flex flex-col break-words">
-              <div className="flex items-end gap-x-2 ">
+        <Alert
+          className={`max-w-[35vw] ${getCardStyles(severity, isDarkMode)} mx-2 mb-4`}
+        >
+          <AlertTitle className="flex">
+            <ExclamationTriangleIcon className="h-8 w-8 mx-2 opacity-100 text-yellow-700" />
+            <span
+              className={`text-[15px] font-bold flex flex-col break-words ${isDarkMode ? "text-white" : "text-black"
+                }`}
+            >
+              <div className="flex items-end gap-x-2">
                 {extractedTitle.charAt(0).toUpperCase() +
                   extractedTitle.slice(1)}
                 <Badge
-                  className={` hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-fira-code py-0  ${getBadgeStyles(severity)} `}
+                  className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
+                    severity
+                  )}`}
                 >
                   {severity}
                 </Badge>
               </div>
-
-              <span className="text-xs text-gray-400 ">
+              <span
+                className={`text-xs ${isDarkMode ? "text-gray-300" : "text-gray-400"
+                  }`}
+              >
                 {description.slice(0, 60)}...
               </span>
             </span>
@@ -219,37 +233,57 @@ export function AnalysisResultLog({
       </DialogTrigger>
 
       <DialogContent
-        className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-[15px]",
-          "max-w-[80vw]",
-        )}
+        className={`fixed left-[50%] top-[50%] z-50 grid translate-x-[-50%] translate-y-[-50%] gap-4 border p-6 shadow-lg duration-200 sm:rounded-[15px] max-w-[80vw]
+        ${isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white text-black border-gray-300"}`}
       >
-        <DialogTitle className="text-slate-200 text-2xl font-semibold p-4">
+        <DialogTitle
+          className={`text-2xl font-semibold p-4 transition ${isDarkMode ? "text-white" : "text-black"
+            }`}
+        >
           {titleMatch ? titleMatch : title}
           <Badge
-            className={` hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-fira-code py-0 ml-2  ${getBadgeStyles(severity)}`}
+            className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ml-2 ${getBadgeStyles(
+              severity
+            )}`}
           >
             {severity}
           </Badge>
         </DialogTitle>
 
-        <div className="divide-y divide-slate-700 rounded-lg border border-slate-700 bg-slate-900 overflow-hidden">
+        <div
+          className={`divide-y rounded-lg border overflow-hidden ${isDarkMode
+              ? "divide-gray-700 border-gray-700 bg-gray-900"
+              : "divide-gray-300 border-gray-300 bg-gray-100"
+            }`}
+        >
           {/* Description Row */}
-          <div className="grid grid-cols-[200px,1fr] divide-x divide-slate-700">
-            <div className="bg-slate-800 p-4 flex items-center justify-center">
-              <h3 className="text-slate-200 font-semibold">Description</h3>
+          <div
+            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
+              }`}
+          >
+            <div
+              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+                }`}
+            >
+              <h3 className="font-semibold">Description</h3>
             </div>
-            <div className="p-4 text-slate-300 leading-relaxed">
+            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
               {description}
             </div>
           </div>
 
           {/* Impact Row */}
-          <div className="grid grid-cols-[200px,1fr] divide-x divide-slate-700">
-            <div className="bg-slate-800 p-4 flex items-center justify-center">
-              <h3 className="text-slate-200 font-semibold">Impact</h3>
+          <div
+            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
+              }`}
+          >
+            <div
+              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+                }`}
+            >
+              <h3 className="font-semibold">Impact</h3>
             </div>
-            <div className="p-4 text-slate-300 leading-relaxed">
+            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
               {detail?.impact &&
                 detail.impact.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -258,17 +292,23 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  ),
+                  )
                 )}
             </div>
           </div>
 
           {/* Recommendation Row */}
-          <div className="grid grid-cols-[200px,1fr] divide-x divide-slate-700">
-            <div className="bg-slate-800 p-4 flex items-center justify-center">
-              <h3 className="text-slate-200 font-semibold">Recommendation</h3>
+          <div
+            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
+              }`}
+          >
+            <div
+              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+                }`}
+            >
+              <h3 className="font-semibold">Recommendation</h3>
             </div>
-            <div className="p-4 text-slate-300 leading-relaxed">
+            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
               {detail?.recommendation &&
                 detail.recommendation.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -277,7 +317,7 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  ),
+                  )
                 )}
             </div>
           </div>
@@ -288,24 +328,30 @@ export function AnalysisResultLog({
 }
 
 // Critical: DB0004, High: EA6336, Medium: EA9C36, Low: EAE436, Info: 36A2EA
-const getCardStyles = (severity: string) => {
-  const baseStyles = `text-xs border box-border h-[64px] min-h-[64px] max-h-[70px] bg-white rounded-lg select-none`;
+const getCardStyles = (severity: string, isDarkMode: boolean) => {
+  const baseStyles = `text-xs border-2 box-border h-[64px] min-h-[64px] max-h-[70px] rounded-lg select-none transition duration-200`;
+
+  const lightModeStyles = `bg-white text-black`;
+  const darkModeStyles = `bg-black text-white`;
+
+  const themeStyles = isDarkMode ? darkModeStyles : lightModeStyles;
 
   switch (severity) {
     case "Critical":
-      return `${baseStyles} border-[#DB0004] text-[#DB0004]`;
+      return `${baseStyles} ${themeStyles} border-[#DB0004]`;
     case "High":
-      return `${baseStyles} border-[#EA6336] text-[#EA6336]`;
+      return `${baseStyles} ${themeStyles} border-[#EA6336]`;
     case "Medium":
-      return `${baseStyles} border-[#EA9C36] text-[#EA9C36]`;
+      return `${baseStyles} ${themeStyles} border-[#EA9C36]`;
     case "Low":
-      return `${baseStyles} border-[#EAE436] text-[#EAE436]`;
+      return `${baseStyles} ${themeStyles} border-[#EAE436]`;
     case "Info":
-      return `${baseStyles} border-[#36A2EA] text-[#36A2EA]`;
+      return `${baseStyles} ${themeStyles} border-[#36A2EA]`;
     default:
-      return `${baseStyles} border-gray-500 text-gray-500`;
+      return `${baseStyles} ${themeStyles} border-gray-500`;
   }
 };
+
 
 const getSeverityLevel = (severity: string) => {
   switch (severity) {
@@ -325,7 +371,7 @@ const getSeverityLevel = (severity: string) => {
 };
 
 const getBadgeStyles = (severity: string) => {
-  const baseStyles = `text-[11px] border rounded-md select-none px-2 py-[2px] font-medium`;
+  const baseStyles = `text-[11px] border rounded-md select-none px-2 py-[2px] font-bold`;
 
   switch (severity) {
     case "Critical":

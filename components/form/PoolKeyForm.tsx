@@ -190,8 +190,11 @@ export default function PoolKeyForm({
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${blockscoutBaseUrl}/api/v2/smart-contracts/${hooks}`);
-      if (!response.ok) throw new Error(`Failed to fetch contract data: ${response.status}`);
+      const response = await fetch(
+        `${blockscoutBaseUrl}/api/v2/smart-contracts/${hooks}`,
+      );
+      if (!response.ok)
+        throw new Error(`Failed to fetch contract data: ${response.status}`);
 
       const data = await response.json();
       const verified = !!data.source_code;
@@ -238,13 +241,22 @@ export default function PoolKeyForm({
         throw new Error("No tasks found in response.");
       }
 
-      const { hooks: dynamicHooks, timeHash: dynamicTimeHash, tasks: dynamicTasks } = dynamicResult.info;
+      const {
+        hooks: dynamicHooks,
+        timeHash: dynamicTimeHash,
+        tasks: dynamicTasks,
+      } = dynamicResult.info;
       const dynamicTaskIDs = dynamicTasks.map((task: any) => task.id);
 
       // ✅ 데이터를 Session Storage에 저장
       sessionStorage.setItem(
         "dynamicResultData",
-        JSON.stringify({ hooks: dynamicHooks, timeHash: dynamicTimeHash, mode: 2, taskIDs: dynamicTaskIDs }),
+        JSON.stringify({
+          hooks: dynamicHooks,
+          timeHash: dynamicTimeHash,
+          mode: 2,
+          taskIDs: dynamicTaskIDs,
+        }),
       );
 
       const verifiedHookData = localStorage.getItem("hookCodeData");
@@ -262,7 +274,9 @@ export default function PoolKeyForm({
           body: JSON.stringify(staticRequestBody),
         });
         if (!staticResponse.ok) {
-          throw new Error(`Request failed with status ${staticResponse.status}`);
+          throw new Error(
+            `Request failed with status ${staticResponse.status}`,
+          );
         }
 
         const staticResult = await staticResponse.json();
@@ -274,13 +288,22 @@ export default function PoolKeyForm({
           throw new Error("No tasks found in response.");
         }
 
-        const { hooks: staticHooks, timeHash: staticTimeHash, tasks: staticTasks } = staticResult.info;
+        const {
+          hooks: staticHooks,
+          timeHash: staticTimeHash,
+          tasks: staticTasks,
+        } = staticResult.info;
         const staticTaskIDs = staticTasks.map((task: any) => task.id);
 
         // ✅ 데이터를 Session Storage에 저장
         sessionStorage.setItem(
           "staticResultData",
-          JSON.stringify({ hooks: staticHooks, timeHash: staticTimeHash, mode: 4, taskIDs: staticTaskIDs }),
+          JSON.stringify({
+            hooks: staticHooks,
+            timeHash: staticTimeHash,
+            mode: 4,
+            taskIDs: staticTaskIDs,
+          }),
         );
       }
 

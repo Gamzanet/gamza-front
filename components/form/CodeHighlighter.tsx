@@ -1,39 +1,30 @@
 "use client";
 
-// @ts-ignore
-import { Prism } from "react-syntax-highlighter";
-// @ts-ignore
-import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useState } from "react";
+import { useTheme } from "next-themes"; // ✅ 다크모드 감지
+import { Prism } from "react-syntax-highlighter";
+import { vscDarkPlus, prism } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { Button } from "../ui/button";
-import { Copy } from "lucide-react"; // 아이콘 추가
+import { Copy } from "lucide-react"; // 복사 아이콘 추가
 
-// @todo replace library to https://github.com/FormidableLabs/prism-react-renderer
+const CodeHighlighter = ({ codeString, fontSize }: { codeString: string; fontSize: number }) => {
+  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const isDarkMode = theme === "dark";
 
-const CodeHighlighter = ({
-  codeString,
-  fontSize,
-}: {
-  codeString: string;
-  fontSize: number;
-}) => {
   return (
     <pre style={{ margin: 0, overflow: "auto" }}>
       <Prism
         language="solidity"
-        style={solarizedlight}
+        style={isDarkMode ? vscDarkPlus : prism} // ✅ 다크모드: vscDarkPlus / 라이트모드: prism
         showLineNumbers={true}
         wrapLongLines={false}
         codeTagProps={{
           style: {
             fontSize: `${fontSize}rem`,
-            borderRadius: "15px",
             whiteSpace: "pre",
           },
         }}
-
-        // @todo try wrap lines: checkout https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/
       >
         {codeString}
       </Prism>
@@ -50,6 +41,8 @@ const ScrollableCode = ({
   className?: string;
   codeString: string;
 }) => {
+  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const isDarkMode = theme === "dark";
   const [fontSize, setFontSize] = useState(1.0);
   const [copied, setCopied] = useState(false);
 
@@ -57,7 +50,7 @@ const ScrollableCode = ({
     try {
       await navigator.clipboard.writeText(codeString);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500); // 1.5초 후 다시 원래 상태로 변경
+      setTimeout(() => setCopied(false), 1500);
     } catch (err) {
       console.error("Failed to copy text:", err);
     }
@@ -65,53 +58,46 @@ const ScrollableCode = ({
 
   return (
     <ScrollArea.Root
-      className={`h-[500px] h-max-[30vh] w-full overflow-hidden rounded bg-white shadow-[0_2px_10px] shadow-blackA4 relative ${className}`}
+      className={`h-[500px] max-h-[30vh] w-full overflow-hidden rounded relative transition ${
+        isDarkMode ? "bg-[#1e1e1e] text-white" : "bg-[#f5f2f0] text-[#333]"
+      } ${className}`}
     >
-      {/* ✅ Copy 버튼 추가 */}
+      {/* ✅ Copy 버튼 (다크 & 라이트 모드 적용) */}
       <div className="absolute right-3 top-3 flex items-center gap-2">
         <Button
-          className="flex items-center gap-1 bg-gray-300 hover:bg-gray-400 text-xs px-2 py-1 rounded-md transition"
+          className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition ${
+            isDarkMode ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-black"
+          }`}
           onClick={handleCopy}
         >
           <Copy size={14} />
           {copied ? "Copied!" : "Copy"}
         </Button>
       </div>
-      {/* <div className="py-2 absolute right-0 top-0">
-        <Button
-          className="rounded-[15px] p-2 m-2 text-xl w-fit-content text-align-center bg-blue-500 text-white hover:bg-blue-600 select-none"
-          onClick={() => {
-            setFontSize(fontSize + 0.5);
-          }}
-        >
-          🔍➕
-        </Button>
-        <Button
-          className="rounded-[15px] p-2 m-2 text-xl w-fit-content text-align-center bg-blue-500 text-white hover:bg-blue-600 select-none"
-          onClick={() => {
-            setFontSize(fontSize > 1 ? fontSize - 0.5 : 1);
-          }}
-        >
-          🔍➖
-        </Button>
-      </div> */}
+
       <ScrollArea.Viewport className="size-full rounded">
         {children}
         <CodeHighlighter codeString={codeString} fontSize={fontSize} />
       </ScrollArea.Viewport>
+
+      {/* ✅ 스크롤바 색상 변경 */}
       <ScrollArea.Scrollbar
-        className="flex touch-none select-none bg-gray-300 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-gray-400 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${
+          isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-300 hover:bg-gray-400"
+        } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
         orientation="vertical"
       >
-        <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500 before:absolute before:left-1/2 before:top-1/2 before:size-full before:min-h-11 before:min-w-11 before:-translate-x-1/2 before:-translate-y-1/2" />
+        <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500" />
       </ScrollArea.Scrollbar>
       <ScrollArea.Scrollbar
-        className="flex touch-none select-none bg-gray-300 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-gray-400 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${
+          isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-300 hover:bg-gray-400"
+        } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
         orientation="horizontal"
       >
-        <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500 before:absolute before:left-1/2 before:top-1/2 before:size-full before:min-h-[44px] before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2" />
+        <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500" />
       </ScrollArea.Scrollbar>
-      <ScrollArea.Corner className="bg-blackA5" />
+      <ScrollArea.Corner className={isDarkMode ? "bg-gray-700" : "bg-gray-300"} />
     </ScrollArea.Root>
   );
 };

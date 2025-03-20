@@ -91,48 +91,56 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
 
       eventSource.onmessage = async (event) => {
         try {
-          console.log(`📩 SSE Received (${type}, Group ${group}, Mode ${mode}):`, event.data);
-      
+          console.log(
+            `📩 SSE Received (${type}, Group ${group}, Mode ${mode}):`,
+            event.data,
+          );
+
           const match = event.data.match(/idx: (\d+), task-id: ([a-z0-9-]+)/);
           if (!match) return;
-      
+
           const idx = parseInt(match[1]);
           const taskId = match[2];
-      
+
           if (!taskIDs.includes(taskId)) {
             console.warn(`⚠️ Received unknown taskID (${taskId}), ignoring.`);
             return;
           }
-      
+
           // ✅ 중복 수신 방지: 이미 받은 idx라면 무시
           const key = `${type}-${group}-${idx}`;
           if (receivedIdxSet.has(key)) {
             console.log(`⚠️ Already received ${key}, ignoring.`);
             return;
           }
-      
+
           // ✅ 데이터 가져오기
           const response = await fetch(`${RESULT_API_URL}/${taskId}`);
-          if (!response.ok) throw new Error(`Failed to fetch result for taskID: ${taskId}`);
-      
+          if (!response.ok)
+            throw new Error(`Failed to fetch result for taskID: ${taskId}`);
+
           const resultData = await response.json();
-      
+
           // ✅ 상태 업데이트
           setTaskResults((prevResults) => ({
             ...prevResults,
             [key]: resultData,
           }));
-      
+
           setReceivedIdxSet((prevSet) => {
             const newSet = new Set(prevSet);
             newSet.add(key);
-          
+
             // ✅ 현재 그룹에서 모든 데이터를 받았다면 연결 종료
-            if ([...taskIDs].every((id) => newSet.has(`${type}-${group}-${id}`))) {
-              console.log(`✅ All data received for ${type}-${group}, closing SSE.`);
+            if (
+              [...taskIDs].every((id) => newSet.has(`${type}-${group}-${id}`))
+            ) {
+              console.log(
+                `✅ All data received for ${type}-${group}, closing SSE.`,
+              );
               eventSource.close();
             }
-      
+
             return newSet;
           });
         } catch (error) {
@@ -144,19 +152,21 @@ export function SSEProvider({ children }: { children: React.ReactNode }) {
         if (eventSource.readyState === EventSource.CLOSED) {
           return; // 서버가 닫은 경우 재연결하지 않음
         }
-      
+
         // 수신해야 할 데이터가 남아있는 경우에만 오류 처리
         if (receivedCount < totalExpected) {
-          console.warn(`⚠️ SSE Connection Error (${type}, Group ${group}, Mode ${mode}):`, event);
+          console.warn(
+            `⚠️ SSE Connection Error (${type}, Group ${group}, Mode ${mode}):`,
+            event,
+          );
           setError("Failed to connect to SSE.");
         }
-      
+
         // 필요 데이터가 다 수신된 경우에는 SSE 종료 (재연결 방지)
         if (receivedCount >= totalExpected) {
           eventSource.close();
         }
       };
-
     });
 
     return () => {

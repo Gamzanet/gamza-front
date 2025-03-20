@@ -28,6 +28,7 @@ import {
 
 import Loading from "@/components/ui/loading";
 import { useSSE } from "@/components/request/SSEManager";
+import { useTheme } from "next-themes";
 
 export const description = "A bar chart with a custom label";
 
@@ -85,18 +86,18 @@ function Component({
 
   const averageGas = validData.length
     ? (
-        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-      ).toFixed(2)
+      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+    ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-        const mid = Math.floor(sorted.length / 2);
-        return sorted.length % 2 === 0
-          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-          : sorted[mid].toString();
-      })()
+      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 === 0
+        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+        : sorted[mid].toString();
+    })()
     : "0";
 
   const maxValue =
@@ -297,7 +298,9 @@ function GasDifferenceSummary({
 export default function GasDifferenceChart() {
   const [isCode, setIsCode] = useState<boolean>(false);
   const { taskResults, error } = useSSE();
-
+  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const isDarkMode = theme === "dark";
+  
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -340,7 +343,7 @@ export default function GasDifferenceChart() {
       difference: Number(hook.swap.gas) - Number(noHook.swap.gas),
     },
   ];
-  const gasPrice = data.result.result.gasPrice;
+  const gasPrice = data.result.result.gasPrice / 1e9;
   const gasData = formattedData;
 
   return (
@@ -348,11 +351,16 @@ export default function GasDifferenceChart() {
       {!isCode && (
         <div className="flex flex-col items-center justify-center">
           {/* ✅ 현재 체인의 가스비 표시 */}
-          <div className="mt-4 p-2 border rounded-lg bg-gray-100 text-sm text-gray-700">
+          <div
+            className={`mt-4 p-2 border rounded-lg text-sm transition-colors duration-200 ${isDarkMode
+              ? "bg-gray-800 text-white border-gray-600"
+              : "bg-gray-100 text-gray-700 border-gray-300"
+              }`}
+          >
             {gasPrice ? (
               <p>
                 <strong>Current Gas Price:</strong>{" "}
-                {gasPrice > 0 ? gasPrice + " wei" : "No Data"}
+                {gasPrice > 0 ? gasPrice + " Gwei" : "No Data"}
               </p>
             ) : (
               <p>Loading gas price...</p>
