@@ -30,10 +30,7 @@ export default function Layout({
         {StaticAnalysis}
         {TraceLog}
         <div className="z-49 rounded-[15px]">
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="min-h-[200px]"
-          >
+          <ResizablePanelGroup direction="horizontal" className="min-h-[200px]">
             <ResizablePanel className="rounded-[15px]">
               <div className="flex flex-col gap-4 overflow-x-auto border-2 border-dotted">
                 <div className="flex justify-between rounded-[15px]">

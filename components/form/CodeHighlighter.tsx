@@ -67,16 +67,18 @@ const ScrollableCode = ({
 
   return (
     <ScrollArea.Root
-      className={`h-[500px] max-h-[60vh] w-full overflow-hidden rounded relative transition ${isDarkMode ? "bg-[#1e1e1e] text-white" : "bg-[white] text-[#333]"
-        } ${className}`}
+      className={`h-[500px] max-h-[60vh] w-full overflow-hidden rounded relative transition ${
+        isDarkMode ? "bg-[#1e1e1e] text-white" : "bg-[white] text-[#333]"
+      } ${className}`}
     >
       {/* ✅ Copy 버튼 (다크 & 라이트 모드 적용) */}
       <div className="absolute right-3 top-3 flex items-center gap-2">
         <Button
-          className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition ${isDarkMode
-            ? "bg-gray-700 hover:bg-gray-600 text-white"
-            : "bg-gray-200 hover:bg-gray-300 text-black"
-            }`}
+          className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs transition ${
+            isDarkMode
+              ? "bg-gray-700 hover:bg-gray-600 text-white"
+              : "bg-gray-200 hover:bg-gray-300 text-black"
+          }`}
           onClick={handleCopy}
         >
           <Copy size={14} />
@@ -91,19 +93,21 @@ const ScrollableCode = ({
 
       {/* ✅ 스크롤바 색상 변경 */}
       <ScrollArea.Scrollbar
-        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${isDarkMode
-          ? "bg-gray-700 hover:bg-gray-600"
-          : "bg-gray-300 hover:bg-gray-400"
-          } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
+        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${
+          isDarkMode
+            ? "bg-gray-700 hover:bg-gray-600"
+            : "bg-gray-300 hover:bg-gray-400"
+        } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
         orientation="vertical"
       >
         <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500" />
       </ScrollArea.Scrollbar>
       <ScrollArea.Scrollbar
-        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${isDarkMode
-          ? "bg-gray-700 hover:bg-gray-600"
-          : "bg-gray-300 hover:bg-gray-400"
-          } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
+        className={`flex touch-none select-none p-0.5 transition-colors duration-[160ms] ease-out ${
+          isDarkMode
+            ? "bg-gray-700 hover:bg-gray-600"
+            : "bg-gray-300 hover:bg-gray-400"
+        } data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col`}
         orientation="horizontal"
       >
         <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-gray-500" />

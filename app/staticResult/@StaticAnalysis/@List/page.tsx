@@ -12,7 +12,6 @@ import ScrollableWindow from "@/components/ScorllableWindow";
 import { threatDetails } from "@/utils/ThreatDetails";
 import { SSE_URL, RESULT_API_URL } from "@/utils/APIreqeust";
 
-
 export default function StaticAnalysisResultPage() {
   const [threats, setThreats] = useState<any[]>([]);
   const [receivedFirstResult, setReceivedFirstResult] = useState(false);
@@ -31,7 +30,7 @@ export default function StaticAnalysisResultPage() {
 
     const mode = 4;
     const eventSource = new EventSource(
-      `${SSE_URL}/${timeHash}/${hooks}/${mode}/0`
+      `${SSE_URL}/${timeHash}/${hooks}/${mode}/0`,
     );
 
     eventSource.onmessage = async (event) => {
@@ -67,8 +66,8 @@ export default function StaticAnalysisResultPage() {
           ...newThreats.filter(
             (newThreat) =>
               !prevThreats.some(
-                (existingThreat) => existingThreat.name === newThreat.name
-              )
+                (existingThreat) => existingThreat.name === newThreat.name,
+              ),
           ),
         ]);
       } catch (error) {
@@ -94,13 +93,15 @@ export default function StaticAnalysisResultPage() {
   }, []);
 
   const filteredThreats = threats.filter((item) =>
-    JSON.stringify(item).toLowerCase().includes(query.toLowerCase())
+    JSON.stringify(item).toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
     <div className="flex flex-col my-4 max-h-[800px] ml-2 gap-y-2">
       <div className="relative w-[96%]">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2">🔍</span>
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+          🔍
+        </span>
         <Input
           defaultValue={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -124,7 +125,7 @@ export default function StaticAnalysisResultPage() {
             {[...filteredThreats]
               .sort(
                 (a, b) =>
-                  getSeverityLevel(b.severity) - getSeverityLevel(a.severity)
+                  getSeverityLevel(b.severity) - getSeverityLevel(a.severity),
               )
               .map((item, index) => (
                 <AnalysisResultLog
@@ -150,7 +151,11 @@ export default function StaticAnalysisResultPage() {
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { getCardStyles, getSeverityLevel, getBadgeStyles } from "@/utils/SeverityStyles";
+import {
+  getCardStyles,
+  getSeverityLevel,
+  getBadgeStyles,
+} from "@/utils/SeverityStyles";
 import { useTheme } from "next-themes"; // ✅ 다크모드 감지
 export function AnalysisResultLog({
   title,
@@ -191,7 +196,7 @@ export function AnalysisResultLog({
             {/* Badge */}
             <Badge
               className={`mt-1 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
-                severity
+                severity,
               )}`}
             >
               {severity}
@@ -202,7 +207,8 @@ export function AnalysisResultLog({
               <span
                 className={`text-[15px] font-bold break-words ${isDarkMode ? "text-white" : "text-black"}`}
               >
-                {extractedTitle.charAt(0).toUpperCase() + extractedTitle.slice(1)}
+                {extractedTitle.charAt(0).toUpperCase() +
+                  extractedTitle.slice(1)}
               </span>
               <span
                 className={`text-xs ${isDarkMode ? "text-gray-300" : "text-gray-400"}`}
@@ -219,8 +225,9 @@ export function AnalysisResultLog({
         ${isDarkMode ? "bg-gray-900 text-white border-gray-700" : "bg-white text-black border-gray-300"}`}
       >
         <DialogTitle
-          className={`text-2xl font-semibold p-4 transition ${isDarkMode ? "text-white" : "text-black"
-            }`}
+          className={`text-2xl font-semibold p-4 transition ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}
         >
           <div className="flex items-center gap-2">
             <Badge
@@ -233,21 +240,24 @@ export function AnalysisResultLog({
         </DialogTitle>
 
         <div
-          className={`divide-y rounded-lg border overflow-hidden ${isDarkMode
-            ? "divide-gray-700 border-gray-700 bg-gray-900"
-            : "divide-gray-300 border-gray-300 bg-gray-100"
-            }`}
+          className={`divide-y rounded-lg border overflow-hidden ${
+            isDarkMode
+              ? "divide-gray-700 border-gray-700 bg-gray-900"
+              : "divide-gray-300 border-gray-300 bg-gray-100"
+          }`}
         >
           {/* Description Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode
-                ? "bg-gray-800 text-gray-200"
-                : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Description</h3>
             </div>
@@ -260,14 +270,16 @@ export function AnalysisResultLog({
 
           {/* Impact Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode
-                ? "bg-gray-800 text-gray-200"
-                : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Impact</h3>
             </div>
@@ -289,14 +301,16 @@ export function AnalysisResultLog({
 
           {/* Recommendation Row */}
           <div
-            className={`grid grid-cols-[200px,1fr] divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-300"
-              }`}
+            className={`grid grid-cols-[200px,1fr] divide-x ${
+              isDarkMode ? "divide-gray-700" : "divide-gray-300"
+            }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode
-                ? "bg-gray-800 text-gray-200"
-                : "bg-gray-200 text-gray-800"
-                }`}
+              className={`p-4 flex items-center justify-center ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-200"
+                  : "bg-gray-200 text-gray-800"
+              }`}
             >
               <h3 className="font-semibold">Recommendation</h3>
             </div>

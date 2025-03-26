@@ -14,7 +14,7 @@ export default function TokenPrice() {
   const data = taskResults["dynamic-2-9"];
   if (!data) {
     return (
-      <div className="w-full h-full">
+      <div className="min-w-[500px] min-h-[330px]">
         <Loading containerClassName="h-full" />
       </div>
     );

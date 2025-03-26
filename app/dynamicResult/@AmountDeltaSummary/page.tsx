@@ -41,7 +41,7 @@ export default function AmountDeltaSummaryPage() {
   const data = taskResults["dynamic-2-9"];
   if (!data) {
     return (
-      <div className="w-full h-full">
+      <div className="min-w-[1040px] min-h-[600px]">
         <Loading containerClassName="h-full" />
       </div>
     );
