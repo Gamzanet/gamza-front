@@ -15,7 +15,7 @@ export default function TokenPrice() {
   if (!data) {
     return (
       <div className="min-w-[500px] min-h-[330px]">
-        <Loading containerClassName="h-full" />
+        <Loading containerClassName="h-full w-full" />
       </div>
     );
   }

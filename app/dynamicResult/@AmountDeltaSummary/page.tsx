@@ -42,7 +42,7 @@ export default function AmountDeltaSummaryPage() {
   if (!data) {
     return (
       <div className="min-w-[1040px] min-h-[600px]">
-        <Loading containerClassName="h-full" />
+        <Loading containerClassName="h-full w-full" />
       </div>
     );
   }

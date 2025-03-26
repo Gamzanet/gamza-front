@@ -195,9 +195,7 @@ export function AnalysisResultLog({
           <AlertTitle className="flex gap-3 items-start">
             {/* Badge */}
             <Badge
-              className={`mt-1 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
-                severity,
-              )}`}
+              className={`${getBadgeStyles(severity)}`}
             >
               {severity}
             </Badge>
@@ -231,7 +229,7 @@ export function AnalysisResultLog({
         >
           <div className="flex items-center gap-2">
             <Badge
-              className={`${getBadgeStyles(severity)} hover:bg-yellow-300 mr-2 leading-none`}
+              className={`${getBadgeStyles(severity)} mr-2 leading-none`}
             >
               {severity}
             </Badge>
