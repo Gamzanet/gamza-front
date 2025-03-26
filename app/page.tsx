@@ -54,7 +54,7 @@ export default function RootPage() {
           />
           <SimpleCustomizableLinkCard
             className="bg-primary-400 w-[400px] h-[500px]"
-            href="/docs"
+            href="https://gamza-net.gitbook.io/gamza.net"
             title="Docs"
             description="Let's study the vulnerability audit methods using Herbicide and the security best practices for Uniswap V4."
           >

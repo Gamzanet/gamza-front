@@ -32,10 +32,10 @@ export default function Layout({
         <div className="z-49 rounded-[15px]">
           <ResizablePanelGroup
             direction="horizontal"
-            className="min-h-[200px] rounded-[15px] border md:min-w-[450px]"
+            className="min-h-[200px]"
           >
-            <ResizablePanel defaultSize={75} className="rounded-[15px]">
-              <div className="flex flex-col gap-4 rounded-[15px]">
+            <ResizablePanel className="rounded-[15px]">
+              <div className="flex flex-col gap-4 overflow-x-auto border-2 border-dotted">
                 <div className="flex justify-between rounded-[15px]">
                   {poolKey}
                   {TokenPrice}
@@ -43,8 +43,7 @@ export default function Layout({
                 {AmountDeltaSummary}
               </div>
             </ResizablePanel>
-            <ResizableHandle withHandle className="rounded-[15px]" />
-            <ResizablePanel defaultSize={32} className="rounded-[15px]">
+            <ResizablePanel className="overflow-x-auto min-w-[370px] max-w-[450px] md:min-w-[370px] border-2 border-dotted">
               {EstimatedGasUsage}
             </ResizablePanel>
           </ResizablePanelGroup>

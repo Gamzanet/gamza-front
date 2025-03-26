@@ -83,7 +83,7 @@ export default function HookCodeForm() {
         JSON.stringify({ hooks, timeHash, mode, taskIDs }),
       );
 
-      router.push(`/staticResult`);
+      await router.push(`/staticResult`);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -126,7 +126,7 @@ export default function HookCodeForm() {
           className="bg-primary text-white"
           onClick={(e) => {
             e.preventDefault();
-            sendApiRequest();
+            if (!loading) sendApiRequest();
           }}
           disabled={loading}
         >

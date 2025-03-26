@@ -13,8 +13,8 @@ export default function StaticAnalysisLayout({
     <div className="flex flex-col">
       {children}
       <div className="flex">
-        <div className="w-[60vw] p-4 border-2 border-dotted">{Code}</div>
-        <div className="w-[40vw] p-4 border-2 border-dotted">{List}</div>
+        <div className="w-[80vw] p-4 border-2 border-dotted">{Code}</div>
+        <div className="w-[20vw] p-4 border-2 border-dotted">{List}</div>
       </div>
     </div>
   );

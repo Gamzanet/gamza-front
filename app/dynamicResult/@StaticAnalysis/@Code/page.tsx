@@ -109,7 +109,7 @@ export default function StaticAnalysisResultPage() {
         {isVerified ? (
           <>
             <h2 className="text-lg font-bold mb-2">Source Code:</h2>
-            <ScrollableCode codeString={verificationResult.source_code} />
+            <ScrollableCode codeString={verificationResult.source_code} className={`h-[60vh]`}/>
           </>
         ) : (
           <div>

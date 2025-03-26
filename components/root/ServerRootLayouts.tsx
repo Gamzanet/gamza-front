@@ -22,17 +22,15 @@ export function TopStickMenuBar() {
       <MenubarMenu key={`MenubarMenu-${route}`}>
         <Link
           href={`/${route.toLowerCase()}`}
-          className={`p-2 space-x-2 hover:text-accent hover:opacity-100 rounded-[50px] text-center justify-center transition ${
-            isDarkMode
-              ? "text-white opacity-80 hover:bg-gray-700"
-              : "text-black opacity-80 hover:bg-[#F1F1F1]"
+          className={`p-2 space-x-2 hover:underline rounded-[50px] text-center justify-center transition ${
+            isDarkMode ? "text-white" : "text-black"
           }`}
           style={{
             width: "152px",
             height: "51px",
-            fontFamily: "'SF Pro Display'",
+            fontFamily: "inherit",
             fontStyle: "normal",
-            fontWeight: 400,
+            fontWeight: 700,
             fontSize: "31px",
             alignItems: "center",
             textAlign: "center",
@@ -66,17 +64,15 @@ export function TopStickMenuBar() {
       <Link
         href="https://gamza-net.gitbook.io/gamza.net"
         target="_blank"
-        className={`p-2 space-x-2 hover:text-accent hover:opacity-100 rounded-[50px] justify-center transition ${
-          isDarkMode
-            ? "text-white opacity-80 hover:bg-gray-700"
-            : "text-black opacity-80 hover:bg-[#F1F1F1]"
+        className={`p-2 space-x-2 hover:underline rounded-[50px] justify-center transition ${
+          isDarkMode ? "bg-black text-white" : "bg-white text-black"
         }`}
         style={{
           width: "152px",
           height: "51px",
-          fontFamily: "'SF Pro Display'",
+          fontFamily: "inherit",
           fontStyle: "normal",
-          fontWeight: 400,
+          fontWeight: 700,
           fontSize: "31px",
           alignItems: "center",
           textAlign: "center",

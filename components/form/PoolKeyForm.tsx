@@ -307,7 +307,7 @@ export default function PoolKeyForm({
         );
       }
 
-      router.push(`/dynamicResult`);
+      await router.push(`/dynamicResult`);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -382,11 +382,11 @@ export default function PoolKeyForm({
           className="bg-primary text-white"
           onClick={(e) => {
             e.preventDefault();
-            sendApiRequest();
+            if (!loading) sendApiRequest();
           }}
           disabled={loading} // 로딩 중 버튼 비활성화
         >
-          {loading ? "Sending..." : "Scan"}
+          {loading ? "Processing..." : "Scan"}
         </Button>
         {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
         {/* {"fail to send request"} */}

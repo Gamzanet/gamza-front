@@ -65,7 +65,7 @@ export default function StaticAnalysisResultPage() {
       </CardHeader>
       <CardContent>
         <h2 className="text-lg font-bold mb-2">Hook Source Code:</h2>
-        <ScrollableCode codeString={hookCodeResult || "No Code Available"} />
+        <ScrollableCode codeString={hookCodeResult || "No Code Available"} className={`h-[60vh]`}/>
       </CardContent>
     </Card>
   );

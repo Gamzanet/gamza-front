@@ -182,7 +182,7 @@ export default function AmountDeltaSummaryPage() {
 
   return (
     <div>
-      <Card>
+      <Card className="min-w-[1040px]">
         <CardHeader>
           <div className="flex">
             <div className="flex flex-col px-4">

@@ -1,10 +1,7 @@
 "use client";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-
 import { Input } from "@/components/ui/input";
-
 import {
   Dialog,
   DialogContent,
@@ -19,23 +16,30 @@ import { useSSE } from "@/components/request/SSEManager";
 export default function StaticAnalysisResultPage() {
   const { taskResults, error } = useSSE();
   const [query, setQuery] = useState("");
-  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
+  const [receivedFirstResult, setReceivedFirstResult] = useState(false);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [expectedCount, setExpectedCount] = useState(0);
+  const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  // ✅ taskIDs 수 기준 기대 개수 추정
+  useEffect(() => {
+    const staticData = sessionStorage.getItem("staticResultData");
+    const dynamicData = sessionStorage.getItem("dynamicResultData");
 
-  if (!taskResults || Object.keys(taskResults).length === 0) {
-    return <Loading containerClassName="h-full" />;
-  }
+    let total = 0;
+    if (staticData) total += 1; // static은 항상 1개
+    if (dynamicData) total += 8 + 1 + 1; // dynamic은 10개
 
-  // ✅ 받은 데이터를 기반으로 위협 목록 생성
+    setExpectedCount(total);
+  }, []);
+
+  // ✅ 수신 결과에서 위협 목록 파싱
   const threats = Object.entries(taskResults).flatMap(([key, data]) => {
-    const [type, group, idx] = key.split("-").map(Number);
-    const mode = group === 0 ? 2 : 4; // group 0은 Dynamic(2), 나머지는 Static(4)
+    const [type, group, idx] = key.split("-").map((x) => x.trim());
+    const mode = group === "0" ? 2 : 4;
 
-    let threatsList =
+    const resultThreats =
       data?.result?.result?.threats?.map((threat: any) => ({
         name: threat.detector,
         description: threat.data.description,
@@ -45,122 +49,153 @@ export default function StaticAnalysisResultPage() {
         type: mode === 2 ? "Dynamic" : "Static",
       })) || [];
 
-    // ✅ 특정 인덱스에 따라 추가적인 위협 감지
-    if (idx === 0 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "AddLiquidity",
-        description: "Unexpected behavior detected when adding liquidity.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 1 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "RemoveLiquidity",
-        description: "Unexpected behavior detected when removing liquidity.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 2 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Swap",
-        description: "Unexpected behavior detected during token swaps.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 3 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Donate",
-        description: "Unexpected behavior detected in the donation process.",
-        severity: "Info",
-        type: "custom",
-      });
-    }
-    if (idx === 4 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "TimeLock",
-        description: "This pool key may not be usable at any time.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 5 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "OnlyPoolManager",
-        description: "Hook contract can call functions besides PoolManager.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 6 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "ReInitialize",
-        description: "No limitation on initialize, potential storage issues.",
-        severity: "Medium",
-        type: "custom",
-      });
-    }
-    if (idx === 7 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Upgradeability",
-        description: "Identified as a proxy contract.",
-        severity: "Critical",
-        type: "custom",
-      });
-    }
-    if (idx === 8 && data?.result?.result?.FAIL >= 1) {
-      threatsList.push({
-        name: "Gas Grief",
-        description: "Could not estimate gas for basic function.",
-        severity: "Low",
-        type: "custom",
-      });
+    // ✅ 추가 사용자 정의 위협 (기본 함수 실패 기반)
+    const failCount = data?.result?.result?.FAIL;
+    const extraThreats = [];
+
+    if (failCount >= 1) {
+      switch (idx) {
+        case "0":
+          extraThreats.push({
+            name: "AddLiquidity",
+            description: "Unexpected behavior detected when adding liquidity.",
+            severity: "Info",
+            type: "custom",
+          });
+          break;
+        case "1":
+          extraThreats.push({
+            name: "RemoveLiquidity",
+            description: "Unexpected behavior detected when removing liquidity.",
+            severity: "Info",
+            type: "custom",
+          });
+          break;
+        case "2":
+          extraThreats.push({
+            name: "Swap",
+            description: "Unexpected behavior detected during token swaps.",
+            severity: "Info",
+            type: "custom",
+          });
+          break;
+        case "3":
+          extraThreats.push({
+            name: "Donate",
+            description: "Unexpected behavior detected in the donation process.",
+            severity: "Info",
+            type: "custom",
+          });
+          break;
+        case "4":
+          extraThreats.push({
+            name: "TimeLock",
+            description: "This pool key may not be usable at any time.",
+            severity: "Medium",
+            type: "custom",
+          });
+          break;
+        case "5":
+          extraThreats.push({
+            name: "OnlyPoolManager",
+            description: "Hook contract can call functions besides PoolManager.",
+            severity: "Medium",
+            type: "custom",
+          });
+          break;
+        case "6":
+          extraThreats.push({
+            name: "ReInitialize",
+            description: "No limitation on initialize, potential storage issues.",
+            severity: "Medium",
+            type: "custom",
+          });
+          break;
+        case "7":
+          extraThreats.push({
+            name: "Upgradeability",
+            description: "Identified as a proxy contract.",
+            severity: "Critical",
+            type: "custom",
+          });
+          break;
+        case "8":
+          extraThreats.push({
+            name: "Gas Grief",
+            description: "Could not estimate gas for basic function.",
+            severity: "Low",
+            type: "custom",
+          });
+          break;
+      }
     }
 
-    return threatsList;
+    return [...resultThreats, ...extraThreats];
   });
 
-  // ✅ 검색어 필터 적용
+  // ✅ 필터 적용
   const filteredThreats = threats.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(query.toLowerCase()),
   );
 
+  // ✅ 수신 카운트 업데이트
+  useEffect(() => {
+    const keys = Object.keys(taskResults);
+    setCompletedCount(keys.length);
+    if (!receivedFirstResult && keys.length > 0) {
+      setReceivedFirstResult(true);
+    }
+  }, [taskResults]);
+
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <div className="flex flex-col my-4 max-h-[800px] ml-2 gap-y-2">
-      <div className="relative w-[96%] ">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-          🔍
-        </span>
+      {/* 검색 */}
+      <div className="relative w-[96%]">
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2">🔍</span>
         <Input
           defaultValue={query}
           onChange={(e) => setQuery(e.target.value)}
-          className={`pl-10 transition-colors duration-200 ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"
-            }`}
+          className={`pl-10 transition-colors duration-200 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-600"
+              : "bg-white text-black border-gray-300"
+          }`}
         />
       </div>
-      <ScrollableWindow className="space-y-2 h-full">
-        {filteredThreats.length > 0 ? (
-          // ✅ 1️⃣ 심각도 기준으로 정렬하여 표시
-          [...filteredThreats]
-            .sort(
-              (a, b) =>
-                getSeverityLevel(b.severity) - getSeverityLevel(a.severity),
-            ) // 내림차순 정렬 (Critical → High → Medium → Low → Info)
-            .map((item, index) => (
-              <AnalysisResultLog
-                key={index}
-                title={item.name}
-                description={item.description}
-                severity={item.severity}
-                detail={threatDetails[item.name]}
-              />
-            ))
-        ) : (
-          <p className="text-gray-500 text-center">No threats detected.</p>
-        )}
-      </ScrollableWindow>
+
+      {/* 최초 결과 수신 전: 스켈레톤 */}
+      {!receivedFirstResult ? (
+        <div className="flex flex-col gap-2 mt-4 w-full px-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <ScrollableWindow className="space-y-2 h-full">
+            {[...filteredThreats]
+              .sort((a, b) => getSeverityLevel(b.severity) - getSeverityLevel(a.severity))
+              .map((item, index) => (
+                <AnalysisResultLog
+                  key={index}
+                  title={item.name}
+                  description={item.description}
+                  severity={item.severity}
+                  detail={threatDetails[item.name]}
+                />
+              ))}
+          </ScrollableWindow>
+
+          {/* 아직 수신 완료되지 않았으면 하단에 로딩 추가 */}
+          {completedCount < expectedCount && (
+            <div className="flex flex-col gap-2 mt-4 w-full px-4">
+              <SkeletonCard />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -168,6 +203,7 @@ export default function StaticAnalysisResultPage() {
 
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { getCardStyles, getSeverityLevel, getBadgeStyles } from "@/utils/SeverityStyles";
 import { useTheme } from "next-themes"; // ✅ 다크모드 감지
 export function AnalysisResultLog({
   title,
@@ -202,32 +238,31 @@ export function AnalysisResultLog({
     <Dialog>
       <DialogTrigger asChild>
         <Alert
-          className={`max-w-[35vw] ${getCardStyles(severity, isDarkMode)} mx-2 mb-4`}
+          className={`relative w-[96%] ${getCardStyles(severity, isDarkMode)} mb-4`}
         >
-          <AlertTitle className="flex">
-            <ExclamationTriangleIcon className="h-8 w-8 mx-2 opacity-100 text-yellow-700" />
-            <span
-              className={`text-[15px] font-bold flex flex-col break-words ${isDarkMode ? "text-white" : "text-black"
-                }`}
+          <AlertTitle className="flex gap-3 items-start">
+            {/* Badge */}
+            <Badge
+              className={`mt-1 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
+                severity
+              )}`}
             >
-              <div className="flex items-end gap-x-2">
-                {extractedTitle.charAt(0).toUpperCase() +
-                  extractedTitle.slice(1)}
-                <Badge
-                  className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ${getBadgeStyles(
-                    severity
-                  )}`}
-                >
-                  {severity}
-                </Badge>
-              </div>
+              {severity}
+            </Badge>
+
+            {/* Text Stack */}
+            <div className="flex flex-col">
               <span
-                className={`text-xs ${isDarkMode ? "text-gray-300" : "text-gray-400"
-                  }`}
+                className={`text-[15px] font-bold break-words ${isDarkMode ? "text-white" : "text-black"}`}
+              >
+                {extractedTitle.charAt(0).toUpperCase() + extractedTitle.slice(1)}
+              </span>
+              <span
+                className={`text-xs ${isDarkMode ? "text-gray-300" : "text-gray-400"}`}
               >
                 {description.slice(0, 60)}...
               </span>
-            </span>
+            </div>
           </AlertTitle>
         </Alert>
       </DialogTrigger>
@@ -240,20 +275,20 @@ export function AnalysisResultLog({
           className={`text-2xl font-semibold p-4 transition ${isDarkMode ? "text-white" : "text-black"
             }`}
         >
-          {titleMatch ? titleMatch : title}
-          <Badge
-            className={`hover:bg-yellow-300 mr-2 text-xs select-none cursor-default font-bold py-0 ml-2 ${getBadgeStyles(
-              severity
-            )}`}
-          >
-            {severity}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge
+              className={`${getBadgeStyles(severity)} hover:bg-yellow-300 mr-2 leading-none`}
+            >
+              {severity}
+            </Badge>
+            {titleMatch ? titleMatch : title}
+          </div>
         </DialogTitle>
 
         <div
           className={`divide-y rounded-lg border overflow-hidden ${isDarkMode
-              ? "divide-gray-700 border-gray-700 bg-gray-900"
-              : "divide-gray-300 border-gray-300 bg-gray-100"
+            ? "divide-gray-700 border-gray-700 bg-gray-900"
+            : "divide-gray-300 border-gray-300 bg-gray-100"
             }`}
         >
           {/* Description Row */}
@@ -262,12 +297,16 @@ export function AnalysisResultLog({
               }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+              className={`p-4 flex items-center justify-center ${isDarkMode
+                ? "bg-gray-800 text-gray-200"
+                : "bg-gray-200 text-gray-800"
                 }`}
             >
               <h3 className="font-semibold">Description</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {description}
             </div>
           </div>
@@ -278,12 +317,16 @@ export function AnalysisResultLog({
               }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+              className={`p-4 flex items-center justify-center ${isDarkMode
+                ? "bg-gray-800 text-gray-200"
+                : "bg-gray-200 text-gray-800"
                 }`}
             >
               <h3 className="font-semibold">Impact</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {detail?.impact &&
                 detail.impact.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -292,7 +335,7 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  )
+                  ),
                 )}
             </div>
           </div>
@@ -303,12 +346,16 @@ export function AnalysisResultLog({
               }`}
           >
             <div
-              className={`p-4 flex items-center justify-center ${isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"
+              className={`p-4 flex items-center justify-center ${isDarkMode
+                ? "bg-gray-800 text-gray-200"
+                : "bg-gray-200 text-gray-800"
                 }`}
             >
               <h3 className="font-semibold">Recommendation</h3>
             </div>
-            <div className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <div
+              className={`p-4 leading-relaxed ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               {detail?.recommendation &&
                 detail.recommendation.split("\n").map((line, index) =>
                   line.trim().startsWith("-") ? (
@@ -317,7 +364,7 @@ export function AnalysisResultLog({
                     </li>
                   ) : (
                     <p key={index}>{line}</p>
-                  )
+                  ),
                 )}
             </div>
           </div>
@@ -327,64 +374,18 @@ export function AnalysisResultLog({
   );
 }
 
-// Critical: DB0004, High: EA6336, Medium: EA9C36, Low: EAE436, Info: 36A2EA
-const getCardStyles = (severity: string, isDarkMode: boolean) => {
-  const baseStyles = `text-xs border-2 box-border h-[64px] min-h-[64px] max-h-[70px] rounded-lg select-none transition duration-200`;
+import { Skeleton } from "@/components/ui/skeleton";
+export function SkeletonCard() {
+  return (
+    <div className="flex items-center rounded-xl px-4 py-3 gap-4 w-[460px] max-w-full">
+      {/* Info badge */}
+      <Skeleton className="h-[24px] w-[50px] rounded-full" />
 
-  const lightModeStyles = `bg-white text-black`;
-  const darkModeStyles = `bg-black text-white`;
-
-  const themeStyles = isDarkMode ? darkModeStyles : lightModeStyles;
-
-  switch (severity) {
-    case "Critical":
-      return `${baseStyles} ${themeStyles} border-[#DB0004]`;
-    case "High":
-      return `${baseStyles} ${themeStyles} border-[#EA6336]`;
-    case "Medium":
-      return `${baseStyles} ${themeStyles} border-[#EA9C36]`;
-    case "Low":
-      return `${baseStyles} ${themeStyles} border-[#EAE436]`;
-    case "Info":
-      return `${baseStyles} ${themeStyles} border-[#36A2EA]`;
-    default:
-      return `${baseStyles} ${themeStyles} border-gray-500`;
-  }
-};
-
-
-const getSeverityLevel = (severity: string) => {
-  switch (severity) {
-    case "Critical":
-      return 5;
-    case "High":
-      return 4;
-    case "Medium":
-      return 3;
-    case "Low":
-      return 2;
-    case "Info":
-      return 1;
-    default:
-      return 0; // 알 수 없는 심각도일 경우
-  }
-};
-
-const getBadgeStyles = (severity: string) => {
-  const baseStyles = `text-[11px] border rounded-md select-none px-2 py-[2px] font-bold`;
-
-  switch (severity) {
-    case "Critical":
-      return `${baseStyles} border-[#DB0004] text-[#DB0004] bg-[#DB0004]/10`;
-    case "High":
-      return `${baseStyles} border-[#EA6336] text-[#EA6336] bg-[#EA6336]/10`;
-    case "Medium":
-      return `${baseStyles} border-[#EA9C36] text-[#EA9C36] bg-[#EA9C36]/10`;
-    case "Low":
-      return `${baseStyles} border-[#EAE436] text-[#EAE436] bg-[#EAE436]/10`;
-    case "Info":
-      return `${baseStyles} border-[#36A2EA] text-[#36A2EA] bg-[#36A2EA]/10`;
-    default:
-      return `${baseStyles} border-gray-500 text-gray-500 bg-gray-500/10`;
-  }
-};
+      {/* Text block */}
+      <div className="flex flex-col gap-2 flex-1">
+        <Skeleton className="h-[16px] w-3/4 rounded-md" />
+        <Skeleton className="h-[12px] w-5/6 rounded-md" />
+      </div>
+    </div>
+  );
+}
