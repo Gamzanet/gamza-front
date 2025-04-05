@@ -33,7 +33,7 @@ export default function Layout({
           <ResizablePanelGroup direction="horizontal" className="min-h-[200px]">
             <ResizablePanel className="rounded-[15px]">
               <div className="flex flex-col gap-4 overflow-x-auto border-2 border-dotted">
-                <div className="flex justify-between rounded-[15px]">
+                <div className="flex overflow-x-auto m-2 min-w-[1040px] rounded-[15px]">
                   {poolKey}
                   {TokenPrice}
                 </div>

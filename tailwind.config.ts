@@ -129,50 +129,50 @@ const config: Config = {
   plugins: [tailwindcss_animate],
   safelist: [
     // Card height & spacing (arbitrary values)
-    'h-[64px]',
-    'min-h-[64px]',
-    'max-h-[70px]',
-    'px-4',
-    'py-[4px]',
-  
+    "h-[64px]",
+    "min-h-[64px]",
+    "max-h-[70px]",
+    "px-4",
+    "py-[4px]",
+
     // Font size
-    'text-[11px]',
-  
+    "text-[11px]",
+
     // Critical
-    'border-[#DB0004]',
-    'text-[#DB0004]',
-    'bg-[#DB0004]/10',
-    'hover:bg-[#DB0004]/10',
-  
+    "border-[#DB0004]",
+    "text-[#DB0004]",
+    "bg-[#DB0004]/10",
+    "hover:bg-[#DB0004]/10",
+
     // High
-    'border-[#EA6336]',
-    'text-[#EA6336]',
-    'bg-[#EA6336]/10',
-    'hover:bg-[#EA6336]/10',
-  
+    "border-[#EA6336]",
+    "text-[#EA6336]",
+    "bg-[#EA6336]/10",
+    "hover:bg-[#EA6336]/10",
+
     // Medium
-    'border-[#EA9C36]',
-    'text-[#EA9C36]',
-    'bg-[#EA9C36]/10',
-    'hover:bg-[#EA9C36]/10',
-  
+    "border-[#EA9C36]",
+    "text-[#EA9C36]",
+    "bg-[#EA9C36]/10",
+    "hover:bg-[#EA9C36]/10",
+
     // Low
-    'border-[#EAE436]',
-    'text-[#EAE436]',
-    'bg-[#EAE436]/10',
-    'hover:bg-[#EAE436]/10',
-  
+    "border-[#EAE436]",
+    "text-[#EAE436]",
+    "bg-[#EAE436]/10",
+    "hover:bg-[#EAE436]/10",
+
     // Info
-    'border-[#36A2EA]',
-    'text-[#36A2EA]',
-    'bg-[#36A2EA]/10',
-    'hover:bg-[#36A2EA]/10',
-  
+    "border-[#36A2EA]",
+    "text-[#36A2EA]",
+    "bg-[#36A2EA]/10",
+    "hover:bg-[#36A2EA]/10",
+
     // Default (gray)
-    'border-gray-500',
-    'text-gray-500',
-    'bg-gray-500/10',
-    'hover:bg-gray-500/10',
+    "border-gray-500",
+    "text-gray-500",
+    "bg-gray-500/10",
+    "hover:bg-gray-500/10",
   ],
 };
 export default config;

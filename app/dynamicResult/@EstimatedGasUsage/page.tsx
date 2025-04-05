@@ -28,7 +28,6 @@ import {
 
 import Loading from "@/components/ui/loading";
 import { useSSE } from "@/components/request/SSEManager";
-import { useTheme } from "next-themes";
 
 export const description = "A bar chart with a custom label";
 
@@ -51,11 +50,15 @@ function Component({
   cardDescription,
   children,
   chartData = [],
+  gasPrice,
+  className,
 }: {
   cardTitle: string;
   cardDescription: string;
   children?: React.ReactNode;
   chartData: { method: string; enableHook: number; disableHook: number }[];
+  gasPrice: number | null;
+  className?: string;
 }) {
   if (chartData.length === 0) {
     return <div>No data available</div>;
@@ -86,18 +89,18 @@ function Component({
 
   const averageGas = validData.length
     ? (
-        validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
-      ).toFixed(2)
+      validData.reduce((sum, d) => sum + d.enableHook, 0) / validData.length
+    ).toFixed(2)
     : "0";
 
   const medianGas = validData.length
     ? (() => {
-        const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
-        const mid = Math.floor(sorted.length / 2);
-        return sorted.length % 2 === 0
-          ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
-          : sorted[mid].toString();
-      })()
+      const sorted = validData.map((d) => d.enableHook).sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 === 0
+        ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+        : sorted[mid].toString();
+    })()
     : "0";
 
   const maxValue =
@@ -105,7 +108,17 @@ function Component({
     1.2; // 최대값보다 약간 더 여유 공간 추가
 
   return (
-    <Card className="p-4">
+    <Card className={`p-4 ${className}`}>
+      {/* ✅ 현재 가스 가격 출력 */}
+      <div className="mb-4 p-2 border rounded-lg text-sm transition-colors duration-200 text-center">
+        {gasPrice !== null ? (
+          <p>
+            <strong>Current Gas Price:</strong> {gasPrice > 0 ? `${gasPrice} Gwei` : "No Data"}
+          </p>
+        ) : (
+          <p>Loading gas price...</p>
+        )}
+      </div>
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
@@ -193,7 +206,7 @@ function Component({
         )}
       </CardContent>
 
-      <CardFooter className="flex-col items-start gap-2 text-sm">
+      <CardFooter className="flex flex-col flex-grow items-start gap-2 text-sm h-full">
         <div className="flex gap-2 font-medium leading-none">
           Maximum gas: {maxGasMethod} {maxGas}{" "}
           <TrendingUp className="h-4 w-4" />
@@ -201,7 +214,7 @@ function Component({
         <div className="leading-none text-muted-foreground">
           min:{minGas} | average:{averageGas} | median:{medianGas}
         </div>
-        <div className="leading-none text-muted-foreground">{children}</div>
+        <div className="leading-none text-muted-foreground flex flex-grow">{children}</div>
       </CardFooter>
     </Card>
   );
@@ -258,13 +271,13 @@ function GasDifferenceSummary({
   } satisfies ChartConfig;
 
   return (
-    <Card>
+    <Card className="flex flex-col flex-grow mt-8">
       <CardHeader>
         <CardTitle>Gas Difference Summary</CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig2}>
+      <CardContent className="flex flex-col flex-grow h-full">
+        <ChartContainer config={chartConfig2} className="flex-grow">
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -282,7 +295,7 @@ function GasDifferenceSummary({
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
+      <CardFooter className="flex flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Maximum gas gap: {maxGasMethod} {maxGas}{" "}
           <TrendingUp className="h-4 w-4" />
@@ -298,8 +311,6 @@ function GasDifferenceSummary({
 export default function GasDifferenceChart() {
   const [isCode, setIsCode] = useState<boolean>(false);
   const { taskResults, error } = useSSE();
-  const { theme } = useTheme(); // ✅ 현재 테마 가져오기
-  const isDarkMode = theme === "dark";
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
@@ -350,23 +361,6 @@ export default function GasDifferenceChart() {
     <>
       {!isCode && (
         <div className="flex flex-col items-center justify-center">
-          {/* ✅ 현재 체인의 가스비 표시 */}
-          <div
-            className={`mt-4 p-2 border rounded-lg text-sm transition-colors duration-200 ${
-              isDarkMode
-                ? "bg-gray-800 text-white border-gray-600"
-                : "bg-gray-100 text-gray-700 border-gray-300"
-            }`}
-          >
-            {gasPrice ? (
-              <p>
-                <strong>Current Gas Price:</strong>{" "}
-                {gasPrice > 0 ? gasPrice + " Gwei" : "No Data"}
-              </p>
-            ) : (
-              <p>Loading gas price...</p>
-            )}
-          </div>
           <Component
             cardTitle="Estimated Gas Usage"
             cardDescription="per method gas consumption enabled/disabled hooks"
@@ -375,13 +369,16 @@ export default function GasDifferenceChart() {
               enableHook: hookGas,
               disableHook: noHookGas,
             }))}
+            gasPrice={gasPrice}
+            className="flex flex-col min-h-[960px]"
           >
-            <GasDifferenceSummary
-              chartData={gasData.map(({ method, difference }) => ({
-                method,
-                gas: difference,
-              }))}
-            />
+              <GasDifferenceSummary
+                chartData={gasData.map(({ method, difference }) => ({
+                  method,
+                  gas: difference,
+                }))}
+              />
+
           </Component>
         </div>
       )}

@@ -87,7 +87,7 @@ export default function HookCodeForm() {
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

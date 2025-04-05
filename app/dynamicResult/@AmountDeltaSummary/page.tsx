@@ -41,7 +41,7 @@ export default function AmountDeltaSummaryPage() {
   const data = taskResults["dynamic-2-9"];
   if (!data) {
     return (
-      <div className="min-w-[1040px] min-h-[600px]">
+      <div className="h-full w-full min-w-[1040px] min-h-[600px]">
         <Loading containerClassName="h-full w-full" />
       </div>
     );
@@ -181,7 +181,6 @@ export default function AmountDeltaSummaryPage() {
   };
 
   return (
-    <div>
       <Card className="min-w-[1040px]">
         <CardHeader>
           <div className="flex">
@@ -265,6 +264,5 @@ export default function AmountDeltaSummaryPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
   );
 }

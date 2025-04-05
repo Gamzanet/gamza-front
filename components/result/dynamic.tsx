@@ -176,31 +176,42 @@ function DynamicPoolKeyResult({
   deployer,
 }: PoolKeyType) {
   return (
-    <Card className="rounded-[15px] border m-2 w-auto min-w-[500px] max-w-[700px] min-h-[330px] flex flex-col">
+    <Card className="m-0 rounded-[15px] border mr-2 w-auto w-full min-h-[330px] flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>PoolKey</CardTitle>
-          <CardDescription className="text-sm text-gray-500">
-            Chain: {chain}
+          <CardTitle className="text-2xl font-bold">PoolKey</CardTitle>
+          <CardDescription className="text-base text-gray-500">
+            Chain: <span className="font-medium">{chain}</span>
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="font-fira-code">
-        <div className="grid grid-cols-[minmax(120px,auto),1fr] border gap-4 p-4">
-          <p className="font-bold">Currency0</p> <p>{currency0}</p>
-          <p className="font-bold">Currency1</p> <p>{currency1}</p>
-          <p className="font-bold">Fee</p> <p>{fee}</p>
-          <p className="font-bold">TickSpacing</p> <p>{tickSpacing}</p>
-          <p className="font-bold">Hooks</p> <p>{hooks}</p>
+        <div className="grid grid-cols-[minmax(120px,auto),1fr] border gap-4 p-4 text-sm">
+          <p className="font-bold text-base">Currency0</p>
+          <p className="truncate text-sm">{currency0}</p>
+
+          <p className="font-bold text-base">Currency1</p>
+          <p className="truncate text-sm">{currency1}</p>
+
+          <p className="font-bold text-base">Fee</p>
+          <p className="text-sm">{fee}</p>
+
+          <p className="font-bold text-base">TickSpacing</p>
+          <p className="text-sm">{tickSpacing}</p>
+
+          <p className="font-bold text-base">Hooks</p>
+          <p className="truncate text-sm">{hooks}</p>
         </div>
 
-        <div className="grid grid-cols-[minmax(120px,auto),1fr] gap-4 p-4">
-          <p className="font-bold">Deployer</p> <p>{deployer}</p>
+        <div className="grid grid-cols-[minmax(120px,auto),1fr] gap-4 p-4 text-sm">
+          <p className="font-bold text-base">Deployer</p>
+          <p className="truncate text-sm">{deployer}</p>
         </div>
       </CardContent>
     </Card>
   );
 }
+
 
 function DynamicTokenPriceResult({
   swappedPrice,
@@ -216,7 +227,7 @@ function DynamicTokenPriceResult({
   const priceDiff = ((swappedPrice / oraclePrice) * 100 - 100).toFixed(2);
 
   return (
-    <Card className="rounded-[15px] border m-2 w-auto min-w-[500px] max-w-[700px] min-h-[330px] flex flex-col">
+    <Card className="m-0 rounded-[15px] border ml-2 w-auto w-full min-h-[330px] flex flex-col">
       <CardHeader>
         <CardTitle>Token Price</CardTitle>
         <CardDescription className="text-sm text-gray-500">
@@ -240,11 +251,11 @@ function DynamicTokenPriceResult({
           {/* ✅ Oracle Price */}
           <div>
             <p className="font-bold">Oracle Price:</p>
-            <p className="text-sm text-gray-500">Oracle Source:</p>
+            <p className="text-sm text-gray-500">Fetched via Pyth</p>
           </div>
           <div>
             <p>{oraclePrice}</p>
-            <p className="text-sm text-gray-500">Pyth</p>
+            <p className="text-sm text-gray-500">Currency0 / Currency1</p>
           </div>
 
           {/* ✅ Price Difference */}

@@ -154,7 +154,7 @@ export default function StaticAnalysisResultPage() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="flex flex-col my-4 max-h-[800px] ml-2 gap-y-2">
+    <div className="flex flex-col my-4 ml-2 gap-y-2">
       {/* 검색 */}
       <div className="relative w-[96%]">
         <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -180,7 +180,7 @@ export default function StaticAnalysisResultPage() {
         </div>
       ) : (
         <>
-          <ScrollableWindow className="space-y-2 h-full">
+          <ScrollableWindow className="space-y-2 h-full overflow-y-auto">
             {[...filteredThreats]
               .sort(
                 (a, b) =>
@@ -251,7 +251,7 @@ export function AnalysisResultLog({
     <Dialog>
       <DialogTrigger asChild>
         <Alert
-          className={`relative w-[96%] ${getCardStyles(severity, isDarkMode)} mb-4`}
+          className={`relative w-[96%] ${getCardStyles(severity, isDarkMode)} mb-4 overflow-y-hidden`}
         >
           <AlertTitle className="flex gap-3 items-start">
             {/* Badge */}

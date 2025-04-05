@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { getBadgeStyles } from "@/utils/SeverityStyles";
+import { trace } from "console";
 
 // ✅ 테스트 이름 매핑 객체 (Dict 활용)
 const testNameMapping: Record<string, string> = {
@@ -74,11 +75,14 @@ export default function Page() {
   // ✅ 선택한 `TraceLog` 데이터 가져오기
   const sampleTraceLog = useMemo(() => {
     if (!traceLogData[testNumber]) return "Loading...";
+    if (traceLogData[testNumber]?.result?.result?.failList[indexNumber]?.name == "setUp()") return "Please Check WhiteList or PoolKey"
     return (
       traceLogData[testNumber]?.result?.result?.failList[indexNumber]?.trace ||
       "No Trace Data Available"
     );
   }, [traceLogData, testNumber, indexNumber]);
+
+  const description = traceLogData[testNumber]?.result?.result?.failList?.[indexNumber]?.description;
 
   // ✅ 왼쪽 화살표 클릭
   const handlePrev = () => {
@@ -132,16 +136,14 @@ export default function Page() {
         <CardContent className="relative px-16">
           {/* 🔹 Impact & Description 추가 */}
           <div
-            className={`mb-4 p-4 rounded-lg border transition-colors duration-200 ${
-              isDarkMode
-                ? "bg-gray-800 text-white border-gray-600"
-                : "bg-gray-100 text-gray-700 border-gray-300"
-            }`}
+            className={`mb-4 p-4 rounded-lg border transition-colors duration-200 ${isDarkMode
+              ? "bg-gray-800 text-white border-gray-600"
+              : "bg-gray-100 text-gray-700 border-gray-300"
+              }`}
           >
             <h2
-              className={`text-lg font-bold transition-colors duration-200 ${
-                isDarkMode ? "text-white" : "text-gray-700"
-              }`}
+              className={`text-lg font-bold transition-colors duration-200 ${isDarkMode ? "text-white" : "text-gray-700"
+                }`}
             >
               Impact:{" "}
               {traceLogData[testNumber]?.result?.result?.failList?.[indexNumber]
@@ -166,23 +168,25 @@ export default function Page() {
               )}
             </h2>
             <p
-              className={`mt-1 text-base transition-colors duration-200 ${
-                isDarkMode ? "text-gray-300" : "text-gray-600"
-              }`}
+              className={`mt-1 text-base transition-colors duration-200 ${isDarkMode ? "text-gray-300" : "text-gray-600"
+                }`}
             >
-              {traceLogData[testNumber]?.result?.result?.failList?.[indexNumber]
-                ?.description || "No description available"}
+              {description ?
+                description === "msg" ?
+                  "Failed to setUp of test" :
+                  description :
+                "No description available"
+              }
             </p>
           </div>
 
           {/* 🔽 Left Arrow Button */}
           <button
             onClick={handlePrev}
-            className={`absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${
-              isDarkMode
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
-            }`}
+            className={`absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${isDarkMode
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
+              }`}
           >
             <ChevronLeft size={30} />
           </button>
@@ -192,11 +196,10 @@ export default function Page() {
           {/* 🔼 Right Arrow Button */}
           <button
             onClick={handleNext}
-            className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${
-              isDarkMode
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
-            }`}
+            className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-md transition ${isDarkMode
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
+              }`}
           >
             <ChevronRight size={30} />
           </button>
@@ -209,13 +212,12 @@ export default function Page() {
               <button
                 key={idx}
                 onClick={() => setIndexNumber(idx)}
-                className={`w-3 h-3 rounded-full transition-transform ${
-                  idx === indexNumber
-                    ? "bg-primary-500 scale-110"
-                    : isDarkMode
-                      ? "bg-gray-500 hover:bg-gray-400"
-                      : "bg-gray-300 hover:bg-gray-400"
-                }`}
+                className={`w-3 h-3 rounded-full transition-transform ${idx === indexNumber
+                  ? "bg-primary-500 scale-110"
+                  : isDarkMode
+                    ? "bg-gray-500 hover:bg-gray-400"
+                    : "bg-gray-300 hover:bg-gray-400"
+                  }`}
               ></button>
             ),
           )}

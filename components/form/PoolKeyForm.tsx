@@ -138,11 +138,11 @@ export default function PoolKeyForm({
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setCurrency0("0x4200000000000000000000000000000000000006");
-    setCurrency1("0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2");
-    setFee("8388608");
+    setCurrency0("0x0000000000000000000000000000000000000000");
+    setCurrency1("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913");
+    setFee("1500");
     setTickSpacing("200");
-    setHooks("0x8dd4c756F183513850e874F7d1ffd0d7Cb498080");
+    setHooks("0x5cd525c621AFCa515Bf58631D4733fbA7B72Aae4");
     setDeployer("0x4e59b44847b379578588920cA78FbF26c0B4956C");
     setChain("base");
   };
@@ -311,7 +311,7 @@ export default function PoolKeyForm({
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
